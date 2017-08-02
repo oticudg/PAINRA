@@ -11,8 +11,37 @@ class CPrincipales extends Conexion
 		FROM users AS u
 		LEFT JOIN user_coordinacion AS uc ON uc.id_user = u.id
 		LEFT JOIN coordinaciones AS c ON uc.id_coordinacion = c.id
-		WHERE delete_at IS NULL AND u.usuario = '{$usuario}'
+		WHERE delete_at IS NULL AND u.usuario = '{$usuario}' OR u.email = '{$usuario}'
 		ORDER BY id ASC;";
+		return $this;
+	}
+
+	public function soportistas($id = -1, $privilegio = 0, $usuario = 0, $cedula = 0)
+	{
+		$this->sql = "SELECT u.id, u.nombre, u.cedula, u.rol, uc.id_coordinacion,
+		coordinacion, uc.id AS iduc
+		FROM users AS u
+		LEFT JOIN user_coordinacion AS uc ON uc.id_user = u.id
+		LEFT JOIN coordinaciones AS c ON uc.id_coordinacion = c.id
+		WHERE delete_at IS NULL AND (u.id = {$id} OR {$id} = -1) OR
+		(u.rol = '{$privilegio}' OR '{$privilegio}' = -1) OR
+		(u.usuario = '{$usuario}' OR '{$usuario}' = -1)  OR
+		(u.cedula = '{$cedula}' OR '{$cedula}' = -1)
+		ORDER BY u.nombre ASC;";
+		return $this;
+	}
+
+	public function add_editSoportista($usuario, $nombre, $cedula, $email, $privilegio, $pass, $id = -1)
+	{
+		$prefijo = ($id == -1) ? 'INSERT INTO ' : 'UPDATE ';
+		$sufijo = ($id == -1) ? ';' : ' WHERE id = ' . $id;
+		$this->sql = $prefijo.' users SET 
+		'.(($id == -1) ? 'pass = "'.$pass.'",' : '').'
+		usuario = "'.$usuario.'",
+		nombre = "'.$nombre.'",
+		email = "'.$email.'",
+		cedula = '.$cedula.',
+		rol = "'.$privilegio.'" '.$sufijo;
 		return $this;
 	}
 

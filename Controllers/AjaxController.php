@@ -46,8 +46,6 @@ class AjaxController
 		}
 	}
 
-	public function paginacion() {}
-
 	public function logout()
 	{
 		if ($_REQUEST['operation'] == 'logout') {
@@ -65,7 +63,7 @@ class AjaxController
 	public function cambioPass()
 	{
 		if ($_REQUEST['operation'] == 'cambioPass') {
-			if ($_REQUEST['token'] == 2) {
+			if ($_REQUEST['token'] == 3) {
 				if (isset($_REQUEST['newpass']) && isset($_REQUEST['confirmacion'])) {
 					if( !empty($_REQUEST['newpass']) || !empty($_REQUEST['confirmacion']) ){
 						if ($_REQUEST['newpass'] === $_REQUEST['confirmacion']) {
@@ -73,6 +71,69 @@ class AjaxController
 						}
 					}
 				}
+			}
+		}
+	}
+
+	public function soportistas()
+	{
+		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'soportistas') {
+			if ($_REQUEST['token'] == 4) {
+				$soportistas = $this->cp->soportistas()->see();
+				$count = 0;
+				echo '
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th width="5%">N°</th>
+							<th>Nombre</th>
+							<th>Cedula</th>
+							<th>Coordinacion</th>
+						</tr>
+					</thead>
+					<tbody>';
+				foreach ($soportistas as $s) {
+					echo '
+					<tr id="soportista" ren="'.MED::e($s['id']).'" rol="'.$s['rol'].'">
+						<td>'.++$count.'</td>
+						<td>'.$s['nombre'].'</td>
+						<td>'.$s['cedula'].'</td>
+						<td class="'.(($s['coordinacion'] == '' && ($s['rol'] == 3 || $s['rol'] == 2)) ? 'bg-danger' : '').'">'.$s['coordinacion'].'</td>
+					</tr>';
+				}
+				echo '
+				<tbody>
+				</table>';
+			}
+		}
+	}
+
+	public function soportistasRegistrar()
+	{
+		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'soportistasRegistrar') {
+			if ($_REQUEST['token'] == 7) {
+				$resultado = array();
+				$resultado2 = array();
+				if ($_REQUEST['id'] == -1) {
+					$resultado = $this->cp->soportistas(0, 0, $_REQUEST['usuario'], 0)->see();
+					$resultado2 = $this->cp->soportistas(0, 0, 0, $_REQUEST['cedula'])->see();
+				}
+				if (count($resultado) > 0 || count($resultado2) > 0) {
+					$resultado = false;
+				} else {
+					$rol = ($_SESSION['rol'] == 1) ? $_REQUEST['rol'] : 3;
+					$pass = ($_REQUEST['id'] == -1) ? MED::e($_REQUEST['cedula']) : '';
+					$resultado = $this->cp->add_editSoportista(
+						$_REQUEST['usuario'],
+						$_REQUEST['nombre'],
+						$_REQUEST['cedula'],
+						$_REQUEST['email'],
+						$rol,
+						$pass,
+						$_REQUEST['id']
+						)->save();
+				}
+				echo json_encode($resultado);
 			}
 		}
 	}

@@ -286,40 +286,40 @@ $(document).ready(function () {
 	// 	buscarTicket($(this).attr("ren"));
 	// });
 
-	// $("#registrar-soportista").submit(function(e){
-	// 	e.preventDefault();
-	// 	var data = $(this).serializeArray();
-	// 	data.push({ name: "operation", value: "soportistasRegistrar" });
-	// 	data.push({ name: "token", value: "7" });
-	// 	$.ajax({
-	// 		url: 'resource/procesos/process.php',
-	// 		type: 'POST',
-	// 		dataType: 'json',
-	// 		data: data,
-	// 		beforeSend: function () {
-	// 			$(".msg").html('<div class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i><div>');
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		if (resul == false) {
-	// 			$(".msg").html('<div class="alert alert-danger" role="alert"> <span class="fa fa-exclamation-triangle"></span> Ya existe este usuario o cedula.<div>');
-	// 		} else {
-	// 			$(".msg").html('<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-ok"></span> Datos Recibidos Exitosamente...<div>');
-	// 			setTimeout(function () {
-	// 				$('.modal-soportista-registrar').modal('toggle');
-	// 				$("form#registrar-soportista")[0].reset();
-	// 				$(".msg").html('');
-	// 				llenarSoportistas();
-	// 			}, 1000);
-	// 			setTimeout(function () {
-	// 				$(".msg").html('');
-	// 			}, 5000);
-	// 		}
-	// 	})
-	// 	.fail(function(resul) {
-	// 		$(".msg").html('<div class="alert alert-danger" role="alert">Error al enviar Datos...<div>');
-	// 	});
-	// });
+	$("#registrar-soportista").submit(function(e){
+		e.preventDefault();
+		var data = $(this).serializeArray();
+		data.push({ name: "operation", value: "soportistasRegistrar" });
+		data.push({ name: "token", value: "7" });
+		$.ajax({
+			url: url+"Ajax/soportistasRegistrar",
+			type: 'POST',
+			dataType: 'json',
+			data: data,
+			beforeSend: function () {
+				$(".msg").html('<div class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i><div>');
+			}
+		})
+		.done(function(resul) {
+			if (resul == false) {
+				$(".msg").html('<div class="alert alert-danger" role="alert"> <span class="fa fa-exclamation-triangle"></span> Ya existe este usuario o cedula.<div>');
+			} else {
+				$(".msg").html('<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-ok"></span> Datos Recibidos Exitosamente...<div>');
+				setTimeout(function () {
+					$('.modal-soportista-registrar').modal('toggle');
+					$("form#registrar-soportista")[0].reset();
+					$(".msg").html('');
+					llenarSoportistas();
+				}, 1000);
+				setTimeout(function () {
+					$("div.alert").fadeOut();
+				}, 5000);
+			}
+		})
+		.fail(function(resul) {
+			$(".msg").html('<div class="alert alert-danger" role="alert">Error al enviar Datos...<div>');
+		});
+	});
 
 	// $("form#form-user-coordinacion").submit(function (e) {
 	// 	e.preventDefault();
@@ -401,64 +401,84 @@ $(document).ready(function () {
 	// /*
 	// * Funciones
 	// */
-	// llenarSoportistas();
-	// $(".modal-soportistas").modal("show");
-	// function llenarSoportistas() {
-	// 	$.ajax({
-	// 		url: 'resource/procesos/process.php',
-	// 		type: 'POST',
-	// 		dataType: 'html',
-	// 		data: {
-	// 			operation: "soportistas",
-	// 			token: 6
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		$(".tabla-soportistas").html(resul);
-	// 		$("a#editarSoportista").click(function (e) {
-	// 			e.preventDefault();
-	// 			editarSoportista($(this).attr("ren"));
-	// 		});
-	// 		$("a#deleteSoportista").click(function (e) {
-	// 			e.preventDefault();
-	// 			$(".modal-abrirTicketError").css("z-index", 999999);
-	// 			$(".modal-abrirTicketError").modal("show");
-	// 			$(".modal-abrirTicketError .modal-title").html("<h4><span class='glyphicon glyphicon-remove'></span> Eliminar Soportista</h4>");
-	// 			$(".modal-abrirTicketError .modal-body .error").html('<div class="row"> <h4>Esta Seguro de Eliminar a '+$(this).attr("name")+'?</h4> </div> <label for="usuario">Usuario:</label> <input type="text" class="form-control" name="usuario" value="'+$(this).attr("usuario")+'" disabled> <label for="cedula">Cedula:</label> <input type="text" class="form-control" name="cedula" value="'+$(this).attr("cedula")+'" disabled> <br>');
-	// 			$(".modal-abrirTicketError .modal-footer span.btnn").html('<button type="button" class="btn btn-primary" id="confirmacionSoportista" ren="'+$(this).attr("ren")+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
-	// 			$("#confirmacionSoportista").click(function () {
-	// 				deleteSoportista($(this).attr("ren"));
-	// 			});
-	// 		});
-	// 		$("a#coordinacion").click(function(e) {
-	// 			e.preventDefault();
-	// 			$(".modal-soportistas-coordinacion input#iduser").attr("value", $(this).attr("ren"));
-	// 			if ($(this).attr("coordinacion") == '') {
-	// 				$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1' selected>Nuevo</option>");
-	// 				$(".modal-soportistas-coordinacion input#iduc").attr("value", "-1");
-	// 			} else {
-	// 				$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1'>Nuevo</option> <option value='"+$(this).attr("iduc")+"' selected>Actualización</option>");
-	// 				$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).attr("coordinacion"));
-	// 				var coordinacion = $(this).attr("coordinacion");
-	// 				var options = $(".modal-soportistas-coordinacion select#coordinacion option");
-	// 				console.log(coordinacion);
-	// 				console.log("adsdasklp");
+	llenarSoportistas();
+	$(".modal-soportistas").modal("show");
+	function llenarSoportistas() {
+		$.ajax({
+			url: url+"Ajax/soportistas",
+			type: 'POST',
+			dataType: 'html',
+			data: {
+				operation: "soportistas",
+				token: 4
+			}
+		})
+		.done(function(resul) {
+			$(".tabla-soportistas").html(resul);
+			$("tr#soportista").click(function () {
+				var rol = $(this).attr("rol");
+				$("button.btn.btn-small.btn-primary#editarU").attr("ren", $(this).attr("ren"));
+				$("button.btn.btn-small.btn-primary#eliminarU").attr("ren", $(this).attr("ren"));
+				$("button.btn.btn-small.btn-primary#coordinacionU").attr("ren", $(this).attr("ren"));
+				if (rol == 2 || rol == 3) {
+					$("button.btn.btn-small.btn-primary#coordinacionU").fadeIn('2');
+				} else {
+					$("button.btn.btn-small.btn-primary#coordinacionU").fadeOut('2');
+				}
+			});
 
-	// 				for (var i = 0; i < options.length; i++) {
-	// 					// if (options[i].attr("value") == coordinacion) {
+			$("button.btn.btn-small.btn-primary#registrarU").click(function () {
+				$(".modal-soportista-registrar").modal("show");
+				$("input[type='hidden']#id").attr("value", -1);
+			});
 
-	// 					// }
-	// 				}
-	// 			}
-	// 			console.log("adsdasklp");
-	// 			$(".modal-soportistas-coordinacion").modal("show");
-	// 			// $(".modal-soportistas-coordinacion .deleteUC").attr("ren", $(this).attr("coordinacion"));
-	// 		});
-	// 	})
-	// 	.fail(function() {
-	// 		$(".tabla-soportistas").html("Error al Cargar...<br>Consulte al Programador.");
-	// 	});
-	// };
+
+
+
+			// $("a#editarSoportista").click(function (e) {
+			// 	e.preventDefault();
+			// 	editarSoportista($(this).attr("ren"));
+			// });
+			// $("a#deleteSoportista").click(function (e) {
+			// 	e.preventDefault();
+			// 	$(".modal-abrirTicketError").css("z-index", 999999);
+			// 	$(".modal-abrirTicketError").modal("show");
+			// 	$(".modal-abrirTicketError .modal-title").html("<h4><span class='glyphicon glyphicon-remove'></span> Eliminar Soportista</h4>");
+			// 	$(".modal-abrirTicketError .modal-body .error").html('<div class="row"> <h4>Esta Seguro de Eliminar a '+$(this).attr("name")+'?</h4> </div> <label for="usuario">Usuario:</label> <input type="text" class="form-control" name="usuario" value="'+$(this).attr("usuario")+'" disabled> <label for="cedula">Cedula:</label> <input type="text" class="form-control" name="cedula" value="'+$(this).attr("cedula")+'" disabled> <br>');
+			// 	$(".modal-abrirTicketError .modal-footer span.btnn").html('<button type="button" class="btn btn-primary" id="confirmacionSoportista" ren="'+$(this).attr("ren")+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
+			// 	$("#confirmacionSoportista").click(function () {
+			// 		deleteSoportista($(this).attr("ren"));
+			// 	});
+			// });
+			// $("a#coordinacion").click(function(e) {
+			// 	e.preventDefault();
+			// 	$(".modal-soportistas-coordinacion input#iduser").attr("value", $(this).attr("ren"));
+			// 	if ($(this).attr("coordinacion") == '') {
+			// 		$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1' selected>Nuevo</option>");
+			// 		$(".modal-soportistas-coordinacion input#iduc").attr("value", "-1");
+			// 	} else {
+			// 		$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1'>Nuevo</option> <option value='"+$(this).attr("iduc")+"' selected>Actualización</option>");
+			// 		$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).attr("coordinacion"));
+			// 		var coordinacion = $(this).attr("coordinacion");
+			// 		var options = $(".modal-soportistas-coordinacion select#coordinacion option");
+			// 		console.log(coordinacion);
+			// 		console.log("adsdasklp");
+
+			// 		for (var i = 0; i < options.length; i++) {
+			// 			// if (options[i].attr("value") == coordinacion) {
+
+			// 			// }
+			// 		}
+			// 	}
+			// 	console.log("adsdasklp");
+			// 	$(".modal-soportistas-coordinacion").modal("show");
+			// 	// $(".modal-soportistas-coordinacion .deleteUC").attr("ren", $(this).attr("coordinacion"));
+			// });
+		})
+		.fail(function() {
+			// $(".tabla-soportistas").html("Error al Cargar...<br>Consulte al Programador.");
+		});
+	};
 
 	// function deleteSoportista(num) {
 	// 	$.ajax({
