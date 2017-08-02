@@ -1,2 +1,2 @@
-# Painra
-Repositorio para la aplicacion painra.
+# PAINRA
+Repositorio para la aplicacion PAINRA.

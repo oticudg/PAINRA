@@ -49,17 +49,6 @@ $(document).ready(function () {
 			}
 		}
 	});
-	$("a#logout").click(function (e) {
-		e.preventDefault();
-		$.ajax({
-			url: url+"Ajax/logout",
-			data: { token: 2, operation: "logout" },
-			type: "POST",
-			success: function () {
-				window.location = url;
-			}
-		});
-	});
 	// /*configuracion del datepicker*/
 	// $(".input-daterange").datepicker({
 	// 	todayBtn: "linked",
@@ -73,36 +62,52 @@ $(document).ready(function () {
 	// /*
 	// * Eventos
 	// */
+	$("a#logout").click(function (e) {
+		e.preventDefault();
+		$.ajax({
+			url: url+"Ajax/logout",
+			data: { token: 2, operation: "logout" },
+			type: "POST",
+			success: function () {
+				window.location = url;
+			}
+		});
+	});
 	// /*ajax para cambiar el pass*/
-	// $("form#password").submit(function (e) {
-	// 	e.preventDefault();
-	// 	var data = $(this).serializeArray();
-	// 	data.push({ name: "operation", value: "cpass" });
-	// 	$.ajax({
-	// 		url: "resource/procesos/process.php",
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 		data: data,
-	// 		beforeSend: function () {
-	// 			$(".fa-spinner").css("display","inline-block");
-	// 		}
-	// 	})
-	// 	.done(function() {
-	// 		$(".menssage").html("<b>Cambio Exitoso</b>");
-	// 		setTimeout(function () {
-	// 			$(".modal-contraseña").modal("toggle");
-	// 			$("form#password")[0].reset();
-	// 		}, 1000);
-	// 	})
-	// 	.fail(function() {
-	// 		$(".menssage").html("<b>Error al Cambiar la contraseña.</b>");
-	// 	})
-	// 	.always(function() {
-	// 		setTimeout(function () {
-	// 			$(".fa-spinner").hide();
-	// 		}, 1000);
-	// 	});
-	// });
+	$("form#password").submit(function (e) {
+		e.preventDefault();
+		var data = $(this).serializeArray();
+		if (data[0].value.length > 7 && data[1].value.length > 7) {
+			if (data[0].value == data[1].value) {
+				data.push({ name: "operation", value: "cambioPass" });
+				$.ajax({
+					url: url+"Ajax/cambioPass",
+					type: "POST",
+					dataType: "json",
+					data: data,
+					beforeSend: function () {
+						$(".fa-spinner").css("display","inline-block");
+					}
+				})
+				.done(function() {
+					$(".menssage").html('<span class="alert alert-success" role="alert"><b><span class="glyphicon glyphicon-ok"></span> Cambio Exitoso <i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></b></span>');
+					setTimeout(function () {
+						$(".modal-contraseña").modal("toggle");
+						$("form#password")[0].reset();
+						$("span.alert.alert-danger").remove();
+						$("span.alert.alert-success").remove();
+					}, 1000);
+				})
+				.fail(function() {
+					$(".menssage").html('<span class="alert alert-danger" role="alert"><b>Error al Cambiar la contraseña.</b></span>');
+				});
+			} else {
+				$(".menssage").html('<span class="alert alert-warning" role="alert"><b><span class="glyphicon glyphicon-exclamation-sign"></span> Los valores ingresados no coinciden.</b></span>');
+			}
+		} else {
+			$(".menssage").html('<span class="alert alert-warning" role="alert"><b><span class="glyphicon glyphicon-exclamation-sign"></span> La constraseña debe tener mas de 8 caracteres.</b></span>');
+		}
+	});
 	// /*ajax para buscar el ticket por el input*/
 	// $("form#ticket").submit(function (e) {
 	// 	e.preventDefault();

@@ -70,7 +70,7 @@ class Template {
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><b>Bienvenido, <?php echo $_SESSION['nombre']; ?><span class="caret"></span></b></a>
 						<ul class="dropdown-menu">
-						<?php if ($_SESSION['privilegio'] < 3) { ?>
+						<?php if ($_SESSION['rol'] < 3) { ?>
 							<li><a href="#" data-toggle="modal" data-target=".modal-soportistas"><i class="fa fa-user-circle-o" aria-hidden="true"></i> Registro Soportistas</a></li>
 						<?php } ?>
 							<li><a href="#" data-toggle="modal" data-target=".modal-contraseña"><span class="glyphicon glyphicon-cog"></span> Cambiar Contraseña</a></li>
@@ -118,5 +118,6 @@ class Template {
 <script src="Views/resource/js/main.js"></script>
 </html>
 <?php
+include_once 'modales/modales.php';
 	}
 }

@@ -28,11 +28,11 @@ class AjaxController
 						if (count($resultado) > 0) {
 							if ($resultado[0]['pass'] === MED::e($_REQUEST['clave'])) {
 								$_SESSION['validar']	= TRUE;
-								$_SESSION['usuario']	= $resultado[0]['usuario'];
-								$_SESSION['nombre']		= $resultado[0]['nombre'];
-								$_SESSION['privilegio']	= $resultado[0]['privilegio'];
-								$_SESSION['cedula']		= $resultado[0]['cedula'];
+								// $_SESSION['usuario']	= $resultado[0]['usuario'];
+								// $_SESSION['cedula']		= $resultado[0]['cedula'];
 								$_SESSION['id']			= $resultado[0]['id'];
+								$_SESSION['nombre']		= $resultado[0]['nombre'];
+								$_SESSION['rol']	= $resultado[0]['rol'];
 								$_SESSION['id_coordinacion'] = $resultado[0]['id_coordinacion'];
 								$_SESSION['coordinacion'] = $resultado[0]['coordinacion'];
 								$_SESSION['coordinacionopc'] = (isset($resultado[1]['coordinacion'])) ? $resultado[1]['coordinacion'] : NULL;
@@ -58,6 +58,21 @@ class AjaxController
 				header('location:'.URL);
 				echo 1;
 				exit();
+			}
+		}
+	}
+
+	public function cambioPass()
+	{
+		if ($_REQUEST['operation'] == 'cambioPass') {
+			if ($_REQUEST['token'] == 2) {
+				if (isset($_REQUEST['newpass']) && isset($_REQUEST['confirmacion'])) {
+					if( !empty($_REQUEST['newpass']) || !empty($_REQUEST['confirmacion']) ){
+						if ($_REQUEST['newpass'] === $_REQUEST['confirmacion']) {
+							echo $this->cp->cambioPass($_SESSION['id'], MED::e($_REQUEST['newpass']))->save();
+						}
+					}
+				}
 			}
 		}
 	}
