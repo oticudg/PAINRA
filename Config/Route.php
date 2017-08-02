@@ -2,18 +2,10 @@
 class Route {
 	public static function css($string)
 	{
-		return URL.'Views/resource/css/'.$string.'.';
-	}
-	public static function _css($string)
-	{
-		return URL.'Views/resource/css/'.$string.'.';
+		echo URL.'Views/otros/css/'.$string.'.css';
 	}
 	public static function js($string)
 	{
-		return URL.'Views/resource/js/'.$string.'.';
-	}
-	public static function _js($string)
-	{
-		return URL.'Views/resource/js/'.$string.'.';
+		echo URL.'Views/otros/js/'.$string.'.js';
 	}
 } /* Fin de la clase Route */

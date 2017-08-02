@@ -1,7 +1,7 @@
 <?php namespace Controllers;
 
 date_default_timezone_set("America/La_Paz");
-use models\CPrincipales as CPrincipales;
+use Models\CPrincipales as CPrincipales;
 use Config\MED as MED;
 
 /**

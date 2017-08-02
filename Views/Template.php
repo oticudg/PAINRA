@@ -1,4 +1,7 @@
 <?php namespace Views;
+
+use Config\Route as Route;
+
 class Template {
 	public function __construct()
 	{
@@ -18,12 +21,12 @@ class Template {
 	<!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> -->
 	<!-- <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet"> -->
 
-<link rel="stylesheet" href="http://localhost/PAINRA/Views/otros/css/bootstrap.min.css">
-<link rel="stylesheet" href="http://localhost/PAINRA/Views/otros/css/bootstrap-theme.min.css">
-<link rel="stylesheet" href="http://localhost/PAINRA/Views/otros/css/pace-theme-minimal.css">
-<link rel="stylesheet" href="http://localhost/PAINRA/Views/otros/css/bootstrap-datepicker3.min.css">
-<link rel="stylesheet" href="http://localhost/PAINRA/Views/otros/css/font-awesome.min.css">
-<link rel="stylesheet" href="http://localhost/PAINRA/Views/otros/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" href="<?php Route::css('bootstrap.min') ?>">
+<link rel="stylesheet" href="<?php Route::css('bootstrap-theme.min') ?>">
+<link rel="stylesheet" href="<?php Route::css('pace-theme-minimal') ?>">
+<link rel="stylesheet" href="<?php Route::css('bootstrap-datepicker3.min') ?>">
+<link rel="stylesheet" href="<?php Route::css('font-awesome.min') ?>">
+<link rel="stylesheet" href="<?php Route::css('dataTables.bootstrap.min') ?>">
 
 	<link href="Views/resource/css/estilos.css" rel="stylesheet">
 </head>
@@ -105,15 +108,15 @@ class Template {
 <!-- <script src="http://code.highcharts.com/highcharts.js"></script> -->
 <!-- <script src="http://code.highcharts.com/modules/exporting.js"></script> -->
 
-<script src="http://localhost/PAINRA/Views/otros/js/jquery.min.js"></script>
-<script src="http://localhost/PAINRA/Views/otros/js/bootstrap.min.js"></script>
-<script src="http://localhost/PAINRA/Views/otros/js/jquery.dataTables.min.js"></script>
-<script src="http://localhost/PAINRA/Views/otros/js/pace.min.js"></script>
-<script src="http://localhost/PAINRA/Views/otros/js/bootstrap-datepicker.min.js"></script>
-<script src="http://localhost/PAINRA/Views/otros/js/bootstrap-datepicker.es.min.js"></script>
-<script src="http://localhost/PAINRA/Views/otros/js/dataTables.bootstrap.min.js"></script>
-<script src="http://localhost/PAINRA/Views/otros/js/highcharts.js"></script>
-<script src="http://localhost/PAINRA/Views/otros/js/exporting.js"></script>
+<script src="<?php Route::js('jquery.min') ?>"></script>
+<script src="<?php Route::js('bootstrap.min') ?>"></script>
+<script src="<?php Route::js('jquery.dataTables.min') ?>"></script>
+<script src="<?php Route::js('pace.min') ?>"></script>
+<script src="<?php Route::js('bootstrap-datepicker.min') ?>"></script>
+<script src="<?php Route::js('bootstrap-datepicker.es.min') ?>"></script>
+<script src="<?php Route::js('dataTables.bootstrap.min') ?>"></script>
+<script src="<?php Route::js('highcharts') ?>"></script>
+<script src="<?php Route::js('exporting') ?>"></script>
 
 <script src="Views/resource/js/main.js"></script>
 </html>
