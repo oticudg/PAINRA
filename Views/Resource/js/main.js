@@ -398,6 +398,93 @@ $(document).ready(function () {
 	// 	})
 	// });
 
+	$("button.btn.btn-small.btn-primary#registrarU").click(function () {
+		$("form#registrar-soportista.form")[0].reset();
+		$(".modal-soportista-registrar select#rol").val("");
+		$(".modal-soportista-registrar").modal("show");
+		$("input[type='hidden']#id").attr("value", -1);
+	});
+
+	$("button.btn.btn-small.btn-primary#editarU").click(function (e) {
+		e.preventDefault();
+		if ($(this).attr("ren")) {
+			$.ajax({
+				url: url+"Ajax/verEditU",
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					operation: "verU",
+					token: 5,
+					num: $(this).attr("ren")
+				}
+			})
+			.done(function(resul) {
+				$(".modal-soportista-registrar input#usuario").val(resul[0].usuario);
+				$(".modal-soportista-registrar input#nombre").val(resul[0].nombre);
+				$(".modal-soportista-registrar input#cedula").val(resul[0].cedula);
+				$(".modal-soportista-registrar input#id").val(resul[0].id);
+				$(".modal-soportista-registrar input#email").val(resul[0].email);
+				var option = $(".modal-soportista-registrar select#rol option");
+				for (var i = 0; i < option.length; i++) {
+					if (resul[0].rol == option[i].text) {
+						option[i].setAttribute("selected", "");
+					}
+				}
+				$(".modal-soportista-registrar").modal("show");
+			});
+		}
+	});
+
+	$("button.btn.btn-small.btn-primary#eliminarU").click(function (e) {
+		e.preventDefault();
+		var num = $(this).attr("ren");
+		if ($(this).attr("ren")) {
+			$.ajax({
+				url: url+"Ajax/verU",
+				data: {
+					token: 5,
+					operation: "verU",
+					num: num
+				},
+				dataType: 'html',
+				type: "POST",
+				success: function (resul) {
+					$(".modal-help h4.modal-title").html("<span class='glyphicon glyphicon-remove'></span> Eliminar Usuario");
+					$(".modal-help .modal-body .help").html(resul);	
+					$(".modal-help").modal("show");
+					$(".modal-help .modal-footer span.btnn").html('<button type="button" class="btn btn-primary" id="confirmDeleteUser" ren="'+num+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
+					$("button#confirmDeleteUser").click(function () {
+						$.ajax({
+							url: url+"Ajax/confirmDeleteUser",
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								operation: "confirmDeleteUser",
+								token: 6,
+								num: $(this).attr("ren")
+							},
+							beforeSend: function () {
+								$(".modal-help .modal-footer span.msg").html('<div class="alert alert-info" role="alert">Enviando Datos Enviados... <i class="fa fa-spinner fa-pulse fa-1x"></i></div>');
+							}
+						})
+						.done(function(resul) {
+							if (resul == true) {
+								llenarSoportistas();
+								$(".modal-help .modal-footer span.msg").html('<div class="alert alert-success" role="alert">Datos Enviados Exitosamente... <i class="fa fa-check" aria-hidden="true"></i></div>');
+								setTimeout(function () {
+									$(".modal-help").modal("toggle");
+									$(".modal-help .modal-footer span.msg").html('');
+									$(".modal-help .modal-footer span.btnn").html('');
+								}, 1500);
+							} else {
+								$(".modal-help .modal-footer span.msg").html('<div class="alert alert-danger" role="alert">Error al Ingresar Datos.</div>');
+							}
+						});
+					});
+				}
+			});
+		}
+	});
 	// /*
 	// * Funciones
 	// */
@@ -417,6 +504,8 @@ $(document).ready(function () {
 			$(".tabla-soportistas").html(resul);
 			$("tr#soportista").click(function () {
 				var rol = $(this).attr("rol");
+				$("tr#soportista").removeClass("activo");
+				$(this).addClass("activo");
 				$("button.btn.btn-small.btn-primary#editarU").attr("ren", $(this).attr("ren"));
 				$("button.btn.btn-small.btn-primary#eliminarU").attr("ren", $(this).attr("ren"));
 				$("button.btn.btn-small.btn-primary#coordinacionU").attr("ren", $(this).attr("ren"));
@@ -427,29 +516,6 @@ $(document).ready(function () {
 				}
 			});
 
-			$("button.btn.btn-small.btn-primary#registrarU").click(function () {
-				$(".modal-soportista-registrar").modal("show");
-				$("input[type='hidden']#id").attr("value", -1);
-			});
-
-
-
-
-			// $("a#editarSoportista").click(function (e) {
-			// 	e.preventDefault();
-			// 	editarSoportista($(this).attr("ren"));
-			// });
-			// $("a#deleteSoportista").click(function (e) {
-			// 	e.preventDefault();
-			// 	$(".modal-abrirTicketError").css("z-index", 999999);
-			// 	$(".modal-abrirTicketError").modal("show");
-			// 	$(".modal-abrirTicketError .modal-title").html("<h4><span class='glyphicon glyphicon-remove'></span> Eliminar Soportista</h4>");
-			// 	$(".modal-abrirTicketError .modal-body .error").html('<div class="row"> <h4>Esta Seguro de Eliminar a '+$(this).attr("name")+'?</h4> </div> <label for="usuario">Usuario:</label> <input type="text" class="form-control" name="usuario" value="'+$(this).attr("usuario")+'" disabled> <label for="cedula">Cedula:</label> <input type="text" class="form-control" name="cedula" value="'+$(this).attr("cedula")+'" disabled> <br>');
-			// 	$(".modal-abrirTicketError .modal-footer span.btnn").html('<button type="button" class="btn btn-primary" id="confirmacionSoportista" ren="'+$(this).attr("ren")+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
-			// 	$("#confirmacionSoportista").click(function () {
-			// 		deleteSoportista($(this).attr("ren"));
-			// 	});
-			// });
 			// $("a#coordinacion").click(function(e) {
 			// 	e.preventDefault();
 			// 	$(".modal-soportistas-coordinacion input#iduser").attr("value", $(this).attr("ren"));
@@ -480,61 +546,7 @@ $(document).ready(function () {
 		});
 	};
 
-	// function deleteSoportista(num) {
-	// 	$.ajax({
-	// 		url: 'resource/procesos/process.php',
-	// 		type: 'POST',
-	// 		dataType: 'json',
-	// 		data: {
-	// 			operation: "deleteSoportista",
-	// 			token: 9,
-	// 			id: num
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		if (resul == true) {
-	// 			$(".modal-abrirTicketError .modal-footer span.msg").html('<div class="alert alert-success" role="alert">Datos Enviados Exitosamente...</div>');
-	// 			llenarSoportistas();
-	// 			setTimeout(function () {
-	// 				$(".modal-abrirTicketError .modal-footer span.msg").html('');
-	// 				$(".modal-abrirTicketError .modal-footer span.btnn").html('');
-	// 				$(".modal-abrirTicketError").modal("toggle");
-	// 			}, 1000);
-	// 		} else {
-	// 			$(".modal-abrirTicketError .modal-footer span.msg").html('<div class="alert alert-danger" role="alert">Error al Ingresar Datos.</div>');
-	// 		}
-	// 	})
-	// 	.fail(function() {
-	// 		$(".modal-abrirTicketError .modal-footer span.msg").html('<div class="alert alert-danger" role="alert">Error al Ingresar Datos, Consulte a Su Programador.</div>');
-	// 	});
-	// };
 
-	// function editarSoportista(num) {
-	// 	$.ajax({
-	// 		url: 'resource/procesos/process.php',
-	// 		type: 'POST',
-	// 		dataType: 'json',
-	// 		data: {
-	// 			operation: "editarSoportista",
-	// 			token: 8,
-	// 			id: num
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		$(".modal-soportista-registrar input#usuario").attr('value', resul[0].usuario);
-	// 		$(".modal-soportista-registrar input#nombre").attr('value', resul[0].nombre);
-	// 		$(".modal-soportista-registrar input#cedula").attr('value', resul[0].cedula);
-	// 		$(".modal-soportista-registrar input#id").attr('value', resul[0].id);
-	// 		$(".modal-soportista-registrar input#email").attr('value', resul[0].email);
-	// 		var option = $(".modal-soportista-registrar select#privilegio option");
-	// 		for (var i = 0; i < option.length; i++) {
-	// 			if (resul[0].privilegio == option[i].text) {
-	// 				option[i].setAttribute("selected", "");
-	// 			}
-	// 		}
-	// 		$(".modal-soportista-registrar").modal("show");
-	// 	})
-	// };
 
 	// function buscarTicket(num) {
 	// 	if (!isNaN(num)) {

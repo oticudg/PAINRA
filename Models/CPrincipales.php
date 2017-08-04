@@ -5,33 +5,22 @@
 */
 class CPrincipales extends Conexion
 {
-	public function login($usuario)
+	public function users($id = -1, $rol = 0, $usuario = 0, $cedula = 0, $email= 0)
 	{
-		$this->sql = "SELECT u.id, u.nombre, u.rol, uc.id_coordinacion, u.pass, coordinacion
-		FROM users AS u
-		LEFT JOIN user_coordinacion AS uc ON uc.id_user = u.id
-		LEFT JOIN coordinaciones AS c ON uc.id_coordinacion = c.id
-		WHERE delete_at IS NULL AND u.usuario = '{$usuario}' OR u.email = '{$usuario}'
-		ORDER BY id ASC;";
-		return $this;
-	}
-
-	public function soportistas($id = -1, $privilegio = 0, $usuario = 0, $cedula = 0)
-	{
-		$this->sql = "SELECT u.id, u.nombre, u.cedula, u.rol, uc.id_coordinacion,
-		coordinacion, uc.id AS iduc
+		$this->sql = "SELECT u.id, u.nombre, u.usuario, u.rol, u.cedula, uc.id_coordinacion, coordinacion, uc.id AS iduc
 		FROM users AS u
 		LEFT JOIN user_coordinacion AS uc ON uc.id_user = u.id
 		LEFT JOIN coordinaciones AS c ON uc.id_coordinacion = c.id
 		WHERE delete_at IS NULL AND (u.id = {$id} OR {$id} = -1) OR
-		(u.rol = '{$privilegio}' OR '{$privilegio}' = -1) OR
+		(u.rol = '{$rol}' OR '{$rol}' = -1) OR
 		(u.usuario = '{$usuario}' OR '{$usuario}' = -1)  OR
-		(u.cedula = '{$cedula}' OR '{$cedula}' = -1)
+		(u.cedula = '{$cedula}' OR '{$cedula}' = -1)  OR
+		(u.cedula = '{$email}' OR '{$email}' = -1)
 		ORDER BY u.nombre ASC;";
 		return $this;
 	}
 
-	public function add_editSoportista($usuario, $nombre, $cedula, $email, $privilegio, $pass, $id = -1)
+	public function add_editUser($usuario, $nombre, $cedula, $email, $rol, $pass, $id = -1)
 	{
 		$prefijo = ($id == -1) ? 'INSERT INTO ' : 'UPDATE ';
 		$sufijo = ($id == -1) ? ';' : ' WHERE id = ' . $id;
@@ -41,7 +30,13 @@ class CPrincipales extends Conexion
 		nombre = "'.$nombre.'",
 		email = "'.$email.'",
 		cedula = '.$cedula.',
-		rol = "'.$privilegio.'" '.$sufijo;
+		rol = "'.$rol.'" '.$sufijo;
+		return $this;
+	}
+
+	public function confirmDeleteUser($id)
+	{
+		$this->sql = "UPDATE users SET delete_at = 1 WHERE id = '{$id}' LIMIT 1";
 		return $this;
 	}
 

@@ -64,7 +64,7 @@
 		<div class="modal-content">
 			<div class="modal-header bg-primary text-center">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<span class="modal-title"><h4><span class="fa fa-plus"></span> Registrar Soportista</h4></span>
+				<h4 class="modal-title"><span class="fa fa-plus"></span> Registrar Soportista</h4>
 			</div>
 			<form id="registrar-soportista" class="form" role="form" accept-charset="UTF-8">
 				<div class="modal-body">
@@ -108,10 +108,30 @@
 				</div>
 				<div class="modal-footer">
 					<span class="msg pull-left"></span>
-					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
 					<button type="submit" class="btn btn-primary"><span class="fa fa-check"></span> Guardar</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
 				</div>
 			</form>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade modal-help" tabindex="9999" role="dialog">
+	<div class="modal-dialog modal-md" role="document">
+		<div class="modal-content">
+			<div class="modal-header bg-primary text-center">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title"><span class="fa fa-plus"></span></h4>
+			</div>
+			<div class="modal-body">
+				<div class="col-md-10 col-md-offset-1 help">
+				</div>
+				<div class="clearfix"></div>
+				<div class="modal-footer">
+					<span class="msg pull-left"></span>
+					<span class="btnn"></span>
+					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

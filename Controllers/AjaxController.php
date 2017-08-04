@@ -24,7 +24,7 @@ class AjaxController
 			if ($_REQUEST['token'] == 1) {
 				if (isset($_REQUEST['usuario']) && isset($_REQUEST['clave'])) {
 					if( !empty($_REQUEST['usuario']) || !empty($_REQUEST['clave']) ){
-						$resultado = $this->cp->login($_REQUEST['usuario'])->see();
+						$resultado = $this->cp->users(0,0,$_REQUEST['usuario'],0,$_REQUEST['usuario'])->see();
 						if (count($resultado) > 0) {
 							if ($resultado[0]['pass'] === MED::e($_REQUEST['clave'])) {
 								$_SESSION['validar']	= TRUE;
@@ -79,7 +79,7 @@ class AjaxController
 	{
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'soportistas') {
 			if ($_REQUEST['token'] == 4) {
-				$soportistas = $this->cp->soportistas()->see();
+				$soportistas = $this->cp->users()->see();
 				$count = 0;
 				echo '
 				<table class="table table-bordered table-hover">
@@ -108,22 +108,64 @@ class AjaxController
 		}
 	}
 
+	public function verU()
+	{
+		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'verU') {
+			if ($_REQUEST['token'] == 5) {
+				$user = $this->cp->users(MED::d($_REQUEST['num']))->see();
+				?>
+				<div class="row">
+					<h4>¿Esta Seguro de Eliminar a <?php echo $user[0]['nombre'] ?>?.</h4>
+				</div>
+				<div class="col-md-8 col-md-offset-2">
+					<label for="usuario">Usuario:</label>
+					<input type="text" class="form-control" name="usuario" value="<?php echo $user[0]['usuario'] ?>" disabled>
+					<label for="cedula">Cedula:</label>
+					<input type="text" class="form-control" name="cedula" value="<?php echo $user[0]['cedula'] ?>" disabled>
+					<br>
+				</div>
+				<?php
+			}
+		}
+	}
+
+	public function verEditU()
+	{
+		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'verU') {
+			if ($_REQUEST['token'] == 5) {
+				$user = $this->cp->users(MED::d($_REQUEST['num']))->see();
+				echo json_encode($user);
+			}
+		}
+	}
+
+	public function confirmDeleteUser()
+	{
+		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'confirmDeleteUser') {
+			if ($_REQUEST['token'] == 6) {
+				echo $this->cp->confirmDeleteUser(MED::d($_REQUEST['num']))->save();
+			}
+		}
+	}
+
 	public function soportistasRegistrar()
 	{
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'soportistasRegistrar') {
 			if ($_REQUEST['token'] == 7) {
-				$resultado = array();
-				$resultado2 = array();
+				$r1 = array();
+				$r2 = array();
+				$r3 = array();
 				if ($_REQUEST['id'] == -1) {
-					$resultado = $this->cp->soportistas(0, 0, $_REQUEST['usuario'], 0)->see();
-					$resultado2 = $this->cp->soportistas(0, 0, 0, $_REQUEST['cedula'])->see();
+					$r1 = $this->cp->users(0, 0, $_REQUEST['usuario'])->see();
+					$r2 = $this->cp->users(0, 0, 0, $_REQUEST['cedula'])->see();
+					$r3 = $this->cp->users(0, 0, 0, 0, $_REQUEST['email'])->see();
 				}
-				if (count($resultado) > 0 || count($resultado2) > 0) {
+				if (count($r1) > 0 || count($r2) > 0 || count($r3) > 0) {
 					$resultado = false;
 				} else {
 					$rol = ($_SESSION['rol'] == 1) ? $_REQUEST['rol'] : 3;
 					$pass = ($_REQUEST['id'] == -1) ? MED::e($_REQUEST['cedula']) : '';
-					$resultado = $this->cp->add_editSoportista(
+					$resultado = $this->cp->add_editUser(
 						$_REQUEST['usuario'],
 						$_REQUEST['nombre'],
 						$_REQUEST['cedula'],
