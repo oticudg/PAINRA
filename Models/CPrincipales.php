@@ -7,7 +7,7 @@ class CPrincipales extends Conexion
 {
 	public function users($id = -1, $rol = 0, $usuario = 0, $cedula = 0, $email= 0)
 	{
-		$this->sql = "SELECT u.id, u.nombre, u.usuario, u.rol, u.cedula, uc.id_coordinacion, coordinacion, uc.id AS iduc
+		$this->sql = "SELECT u.*, uc.id_coordinacion, coordinacion, uc.id AS iduc
 		FROM users AS u
 		LEFT JOIN user_coordinacion AS uc ON uc.id_user = u.id
 		LEFT JOIN coordinaciones AS c ON uc.id_coordinacion = c.id
@@ -37,6 +37,16 @@ class CPrincipales extends Conexion
 	public function confirmDeleteUser($id)
 	{
 		$this->sql = "UPDATE users SET delete_at = 1 WHERE id = '{$id}' LIMIT 1";
+		return $this;
+	}
+
+	public function addUserCoordinacion($user, $coordinacion, $id = -1)
+	{
+		$prefijo = ($id == -1) ? 'INSERT INTO ' : 'UPDATE ';
+		$sufijo = ($id == -1) ? ';' : ' WHERE id = ' . $id;
+		$this->sql .= $prefijo." user_coordinacion SET
+		id_user = {$user},
+		id_coordinacion = ".$coordinacion.$sufijo;
 		return $this;
 	}
 

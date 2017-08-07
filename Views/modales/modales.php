@@ -40,13 +40,23 @@
 				<h4 class="modal-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i> Usuarios Registrados</h4>
 			</div>
 			<div class="modal-body">
-				<div class="col-md-10 col-md-offset-1">
-					<div class="row">
-						<button type="btn" class="btn btn-small btn-primary" id="registrarU"><span class="fa fa-plus"></span> Registrar</button>
-						<button type="btn" class="btn btn-small btn-primary" id="editarU"><span class="fa fa-plus"></span> Editar</button>
-						<button type="btn" class="btn btn-small btn-primary" id="eliminarU"><span class="fa fa-plus"></span> Eliminar</button>
-						<button type="btn" class="btn btn-small btn-primary" id="coordinacionU" style="display:none;"><span class="fa fa-plus"></span> Coordinación</button>
-						<span class="btncoord"></span>
+				<div class="row">
+					<div class="container">
+						<div class="col-md-offset-1">
+							<button type="btn" class="btn btn-small btn-primary" id="registrarU" data-toggle="tooltip" data-placement="top" title="Registrar">
+								<span class="fa fa-plus"></span>
+							</button>
+							<button type="btn" class="btn btn-small btn-warning" id="editarU" data-toggle="tooltip" data-placement="top" title="Editar">
+								<span class="glyphicon glyphicon-edit">
+								</span>
+							</button>
+							<button type="btn" class="btn btn-small btn-danger" id="eliminarU" data-toggle="tooltip" data-placement="top" title="Eliminar">
+								<span class="fa fa-trash"></span>
+							</button>
+							<button type="btn" class="btn btn-small btn-info" id="coordinacionU" style="display:none;" data-toggle="tooltip" data-placement="top" title="Coordinación">
+								<span class="fa fa-cubes"></span>
+							</button>
+						</div>
 					</div><br>
 				</div>
 				<div class="col-md-10 col-md-offset-1 tabla-soportistas overflow"></div>
@@ -109,6 +119,48 @@
 				<div class="modal-footer">
 					<span class="msg pull-left"></span>
 					<button type="submit" class="btn btn-primary"><span class="fa fa-check"></span> Guardar</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
+				</div>
+			</form>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade modal-soportistas-coordinacion" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<form id="form-user-coordinacion" method="POST">
+				<div class="modal-header bg-primary text-center">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title"><h4><i class="fa fa-user-circle-o" aria-hidden="true"></i> Agregar Coordinación</h4></h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-10 col-md-offset-1">
+							<div class="form-group">
+								<span class="fa fa-"></span>
+								<label for="tipo">Tipo de Cambio:</label>
+								<select name="tipo" id="tipo" class="form-control"></select>
+							</div>
+							<div class="form-group">
+								<span class="fa fa-"></span>
+								<label for="coordinacion">Coordinacion:</label>
+								<select name="coordinacion" id="coordinacion" class="form-control" required>
+									<option value="">Seleccione la Coordinación</option>
+									<option value="1">Coordinación de Desarrollo</option>
+									<option value="2">Coordinación de Soporte</option>
+									<option value="3">Coordinación de Redes</option>
+								</select>
+								<input type="hidden" id="iduser" name="iduser" value="-1">
+							</div>
+							<span class="msgcoordinacion"></span>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger deleteUC">Eliminar</button>
+					<input type="submit" class="btn btn-primary" value="Guardar">
 					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
 				</div>
 			</form>

@@ -82,19 +82,19 @@ class AjaxController
 				$soportistas = $this->cp->users()->see();
 				$count = 0;
 				echo '
-				<table class="table table-bordered table-hover">
+				<table class="table table-bordered table-hover table-condensed" id="soportistas">
 					<thead>
 						<tr>
 							<th width="5%">N°</th>
 							<th>Nombre</th>
-							<th>Cedula</th>
-							<th>Coordinacion</th>
+							<th>Cédula</th>
+							<th>Coordinación</th>
 						</tr>
 					</thead>
 					<tbody>';
 				foreach ($soportistas as $s) {
 					echo '
-					<tr id="soportista" ren="'.MED::e($s['id']).'" rol="'.$s['rol'].'">
+					<tr id="soportista" ren="'.MED::e($s['id']).'" rol="'.$s['rol'].'" '.((isset($s['coordinacion'])) ? 'coord="'.$s['iduc'].'" idcoor="'.$s['id_coordinacion'].'"' : "").'>
 						<td>'.++$count.'</td>
 						<td>'.$s['nombre'].'</td>
 						<td>'.$s['cedula'].'</td>
@@ -104,27 +104,6 @@ class AjaxController
 				echo '
 				<tbody>
 				</table>';
-			}
-		}
-	}
-
-	public function verU()
-	{
-		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'verU') {
-			if ($_REQUEST['token'] == 5) {
-				$user = $this->cp->users(MED::d($_REQUEST['num']))->see();
-				?>
-				<div class="row">
-					<h4>¿Esta Seguro de Eliminar a <?php echo $user[0]['nombre'] ?>?.</h4>
-				</div>
-				<div class="col-md-8 col-md-offset-2">
-					<label for="usuario">Usuario:</label>
-					<input type="text" class="form-control" name="usuario" value="<?php echo $user[0]['usuario'] ?>" disabled>
-					<label for="cedula">Cedula:</label>
-					<input type="text" class="form-control" name="cedula" value="<?php echo $user[0]['cedula'] ?>" disabled>
-					<br>
-				</div>
-				<?php
 			}
 		}
 	}
@@ -179,6 +158,28 @@ class AjaxController
 			}
 		}
 	}
+
+	public function coordinacionRegistrar()
+	{
+		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'coordinacionRegistrar') {
+			if ($_REQUEST['token'] == 8) {
+				$resultado = $this->cp->addUserCoordinacion(MED::d($_REQUEST['iduser']), $_REQUEST['coordinacion'], $_REQUEST['tipo'])->save();
+				echo json_encode($resultado);
+			}
+		}
+	}
+
+
+	// if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'deleteUserCoordinacion') {
+	// 	if ($_REQUEST['token'] == 11) {
+	// 		$resultado = ConsultasPrincipales::deleteUserCoordinacion($_REQUEST['id']);
+	// 		echo json_encode($resultado);
+	// 	}
+	// }
+
+
+
+
 
 	public function __destruct()
 	{

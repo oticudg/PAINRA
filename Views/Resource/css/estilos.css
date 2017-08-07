@@ -58,6 +58,7 @@ body{padding-top:9vh !important; margin-bottom:8vh !important;}
 .notice-danger>strong {color:#d73814;}
 .color{color:#009BFF;}
 .activo{background:skyblue;}
+#soportistas td{cursor:pointer;}
 .ventana{
  -moz-box-shadow:0px 0px 6px #000000;
  -webkit-box-shadow:0px 0px 6px #000000;

@@ -20,6 +20,7 @@ class Template {
 	<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css" rel="stylesheet"> -->
 	<!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> -->
 	<!-- <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet"> -->
+	<!-- <link rel="stylesheet" href="bower_components/sweetalert2/dist/sweetalert2.min.css"> -->
 
 <link rel="stylesheet" href="<?php Route::css('bootstrap.min') ?>">
 <link rel="stylesheet" href="<?php Route::css('bootstrap-theme.min') ?>">
@@ -27,7 +28,7 @@ class Template {
 <link rel="stylesheet" href="<?php Route::css('bootstrap-datepicker3.min') ?>">
 <link rel="stylesheet" href="<?php Route::css('font-awesome.min') ?>">
 <link rel="stylesheet" href="<?php Route::css('dataTables.bootstrap.min') ?>">
-
+<link rel="stylesheet" href="<?php Route::css('sweetalert2.min') ?>">
 	<link href="Views/resource/css/estilos.css" rel="stylesheet">
 </head>
 <body>
@@ -107,6 +108,7 @@ class Template {
 <!-- <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script> -->
 <!-- <script src="http://code.highcharts.com/highcharts.js"></script> -->
 <!-- <script src="http://code.highcharts.com/modules/exporting.js"></script> -->
+<!-- <script src="bower_components/sweetalert2/dist/sweetalert2.min.js"></script> -->
 
 <script src="<?php Route::js('jquery.min') ?>"></script>
 <script src="<?php Route::js('bootstrap.min') ?>"></script>
@@ -117,6 +119,7 @@ class Template {
 <script src="<?php Route::js('dataTables.bootstrap.min') ?>"></script>
 <script src="<?php Route::js('highcharts') ?>"></script>
 <script src="<?php Route::js('exporting') ?>"></script>
+<script src="<?php Route::js('sweetalert2.min') ?>"></script>
 
 <script src="Views/resource/js/main.js"></script>
 </html>
