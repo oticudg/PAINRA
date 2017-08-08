@@ -51,7 +51,7 @@ $(document).ready(function () {
 			}
 		}
 	});
-	// /*configuracion del datepicker*/
+	/*configuracion del datepicker*/
 	// $(".input-daterange").datepicker({
 	// 	todayBtn: "linked",
 	// 	clearBtn: true,
@@ -61,9 +61,9 @@ $(document).ready(function () {
 	// 	autoclose: true,
 	// 	todayHighlight: true
 	// });
-	// /*
-	// * Eventos
-	// */
+	/*
+	* Eventos
+	*/
 	$("a#logout").click(function (e) {
 		e.preventDefault();
 		$.ajax({
@@ -306,32 +306,6 @@ $(document).ready(function () {
 	// 	$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).val());
 	// });
 
-	// $(".modal-soportistas-coordinacion .deleteUC").click(function (e) {
-	// 	e.preventDefault();
-	// 	$.ajax({
-	// 		url: 'resource/procesos/process.php',
-	// 		type: 'POST',
-	// 		dataType: 'json',
-	// 		data: {
-	// 			operation: "deleteUserCoordinacion",
-	// 			token: 11,
-	// 			id: $(this).attr("ren")
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		if (resul == true) {
-	// 			$("span.msgcoordinacion").html('<div class="alert alert-success" role="alert"> Borrado Exitoso <span class="glyphicon glyphicon-remove"></span> </div>');
-	// 		} else {
-	// 			$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al Realizar la Acción <span class="glyphicon glyphicon-remove"></span> </div>');
-	// 		}
-	// 		setTimeout(function () {
-	// 			$("span.msgcoordinacion").html('');
-	// 			$(".modal-soportistas-coordinacion").modal("toggle");
-	// 			llenarSoportistas();
-	// 		}, 1000);
-	// 	})
-	// });
-
 	$("#registrar-soportista").submit(function(e){
 		e.preventDefault();
 		var data = $(this).serializeArray();
@@ -458,12 +432,45 @@ $(document).ready(function () {
 		if ($(this).attr("coord") == "") {
 			$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1' selected>Nuevo</option>");
 			$(".modal-soportistas-coordinacion input#iduc").attr("value", "-1");
+			$(".modal-soportistas-coordinacion button.deleteUC").hide();
 			$('.modal-soportistas-coordinacion select#coordinacion').val("");
 		} else {
 			$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1'>Nuevo</option> <option value='"+$(this).attr("coord")+"' selected>Actualización</option>");
+			$(".modal-soportistas-coordinacion button.deleteUC").attr("ren", $(this).attr("coord"));
 			$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).attr("coord"));
 			$('.modal-soportistas-coordinacion select#coordinacion').val($(this).attr("idcoor"));
+			$(".modal-soportistas-coordinacion button.deleteUC").show();
 		}
+	});
+
+	$(".modal-soportistas-coordinacion .deleteUC").click(function (e) {
+		e.preventDefault();
+		$.ajax({
+			url: url+"Ajax/deleteUserCoordinacion",
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				operation: "deleteUserCoordinacion",
+				token: 9,
+				id: $(this).attr("ren")
+			}
+		})
+		.done(function(resul) {
+			if (resul == true) {
+				$("span.msgcoordinacion").html('<div class="alert alert-success" role="alert"> Borrado Exitoso <span class="glyphicon glyphicon-ok"></span> </div>');
+				$("button.btn#coordinacionU").hide();
+				$("button.btn#coordinacionU").removeAttr("ren");
+				$("button.btn#coordinacionU").removeAttr("idcoor");
+				$("button.btn#coordinacionU").removeAttr("coord");
+			} else {
+				$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al Borrar <span class="glyphicon glyphicon-remove"></span> </div>');
+			}
+			setTimeout(function () {
+				$("span.msgcoordinacion").html('');
+				$(".modal-soportistas-coordinacion").modal("toggle");
+				llenarSoportistas();
+			}, 1000);
+		})
 	});
 
 	$("form#form-user-coordinacion").submit(function (e) {
@@ -474,16 +481,15 @@ $(document).ready(function () {
 		$.ajax({
 			url: url+"Ajax/coordinacionRegistrar",
 			type: 'POST',
-			// dataType: 'json',
+			dataType: 'json',
 			data: data,
 			beforeSend: function () {
 				$("span.msgcoordinacion").html('<div class="alert alert-info" role="alert"> Enviando Datos... <i class="fa fa-spinner fa-pulse fa-fw"></i> </div>');
 			}
 		})
 		.done(function(resul) {
-			console.log(resul);
-			if (resul.estado == false) {
-				$("span.msgcoordinacion").html('<div class="alert alert-warning" role="alert"> '+resul.msg+' <span class="glyphicon glyphicon-ok"></span> </div>');
+			if (resul == 0) {
+				$("span.msgcoordinacion").html('<div class="alert alert-warning text-center" role="alert"> No se pudo realizar el registro <span class="fa fa-close"></span> </div>');
 			} else {
 				$("span.msgcoordinacion").html('<div class="alert alert-success" role="alert"> Datos Recibidos <span class="glyphicon glyphicon-ok"></span> </div>');
 				setTimeout(function () {
@@ -497,13 +503,13 @@ $(document).ready(function () {
 			}, 5000);
 		})
 		.fail(function() {
-			// $("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al procesar los datos <span class="glyphicon glyphicon-remove"></span> </div>');
+			$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al registrar los datos. <span class="glyphicon glyphicon-remove"></span> </div>');
 		});
 	});
 
-	// /*
-	// * Funciones
-	// */
+	/*
+	* Funciones
+	*/
 	llenarSoportistas();
 	$(".modal-soportistas").modal("show");
 	function llenarSoportistas() {

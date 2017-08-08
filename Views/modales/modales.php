@@ -132,7 +132,7 @@
 			<form id="form-user-coordinacion" method="POST">
 				<div class="modal-header bg-primary text-center">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title"><h4><i class="fa fa-user-circle-o" aria-hidden="true"></i> Agregar Coordinación</h4></h4>
+					<h4 class="modal-title"><i class="fa fa-user-circle-o" aria-hidden="true"></i> Agregar Coordinación</h4>
 				</div>
 				<div class="modal-body">
 					<div class="row">

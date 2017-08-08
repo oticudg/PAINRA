@@ -23,7 +23,7 @@ class AjaxController
 		if ($_REQUEST['operation'] == 'login') {
 			if ($_REQUEST['token'] == 1) {
 				if (isset($_REQUEST['usuario']) && isset($_REQUEST['clave'])) {
-					if( !empty($_REQUEST['usuario']) || !empty($_REQUEST['clave']) ){
+					if( !empty($_REQUEST['usuario']) || !empty($_REQUEST['clave']) ) {
 						$resultado = $this->cp->users(0,0,$_REQUEST['usuario'],0,$_REQUEST['usuario'])->see();
 						if (count($resultado) > 0) {
 							if ($resultado[0]['pass'] === MED::e($_REQUEST['clave'])) {
@@ -131,15 +131,11 @@ class AjaxController
 	{
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'soportistasRegistrar') {
 			if ($_REQUEST['token'] == 7) {
-				$r1 = array();
-				$r2 = array();
-				$r3 = array();
+				$users = array();
 				if ($_REQUEST['id'] == -1) {
-					$r1 = $this->cp->users(0, 0, $_REQUEST['usuario'])->see();
-					$r2 = $this->cp->users(0, 0, 0, $_REQUEST['cedula'])->see();
-					$r3 = $this->cp->users(0, 0, 0, 0, $_REQUEST['email'])->see();
+					$users = $this->cp->users(0, 0, $_REQUEST['usuario'], $_REQUEST['cedula'], $_REQUEST['email'])->see();
 				}
-				if (count($r1) > 0 || count($r2) > 0 || count($r3) > 0) {
+				if (count($users) > 0) {
 					$resultado = false;
 				} else {
 					$rol = ($_SESSION['rol'] == 1) ? $_REQUEST['rol'] : 3;
@@ -163,19 +159,26 @@ class AjaxController
 	{
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'coordinacionRegistrar') {
 			if ($_REQUEST['token'] == 8) {
-				$resultado = $this->cp->addUserCoordinacion(MED::d($_REQUEST['iduser']), $_REQUEST['coordinacion'], $_REQUEST['tipo'])->save();
-				echo json_encode($resultado);
+				$iduser = MED::d($_REQUEST['iduser']);
+				$resultado = $this->cp->select('user_coordinacion', array(array('id_user',$iduser), array('id_coordinacion',$_REQUEST['coordinacion'])))->see();
+				if (count($resultado) > 0) {
+					echo 0;
+				} else {
+					echo $this->cp->addUserCoordinacion($iduser, $_REQUEST['coordinacion'], $_REQUEST['tipo'])->save();
+				}
 			}
 		}
 	}
 
-
-	// if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'deleteUserCoordinacion') {
-	// 	if ($_REQUEST['token'] == 11) {
-	// 		$resultado = ConsultasPrincipales::deleteUserCoordinacion($_REQUEST['id']);
-	// 		echo json_encode($resultado);
-	// 	}
-	// }
+	public function deleteUserCoordinacion()
+	{
+		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'deleteUserCoordinacion') {
+			if ($_REQUEST['token'] == 9) {
+				$resultado = $this->cp->deleteUserCoordinacion($_REQUEST['id'])->save();
+				echo json_encode($resultado);
+			}
+		}
+	}
 
 
 
