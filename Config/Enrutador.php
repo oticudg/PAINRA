@@ -15,14 +15,17 @@ class Enrutador{
 			$controlador = new $mostrar;
 			if (!isset($argumento)) {
 				$data = call_user_func(array($controlador, $metodo)); 
-			}else{
+			} else {
 				$data = call_user_func_array(array($controlador, $metodo), $argumento); 
 			}
 		}
 		if (!isset($_REQUEST['token'])) {
 			$ruta = ROOT.'Views'.DS.$request->getControlador().DS.$request->getMetodo().'.php';
-			if(is_readable($ruta))
+			if(is_readable($ruta)) {
 				require_once $ruta;
+			} else {
+				require_once ROOT.'Views'.DS.'error\index.php';
+			}
 		}
 	}
 }/*final de la clase Enrutador*/

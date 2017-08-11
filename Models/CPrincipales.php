@@ -16,7 +16,7 @@ class CPrincipales extends Conexion
 		(u.rol = "'.$rol.'" OR "'.$rol.'" = -1) OR
 		(u.usuario = "'.$usuario.'" OR "'.$usuario.'" = -1)  OR
 		(u.cedula = "'.$cedula.'" OR "'.$cedula.'" = -1)  OR
-		(u.cedula = "'.$email.'" OR "'.$email.'" = -1)
+		(u.email = "'.$email.'" OR "'.$email.'" = -1)
 		ORDER BY u.nombre ASC;';
 		return $this;
 	}
@@ -35,9 +35,9 @@ class CPrincipales extends Conexion
 		return $this;
 	}
 
-	public function confirmDeleteUser($id)
+	public function cambioPass($id, $clave)
 	{
-		$this->sql = 'UPDATE users SET delete_at = 1 WHERE id = '.$id.' LIMIT 1';
+		$this->sql = 'UPDATE users SET pass = "'.$clave.'" WHERE id = '.$id.' LIMIT 1';
 		return $this;
 	}
 
@@ -51,7 +51,26 @@ class CPrincipales extends Conexion
 		return $this;
 	}
 
-	public function barrasEstadisticas($coordinacion = '')
+	public function add_editDireccion($opcion, $id = -1)
+	{
+		$prefijo = ($id == -1) ? 'INSERT INTO ' : 'UPDATE ';
+		$sufijo = ($id == -1) ? ';' : ' WHERE id = ' . $id;
+		$this->sql = $prefijo.'direccion SET
+		opcion = "'.$opcion.'" '.$sufijo;
+		return $this;
+	}
+
+	public function add_editDivision($opcion, $relacion, $id = -1)
+	{
+		$prefijo = ($id == -1) ? 'INSERT INTO ' : 'UPDATE ';
+		$sufijo = ($id == -1) ? ';' : ' WHERE id = ' . $id;
+		$this->sql = $prefijo.'division SET
+		opcion = "'.$opcion.'",
+		relacion = '.$relacion.$sufijo;
+		return $this;
+	}
+
+	public function barrasEstadisticas()
 	{
 		$where = '';
 		if ($_SESSION['rol'] == 2) {
@@ -59,62 +78,35 @@ class CPrincipales extends Conexion
 		} elseif ($_SESSION['rol'] == 3) {
 			$where = 'WHERE t.cedula_soporte = ' . $_SESSION['cedula'];
 		}
-		$this->sql = 'SELECT p.id, p.descripcion, COUNT(t.id)
-		FROM tickets AS t INNER JOIN prioridades AS p ON t.id_prioridad = p.id
-		'.$where.'
-		GROUP BY 2
-		ORDER BY t.estatus;';
+		$this->sql = 'SELECT e.id, e.descripcion, COUNT(t.id) AS tickets FROM tickets AS t INNER JOIN estatus AS e ON t.id_estatus = e.id
+		'.$where.'GROUP BY 2 ORDER BY 2;';
 		return $this;
-
-		// print_r($a);
-		// $resul = (new Conexion)->see($consulta);
-		// $totalPendiente = 0; $totalEnProceso = 0; $totalResuelto = 0;
-		// foreach ($resul as $key)
-		// {
-		// 	switch ($key['estatus'])
-		// 	{
-		// 		case 'Abierto':
-		// 		$totalPendiente = $key['total']; break;
-		// 		case 'En proceso':
-		// 		$totalEnProceso = $key['total']; break;
-		// 		case 'Cerrado':
-		// 		$totalResuelto = $key['total']; break;
-		// 	}
-		// }
-		// $totalSolicitudes = $totalPendiente + $totalEnProceso + $totalResuelto;
-		// $efectividad = ( $totalSolicitudes > 0  ) ? (($totalResuelto * 100) / $totalSolicitudes) : 0 ;
-		// return array(
-		// 	'totalPendiente' => $totalPendiente,
-		// 	'totalEnProceso' => $totalEnProceso,
-		// 	'totalResuelto' => $totalResuelto,
-		// 	'totalSolicitudes' => $totalSolicitudes,
-		// 	'efectividad' => $efectividad
-		// 	);
 	}
 
-	public function select($tabla, $where = 0)
+	public function select($tabla, $where = array(array(-1, -1)))
 	{
 		$this->sql = 'SELECT * FROM '.$tabla;
 		$cont = count($where);
 		if ($cont > 0) {
 			$this->sql .=' WHERE '; 
 			for($i = 0; $i < $cont; $i++){
-				$this->sql .= '('.$where[$i][0].' = "'.$where[$i][1].'" OR "'.$where[$i][1].'" = -1)';
+				$this->sql .= '('.$where[$i][0].' = "'.$where[$i][1].'" OR '.$where[$i][1].' = -1)';
 				if ( $cont > 0 && $i < $cont-1) { $this->sql .= ' AND '; }
 			}
 		}
+		$this->sql .= ' AND delete_at IS NULL';
 		return $this;
 	}
 
-	public function cambioPass($id, $clave)
+	public function confirmDelete($tabla, $id)
 	{
-		$this->sql = 'UPDATE users SET pass = "'.$clave.'" WHERE id = '.$id.' LIMIT 1';
+		$this->sql = 'UPDATE '.$tabla.' SET delete_at = "'.date('Y-m-d H:m:s').'" WHERE id = '.$id.' LIMIT 1';
 		return $this;
 	}
 
-	public function deleteUserCoordinacion($id)
+	public function delete($tabla, $id)
 	{
-		$this->sql = 'DELETE FROM user_coordinacion WHERE id = '.$id.' LIMIT 1';
+		$this->sql = 'DELETE FROM '.$tabla.' WHERE id = '.$id.' LIMIT 1';
 		return $this;
 	}
 

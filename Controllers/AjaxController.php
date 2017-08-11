@@ -27,9 +27,9 @@ class AjaxController
 						$resultado = $this->cp->users(0,0,$_REQUEST['usuario'],0,$_REQUEST['usuario'])->see();
 						if (count($resultado) > 0) {
 							if ($resultado[0]['pass'] === MED::e($_REQUEST['clave'])) {
-								$_SESSION['validar']	= TRUE;
 								// $_SESSION['usuario']	= $resultado[0]['usuario'];
-								// $_SESSION['cedula']		= $resultado[0]['cedula'];
+								$_SESSION['cedula']		= $resultado[0]['cedula'];
+								$_SESSION['validar']	= TRUE;
 								$_SESSION['id']			= $resultado[0]['id'];
 								$_SESSION['nombre']		= $resultado[0]['nombre'];
 								$_SESSION['rol']	= $resultado[0]['rol'];
@@ -122,7 +122,7 @@ class AjaxController
 	{
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'confirmDeleteUser') {
 			if ($_REQUEST['token'] == 6) {
-				echo $this->cp->confirmDeleteUser(MED::d($_REQUEST['num']))->save();
+				echo $this->cp->confirmDelete('users', MED::d($_REQUEST['num']))->save();
 			}
 		}
 	}
@@ -174,15 +174,74 @@ class AjaxController
 	{
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'deleteUserCoordinacion') {
 			if ($_REQUEST['token'] == 9) {
-				$resultado = $this->cp->deleteUserCoordinacion($_REQUEST['id'])->save();
+				$resultado = $this->cp->delete('user_coordinacion', $_REQUEST['id'])->save();
 				echo json_encode($resultado);
 			}
 		}
 	}
 
+	public function paginacion($var = 0)
+	{
+		if ($_REQUEST['operation'] == 'paginacion') {
+			if ($_REQUEST['token'] == 10) {
+				require_once 'Views/modulos/'.$_REQUEST['modulo'].'.php';	
+			}
+		}
+	}
 
+	public function barrasEstadisticas()
+	{
+		if ($_REQUEST['token'] == 11) {
+			$resultado = $this->cp->barrasEstadisticas()->see();
+			echo json_encode($resultado);
+		}
+	}
 
+	public function buscarDepartamento()
+	{
+		if ($_REQUEST['operation'] == 'departamentos') {
+			echo '<option value="">Seleccione una opción</option>';
+			if ($_REQUEST['token'] == 12) {
+				$resultado = $this->cp->select('direccion')->see();
+				foreach ($resultado as $r) {
+					echo '<option value="'.$r['id'].'">'.$r['opcion'].'</option>';
+				}
+			}
+			if ($_REQUEST['token'] == 13) {
+				$resultado = $this->cp->select('division', array(array('relacion', $_REQUEST['num'])))->see();
+				foreach ($resultado as $r) {
+					echo '<option value="'.$r['id'].'">'.$r['opcion'].'</option>';
+				}
+			}
+			if ($_REQUEST['token'] == 16) {
+				$resultado = $this->cp->select('direccion')->see();
+				foreach ($resultado as $r) {
+					echo '<option ren="'.$r['id'].'" value="'.$r['opcion'].'"></option>';
+				}
+			}
+		}
+	}
 
+	public function deleteDepartamento()
+	{
+		if ($_REQUEST['token'] == 14) {
+			echo $this->cp->confirmDelete('division', $_REQUEST['num'])->save();
+		}
+	}
+
+	public function registrarDepartamento()
+	{
+		if ($_REQUEST['token'] == 15) {
+			$this->cp->add_editDireccion($_REQUEST['direccion'],
+										$_REQUEST['id_direccion'])->save();
+			if (isset($_REQUEST['division']) && $_REQUEST['id_direccion'] != -1) {
+				$this->cp->add_editDivision($_REQUEST['division'],
+										$_REQUEST['id_direccion'],
+										$_REQUEST['id_division'])->save();
+			}
+			echo(1);
+		}
+	}
 
 	public function __destruct()
 	{

@@ -17,14 +17,6 @@ class InicioController
 
 	public function index()
 	{
-		if ($_SESSION['rol'] == 2) {
-			$asignado = $_SESSION['coordinacion'];
-		} elseif ($_SESSION['rol'] == 3) {
-			$asignado = $_SESSION['usuario'];
-		} else {
-			$asignado = 'La OTIC';
-		}
-// (new CPrincipales)->barrasEstadisticas();
 		$this->cp->barrasEstadisticas();
 
 		if($_SESSION['rol'] == 2) {
@@ -34,8 +26,6 @@ class InicioController
 		} else {
 
 		}
-
-		return array('asignado' => $asignado);
 	}
 
 	public function inicio()
