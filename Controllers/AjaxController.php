@@ -160,7 +160,7 @@ class AjaxController
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'coordinacionRegistrar') {
 			if ($_REQUEST['token'] == 8) {
 				$iduser = MED::d($_REQUEST['iduser']);
-				$resultado = $this->cp->select('user_coordinacion', array(array('id_user',$iduser), array('id_coordinacion',$_REQUEST['coordinacion'])))->see();
+				$resultado = $this->cp->select('user_coordinacion', array(array('id_user',$iduser), array('id_coordinacion',$_REQUEST['coordinacion'])), 0)->see();
 				if (count($resultado) > 0) {
 					echo 0;
 				} else {
@@ -240,6 +240,30 @@ class AjaxController
 										$_REQUEST['id_division'])->save();
 			}
 			echo(1);
+		}
+	}
+
+	public function buscarSolicitudes()
+	{
+		if ($_REQUEST['operation'] == 'solicitudes') {
+			if ($_REQUEST['token'] == 16) {
+				$resultado = $this->cp->select('categoria')->see();
+			} elseif ($_REQUEST['token'] == 17) {
+				$resultado = $this->cp->select('problema_i', array(array('relacion', $_REQUEST['num'])))->see();
+			} elseif ($_REQUEST['token'] == 18) {
+				$resultado = $this->cp->select('problema_ii', array(array('relacion', $_REQUEST['num'])))->see();
+			}
+			echo '<option value="">Seleccione una opción</option>';
+			foreach ($resultado as $r) {
+				echo '<option value="'.$r['id'].'">'.$r['opcion'].'</option>';
+			}
+		}
+	}
+
+	public function deleteServicio()
+	{
+		if ($_REQUEST['token'] == 19) {
+			echo $this->cp->confirmDelete('problema_ii', $_REQUEST['num'])->save();
 		}
 	}
 

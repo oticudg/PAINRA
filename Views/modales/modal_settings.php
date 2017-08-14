@@ -246,6 +246,93 @@
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 
+		<div class="modal fade modal-servicios" tabindex="9999" role="dialog">
+			<div class="modal-dialog modal-md" role="document">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-center">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title"><i class="glyphicon glyphicon-inbox" aria-hidden="true"></i> Servicios</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-10 col-md-offset-1" style="margin-bottom: 1em;">
+								<button type="btn" class="btn btn-small btn-primary" id="registrarS" data-toggle="tooltip" data-placement="top" title="Registrar">
+									<span class="fa fa-plus"></span>
+								</button>
+								<button type="btn" class="btn btn-small btn-warning" id="editarS" data-toggle="tooltip" data-placement="top" title="Editar">
+									<span class="glyphicon glyphicon-edit">
+									</span>
+								</button>
+								<button type="btn" class="btn btn-small btn-danger" id="eliminarS" data-toggle="tooltip" data-placement="top" title="Eliminar">
+									<span class="fa fa-trash"></span>
+								</button>
+							</div>
+							<div class="col-md-10 col-md-offset-1">
+		<!-- 						<div class="form-group">
+									<div class="col-md-12">
+										<span class="fa fa-cubes"></span>
+										<label for="categoria">Categoria:</label>
+									</div>
+									<div class="col-md-9	">
+										<select name="categoria" id="categoria" class="form-control" required> </select>
+									</div>
+									<div class="col-md-3">
+										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
+										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<span class="fa fa-cubes"></span>
+										<label for="categoria">Categoria:</label>
+									</div>
+									<div class="col-md-9	">
+										<select name="categoria" id="categoria" class="form-control" required> </select>
+									</div>
+									<div class="col-md-3">
+										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
+										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<span class="fa fa-cubes"></span>
+										<label for="categoria">Categoria:</label>
+									</div>
+									<div class="col-md-9	">
+										<select name="categoria" id="categoria" class="form-control" required> </select>
+									</div>
+									<div class="col-md-3">
+										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
+										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
+									</div>
+								</div> -->
+								<div class="form-group">
+									<span class="fa fa-cubes"></span>
+									<label for="categoria">Categoria:</label>
+									<select name="categoria" id="categoria" class="form-control" required> </select>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-cube"></span>
+									<label for="problema">Problema:</label>
+									<select name="problema" id="problema" class="form-control" required> </select>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-cube"></span>
+									<label for="subproblema">Sub-problema:</label>
+									<select name="subproblema" id="subproblema" class="form-control" required> </select>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
 		<div class="modal fade modal-help" tabindex="9999" role="dialog">
 			<div class="modal-dialog modal-md" role="document">
 				<div class="modal-content">

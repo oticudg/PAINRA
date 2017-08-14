@@ -208,7 +208,7 @@ $(document).ready(function () {
 			dataType: 'html',
 			data: {
 				operation: "departamentos",
-				token: 16
+				token: 12
 			},
 			type: "POST",
 			success: function (res) {
@@ -467,208 +467,208 @@ $(document).ready(function () {
 	// 	$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).val());
 	// });
 	/* 
-	 * soportistas
-	 */
-	 /* Realiza el registro al presionar el boton submit */
-	 $("#registrar-soportista").submit(function(e){
-	 	e.preventDefault();
-	 	var data = $(this).serializeArray();
-	 	data.push({ name: "operation", value: "soportistasRegistrar" });
-	 	data.push({ name: "token", value: "7" });
-	 	$.ajax({
-	 		url: url+"Ajax/soportistasRegistrar",
-	 		type: 'POST',
-	 		dataType: 'json',
-	 		data: data,
-	 		beforeSend: function () {
-	 			$(".msg").html('<div class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i><div>');
-	 		}
-	 	})
-	 	.done(function(resul) {
-	 		if (resul == false) {
-	 			$(".msg").html('<div class="alert alert-danger" role="alert"> <span class="fa fa-exclamation-triangle"></span> Ya existe este usuario o cedula.<div>');
-	 		} else {
-	 			$(".msg").html('<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-ok"></span> Datos Recibidos Exitosamente...<div>');
-	 			setTimeout(function () {
-	 				$('.modal-soportista-registrar').modal('toggle');
-	 				$("form#registrar-soportista")[0].reset();
-	 				$(".msg").html('');
-	 				llenarSoportistas();
-	 			}, 1000);
-	 			setTimeout(function () {
-	 				$("div.alert").fadeOut();
-	 			}, 5000);
-	 		}
-	 	})
-	 	.fail(function(resul) {
-	 		$(".msg").html('<div class="alert alert-danger" role="alert">Error al enviar Datos...<div>');
-	 	});
-	 });
-	 /* Abre el modal para registrar nuevo usuario */
-	 $("button.btn.btn-small.btn-primary#registrarU").click(function () {
-	 	$("form#registrar-soportista.form")[0].reset();
-	 	$(".modal-soportista-registrar select#rol").val("");
-	 	$(".modal-soportista-registrar").modal("show");
-	 	$("input[type='hidden']#id").attr("value", -1);
-	 });
-	 /* Abre el modal para editar usuario */
-	 $("button.btn#editarU").click(function (e) {
-	 	e.preventDefault();
-	 	if ($(this).attr("ren")) {
-	 		$.ajax({
-	 			url: url+"Ajax/verEditU",
-	 			type: 'POST',
-	 			dataType: 'json',
-	 			data: {
-	 				operation: "verU",
-	 				token: 5,
-	 				num: $(this).attr("ren")
-	 			}
-	 		})
-	 		.done(function(resul) {
-	 			$(".modal-soportista-registrar input#usuario").val(resul[0].usuario);
-	 			$(".modal-soportista-registrar input#nombre").val(resul[0].nombre);
-	 			$(".modal-soportista-registrar input#cedula").val(resul[0].cedula);
-	 			$(".modal-soportista-registrar input#id").val(resul[0].id);
-	 			$(".modal-soportista-registrar input#email").val(resul[0].email);
-	 			$(".modal-soportista-registrar select#rol option").removeAttr("selected");
-	 			var option = $(".modal-soportista-registrar select#rol option");
-	 			for (var i = 0; i < option.length; i++) {
-	 				if (resul[0].rol == option[i].text) {
-	 					option[i].setAttribute("selected", "");
-	 				}
-	 			}
-	 			$(".modal-soportista-registrar").modal("show");
-	 		});
-	 	}
-	 });
-	 /* Abre un modal para preguntar si se va a eliminar y al presionar el boton lo elimina. */
-	 $("button.btn#eliminarU").click(function (e) {
-	 	e.preventDefault();
-	 	var num = $(this).attr("ren");
-	 	if (num) {
-	 		var a = $("tr[ren="+num+"]").children("td"),
-	 		nombre = a[1].innerHTML,
-	 		cedula = a[2].innerHTML;
-	 		$(".modal-help .modal-body .help").html('<div class="row"> <h4>¿Esta Seguro de Eliminar a '+nombre+'?.</h4> <div class="col-md-8 col-md-offset-2"> <label for="usuario">Usuario:</label> <input type="text" class="form-control" name="usuario" value="'+nombre+'" disabled> <label for="cedula">Cedula:</label> <input type="text" class="form-control" name="cedula" value="'+cedula+'" disabled> <br> </div> </div>');
-	 		$(".modal-help h4.modal-title").html("<span class='glyphicon glyphicon-trash'></span> Eliminar Usuario");
-	 		$(".modal-help .modal-footer span.btnn").html('<button type="button" class="btn btn-primary" id="confirmDeleteUser" ren="'+num+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
-	 		$(".modal-help").modal("show");
-	 		$("button#confirmDeleteUser").click(function () {
-	 			$.ajax({
-	 				url: url+"Ajax/confirmDeleteUser",
-	 				type: 'POST',
-	 				dataType: 'json',
-	 				data: {
-	 					operation: "confirmDeleteUser",
-	 					token: 6,
-	 					num: $(this).attr("ren")
-	 				},
-	 				beforeSend: function () {
-	 					$(".modal-help .modal-footer span.msg").html('<div class="alert alert-info" role="alert">Enviando Datos Enviados... <i class="fa fa-spinner fa-pulse fa-1x"></i></div>');
-	 				}
-	 			})
-	 			.done(function(resul) {
-	 				if (resul == true) {
-	 					llenarSoportistas();
-	 					$("button#eliminarU").attr("ren", "");
-	 					$("button#editarU").attr("ren", "");
-	 					$("button.btn#coordinacionU").fadeOut('2');
-	 					swal('Borrado de Usuario', 'Exitoso...!', 'success');
-	 					setTimeout(function () {
-	 						$(".modal-help").modal("toggle");
-	 						$(".modal-help .modal-footer span.msg").html('');
-	 						$(".modal-help .modal-footer span.btnn").html('');
-	 					}, 1500);
-	 				} else {
-	 					$(".modal-help .modal-footer span.msg").html('<div class="alert alert-danger" role="alert">Error al Ingresar Datos.</div>');
-	 				}
-	 			});
-	 		});
-	 	}
-	 });
-	 /* Abre el modal para registrar a los usuarios en una coordinacion */
-	 $("button.btn#coordinacionU").click(function(e) {
-	 	e.preventDefault();
-	 	$(".modal-soportistas-coordinacion input#iduser").attr("value", $(this).attr("ren"));
-	 	$(".modal-soportistas-coordinacion").modal("toggle");
-	 	if ($(this).attr("coord") == "") {
-	 		$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1' selected>Nuevo</option>");
-	 		$(".modal-soportistas-coordinacion input#iduc").attr("value", "-1");
-	 		$(".modal-soportistas-coordinacion button.deleteUC").hide();
-	 		$('.modal-soportistas-coordinacion select#coordinacion').val("");
-	 	} else {
-	 		$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1'>Nuevo</option> <option value='"+$(this).attr("coord")+"' selected>Actualización</option>");
-	 		$(".modal-soportistas-coordinacion button.deleteUC").attr("ren", $(this).attr("coord"));
-	 		$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).attr("coord"));
-	 		$('.modal-soportistas-coordinacion select#coordinacion').val($(this).attr("idcoor"));
-	 		$(".modal-soportistas-coordinacion button.deleteUC").show();
-	 	}
-	 });
-	 /* Quita al usuario de la coordinacion */
-	 $(".modal-soportistas-coordinacion .deleteUC").click(function (e) {
-	 	e.preventDefault();
-	 	$.ajax({
-	 		url: url+"Ajax/deleteUserCoordinacion",
-	 		type: 'POST',
-	 		dataType: 'json',
-	 		data: {
-	 			operation: "deleteUserCoordinacion",
-	 			token: 9,
-	 			id: $(this).attr("ren")
-	 		}
-	 	})
-	 	.done(function(resul) {
-	 		if (resul == true) {
-	 			$("span.msgcoordinacion").html('<div class="alert alert-success" role="alert"> Borrado Exitoso <span class="glyphicon glyphicon-ok"></span> </div>');
-	 			$("button.btn#coordinacionU").hide();
-	 			$("button.btn#coordinacionU").removeAttr("ren");
-	 			$("button.btn#coordinacionU").removeAttr("idcoor");
-	 			$("button.btn#coordinacionU").removeAttr("coord");
-	 		} else {
-	 			$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al Borrar <span class="glyphicon glyphicon-remove"></span> </div>');
-	 		}
-	 		setTimeout(function () {
-	 			$("span.msgcoordinacion").html('');
-	 			$(".modal-soportistas-coordinacion").modal("toggle");
-	 			llenarSoportistas();
-	 		}, 1000);
-	 	})
-	 });
-	 /* Realiza el registro de la coordinacion para un usuario */
-	 $("form#form-user-coordinacion").submit(function (e) {
-	 	e.preventDefault();
-	 	var data = $(this).serializeArray();
-	 	data.push({ name: "operation", value: "coordinacionRegistrar" });
-	 	data.push({ name: "token", value: "8" });
-	 	$.ajax({
-	 		url: url+"Ajax/coordinacionRegistrar",
-	 		type: 'POST',
-	 		dataType: 'json',
-	 		data: data,
-	 		beforeSend: function () {
-	 			$("span.msgcoordinacion").html('<div class="alert alert-info" role="alert"> Enviando Datos... <i class="fa fa-spinner fa-pulse fa-fw"></i> </div>');
-	 		}
-	 	})
-	 	.done(function(resul) {
-	 		if (resul == 0) {
-	 			$("span.msgcoordinacion").html('<div class="alert alert-warning text-center" role="alert"> No se pudo realizar el registro <span class="fa fa-close"></span> </div>');
-	 		} else {
-	 			$("span.msgcoordinacion").html('<div class="alert alert-success" role="alert"> Datos Recibidos <span class="glyphicon glyphicon-ok"></span> </div>');
-	 			setTimeout(function () {
-	 				$("span.msgcoordinacion").html('');
-	 				$(".modal-soportistas-coordinacion").modal("toggle");
-	 				llenarSoportistas();
-	 			}, 1000);
-	 		}
-	 		setTimeout(function () {
-	 			$("span.msgcoordinacion").html('');
-	 		}, 5000);
-	 	})
-	 	.fail(function() {
-	 		$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al registrar los datos. <span class="glyphicon glyphicon-remove"></span> </div>');
-	 	});
-	 });
+	* soportistas
+	*/
+	/* Realiza el registro al presionar el boton submit */
+	$("#registrar-soportista").submit(function(e){
+		e.preventDefault();
+		var data = $(this).serializeArray();
+		data.push({ name: "operation", value: "soportistasRegistrar" });
+		data.push({ name: "token", value: "7" });
+		$.ajax({
+			url: url+"Ajax/soportistasRegistrar",
+			type: 'POST',
+			dataType: 'json',
+			data: data,
+			beforeSend: function () {
+				$(".msg").html('<div class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i><div>');
+			}
+		})
+		.done(function(resul) {
+			if (resul == false) {
+				$(".msg").html('<div class="alert alert-danger" role="alert"> <span class="fa fa-exclamation-triangle"></span> Ya existe este usuario o cedula.<div>');
+			} else {
+				$(".msg").html('<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-ok"></span> Datos Recibidos Exitosamente...<div>');
+				setTimeout(function () {
+					$('.modal-soportista-registrar').modal('toggle');
+					$("form#registrar-soportista")[0].reset();
+					$(".msg").html('');
+					llenarSoportistas();
+				}, 1000);
+				setTimeout(function () {
+					$("div.alert").fadeOut();
+				}, 5000);
+			}
+		})
+		.fail(function(resul) {
+			$(".msg").html('<div class="alert alert-danger" role="alert">Error al enviar Datos...<div>');
+		});
+	});
+	/* Abre el modal para registrar nuevo usuario */
+	$("button.btn.btn-small.btn-primary#registrarU").click(function () {
+		$("form#registrar-soportista.form")[0].reset();
+		$(".modal-soportista-registrar select#rol").val("");
+		$(".modal-soportista-registrar").modal("show");
+		$("input[type='hidden']#id").attr("value", -1);
+	});
+	/* Abre el modal para editar usuario */
+	$("button.btn#editarU").click(function (e) {
+		e.preventDefault();
+		if ($(this).attr("ren")) {
+			$.ajax({
+				url: url+"Ajax/verEditU",
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					operation: "verU",
+					token: 5,
+					num: $(this).attr("ren")
+				}
+			})
+			.done(function(resul) {
+				$(".modal-soportista-registrar input#usuario").val(resul[0].usuario);
+				$(".modal-soportista-registrar input#nombre").val(resul[0].nombre);
+				$(".modal-soportista-registrar input#cedula").val(resul[0].cedula);
+				$(".modal-soportista-registrar input#id").val(resul[0].id);
+				$(".modal-soportista-registrar input#email").val(resul[0].email);
+				$(".modal-soportista-registrar select#rol option").removeAttr("selected");
+				var option = $(".modal-soportista-registrar select#rol option");
+				for (var i = 0; i < option.length; i++) {
+					if (resul[0].rol == option[i].text) {
+						option[i].setAttribute("selected", "");
+					}
+				}
+				$(".modal-soportista-registrar").modal("show");
+			});
+		}
+	});
+	/* Abre un modal para preguntar si se va a eliminar y al presionar el boton lo elimina. */
+	$("button.btn#eliminarU").click(function (e) {
+		e.preventDefault();
+		var num = $(this).attr("ren");
+		if (num) {
+			var a = $("tr[ren="+num+"]").children("td"),
+			nombre = a[1].innerHTML,
+			cedula = a[2].innerHTML;
+			$(".modal-help .modal-body .help").html('<div class="row"> <h4>¿Esta Seguro de Eliminar a '+nombre+'?.</h4> <div class="col-md-8 col-md-offset-2"> <label for="usuario">Usuario:</label> <input type="text" class="form-control" name="usuario" value="'+nombre+'" disabled> <label for="cedula">Cedula:</label> <input type="text" class="form-control" name="cedula" value="'+cedula+'" disabled> <br> </div> </div>');
+			$(".modal-help h4.modal-title").html("<span class='glyphicon glyphicon-trash'></span> Eliminar Usuario");
+			$(".modal-help .modal-footer span.btnn").html('<button type="button" class="btn btn-primary" id="confirmDeleteUser" ren="'+num+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
+			$(".modal-help").modal("show");
+			$("button#confirmDeleteUser").click(function () {
+				$.ajax({
+					url: url+"Ajax/confirmDeleteUser",
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						operation: "confirmDeleteUser",
+						token: 6,
+						num: $(this).attr("ren")
+					},
+					beforeSend: function () {
+						$(".modal-help .modal-footer span.msg").html('<div class="alert alert-info" role="alert">Enviando Datos Enviados... <i class="fa fa-spinner fa-pulse fa-1x"></i></div>');
+					}
+				})
+				.done(function(resul) {
+					if (resul == true) {
+						llenarSoportistas();
+						$("button#eliminarU").attr("ren", "");
+						$("button#editarU").attr("ren", "");
+						$("button.btn#coordinacionU").fadeOut('2');
+						swal('Borrado de Usuario', 'Exitoso...!', 'success');
+						setTimeout(function () {
+							$(".modal-help").modal("toggle");
+							$(".modal-help .modal-footer span.msg").html('');
+							$(".modal-help .modal-footer span.btnn").html('');
+						}, 1500);
+					} else {
+						$(".modal-help .modal-footer span.msg").html('<div class="alert alert-danger" role="alert">Error al Ingresar Datos.</div>');
+					}
+				});
+			});
+		}
+	});
+	/* Abre el modal para registrar a los usuarios en una coordinacion */
+	$("button.btn#coordinacionU").click(function(e) {
+		e.preventDefault();
+		$(".modal-soportistas-coordinacion input#iduser").attr("value", $(this).attr("ren"));
+		$(".modal-soportistas-coordinacion").modal("toggle");
+		if ($(this).attr("coord") == "") {
+			$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1' selected>Nuevo</option>");
+			$(".modal-soportistas-coordinacion input#iduc").attr("value", "-1");
+			$(".modal-soportistas-coordinacion button.deleteUC").hide();
+			$('.modal-soportistas-coordinacion select#coordinacion').val("");
+		} else {
+			$(".modal-soportistas-coordinacion select#tipo").html("<option value='-1'>Nuevo</option> <option value='"+$(this).attr("coord")+"' selected>Actualización</option>");
+			$(".modal-soportistas-coordinacion button.deleteUC").attr("ren", $(this).attr("coord"));
+			$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).attr("coord"));
+			$('.modal-soportistas-coordinacion select#coordinacion').val($(this).attr("idcoor"));
+			$(".modal-soportistas-coordinacion button.deleteUC").show();
+		}
+	});
+	/* Quita al usuario de la coordinacion */
+	$(".modal-soportistas-coordinacion .deleteUC").click(function (e) {
+		e.preventDefault();
+		$.ajax({
+			url: url+"Ajax/deleteUserCoordinacion",
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				operation: "deleteUserCoordinacion",
+				token: 9,
+				id: $(this).attr("ren")
+			}
+		})
+		.done(function(resul) {
+			if (resul == true) {
+				$("span.msgcoordinacion").html('<div class="alert alert-success" role="alert"> Borrado Exitoso <span class="glyphicon glyphicon-ok"></span> </div>');
+				$("button.btn#coordinacionU").hide();
+				$("button.btn#coordinacionU").removeAttr("ren");
+				$("button.btn#coordinacionU").removeAttr("idcoor");
+				$("button.btn#coordinacionU").removeAttr("coord");
+			} else {
+				$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al Borrar <span class="glyphicon glyphicon-remove"></span> </div>');
+			}
+			setTimeout(function () {
+				$("span.msgcoordinacion").html('');
+				$(".modal-soportistas-coordinacion").modal("toggle");
+				llenarSoportistas();
+			}, 1000);
+		})
+	});
+	/* Realiza el registro de la coordinacion para un usuario */
+	$("form#form-user-coordinacion").submit(function (e) {
+		e.preventDefault();
+		var data = $(this).serializeArray();
+		data.push({ name: "operation", value: "coordinacionRegistrar" });
+		data.push({ name: "token", value: "8" });
+		$.ajax({
+			url: url+"Ajax/coordinacionRegistrar",
+			type: 'POST',
+			dataType: 'json',
+			data: data,
+			beforeSend: function () {
+				$("span.msgcoordinacion").html('<div class="alert alert-info" role="alert"> Enviando Datos... <i class="fa fa-spinner fa-pulse fa-fw"></i> </div>');
+			}
+		})
+		.done(function(resul) {
+			if (resul == 0) {
+				$("span.msgcoordinacion").html('<div class="alert alert-warning text-center" role="alert"> No se pudo realizar el registro <span class="fa fa-close"></span> </div>');
+			} else {
+				$("span.msgcoordinacion").html('<div class="alert alert-success" role="alert"> Datos Recibidos <span class="glyphicon glyphicon-ok"></span> </div>');
+				setTimeout(function () {
+					$("span.msgcoordinacion").html('');
+					$(".modal-soportistas-coordinacion").modal("toggle");
+					llenarSoportistas();
+				}, 1000);
+			}
+			setTimeout(function () {
+				$("span.msgcoordinacion").html('');
+			}, 5000);
+		})
+		.fail(function() {
+			$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al registrar los datos. <span class="glyphicon glyphicon-remove"></span> </div>');
+		});
+	});
 
 	/*
 	* Funciones
@@ -880,7 +880,97 @@ $(document).ready(function () {
 	// };
 
 
-
-
-
+	$(".modal-servicios").modal("toggle");
+	/*
+	* Servicios
+	*/
+	$(".modal-servicios select#categoria").ready(function () {
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudes",
+				token: 16
+			},
+			type: "POST",
+			success: function (res) {
+				$(".modal-servicios select#categoria").html(res);
+			}
+		});
+	});
+	$(".modal-servicios select#categoria").change(function () {
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudes",
+				token: 17,
+				num: $(this).val()
+			},
+			type: "POST",
+			success: function (res) {
+				$(".modal-servicios select#subproblema").html("");
+				$(".modal-servicios select#problema").html(res);
+			}
+		});
+	});
+	$(".modal-servicios select#problema").change(function () {
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudes",
+				token: 18,
+				num: $(this).val()
+			},
+			type: "POST",
+			success: function (res) {
+				$(".modal-servicios select#subproblema").html(res);
+			}
+		});
+	});
+	$(".modal-servicios select#subproblema").change(function () {
+		var num = $(this).val();
+		$(".modal-servicios #editarS").attr("ren", num);
+		$(".modal-servicios #eliminarS").attr("ren", num);
+	});
+	$(".modal-servicios #eliminarS").click(function () {
+		if ($(this).attr("ren")) {
+			valor = $(".modal-servicios select#subproblema").val();
+			subproblema = $(".modal-servicios select#subproblema option[value="+valor+"]").html();
+			$(".modal-help h4").html('<span class="fa fa-trash"></span> Eliminar Servicio.');
+			$(".modal-help .help").html('<h4>¿Esta Seguro de eliminar este servicio?</h4> <div class="form-group"><label>Sub-problema:</label> <input type="text" class="form-control" value="'+subproblema+'" disabled> </div>');
+			$(".modal-help .btnn").html('<button type="button" class="btn btn-primary" id="confirmDeleteServicio" ren="'+valor+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
+			$(".modal-help").modal("toggle");
+			$(".modal-help #confirmDeleteServicio").click(function () {
+				$.ajax({
+					url: url+"Ajax/deleteServicio",
+					dataType: 'json',
+					data: {
+						token: 19,
+						num: $(this).attr("ren")
+					},
+					type: "POST",
+					success: function (res) {
+						$(".modal-help").modal("toggle");
+						swal({
+							title: '¡Borrado Exitoso!',
+							type: 'success',
+							timer: 2000
+						}).then(
+						function () {},
+						function (dismiss) {});
+					}
+				}).fail(function() {
+					swal({
+						title: '¡Error al Borrar!',
+						type: 'error',
+						timer: 2000
+					}).then(
+					function () {},
+					function (dismiss) {});
+				});
+			});
+		}
+	});
 });

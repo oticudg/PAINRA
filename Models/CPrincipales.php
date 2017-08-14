@@ -83,7 +83,7 @@ class CPrincipales extends Conexion
 		return $this;
 	}
 
-	public function select($tabla, $where = array(array(-1, -1)))
+	public function select($tabla, $where = array(array(-1, -1)), $delete = 1)
 	{
 		$this->sql = 'SELECT * FROM '.$tabla;
 		$cont = count($where);
@@ -94,7 +94,9 @@ class CPrincipales extends Conexion
 				if ( $cont > 0 && $i < $cont-1) { $this->sql .= ' AND '; }
 			}
 		}
-		$this->sql .= ' AND delete_at IS NULL';
+		if ($delete == 1) {
+			$this->sql .= ' AND delete_at IS NULL';
+		}
 		return $this;
 	}
 
