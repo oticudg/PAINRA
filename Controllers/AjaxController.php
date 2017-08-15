@@ -245,6 +245,7 @@ class AjaxController
 
 	public function buscarSolicitudes()
 	{
+		echo '<option>Seleccione una opción</option>';
 		if ($_REQUEST['operation'] == 'solicitudes') {
 			if ($_REQUEST['token'] == 16) {
 				$resultado = $this->cp->select('categoria')->see();
@@ -253,9 +254,18 @@ class AjaxController
 			} elseif ($_REQUEST['token'] == 18) {
 				$resultado = $this->cp->select('problema_ii', array(array('relacion', $_REQUEST['num'])))->see();
 			}
-			echo '<option value="">Seleccione una opción</option>';
 			foreach ($resultado as $r) {
 				echo '<option value="'.$r['id'].'">'.$r['opcion'].'</option>';
+			}
+		}
+		if ($_REQUEST['operation'] == 'solicitudesRegistro') {
+			if ($_REQUEST['token'] == 19) {
+				$resultado = $this->cp->select('categoria')->see();
+			} elseif ($_REQUEST['token'] == 21) {
+				$resultado = $this->cp->select('problema_i', array(array('relacion', $_REQUEST['num'])))->see();
+			}
+			foreach ($resultado as $r) {
+				echo '<option value="'.$r['opcion'].'">'.$r['id'].'</option>';
 			}
 		}
 	}
@@ -264,6 +274,20 @@ class AjaxController
 	{
 		if ($_REQUEST['token'] == 19) {
 			echo $this->cp->confirmDelete('problema_ii', $_REQUEST['num'])->save();
+		}
+	}
+
+	public function registroServicios()
+	{
+		if ($_REQUEST['token'] == 22) {
+			$this->cp->add_editCategoria($_REQUEST['categoria'], $_REQUEST['idcategoria'])->save();
+			if ($_REQUEST['idcategoria'] != -1) {
+				$this->cp->add_editProblemas('problema_i', $_REQUEST['problema'], $_REQUEST['idcategoria'], $_REQUEST['idproblema'])->save();
+				if ($_REQUEST['idproblema'] != -1) {
+					$this->cp->add_editProblemas('problema_ii', $_REQUEST['subproblema'], $_REQUEST['idproblema'], $_REQUEST['idsubproblema'])->save();
+				}
+			}
+			echo(1);
 		}
 	}
 

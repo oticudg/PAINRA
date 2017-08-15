@@ -268,57 +268,18 @@
 								</button>
 							</div>
 							<div class="col-md-10 col-md-offset-1">
-		<!-- 						<div class="form-group">
-									<div class="col-md-12">
-										<span class="fa fa-cubes"></span>
-										<label for="categoria">Categoria:</label>
-									</div>
-									<div class="col-md-9	">
-										<select name="categoria" id="categoria" class="form-control" required> </select>
-									</div>
-									<div class="col-md-3">
-										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
-										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
-									</div>
-								</div>
 								<div class="form-group">
-									<div class="col-md-12">
-										<span class="fa fa-cubes"></span>
-										<label for="categoria">Categoria:</label>
-									</div>
-									<div class="col-md-9	">
-										<select name="categoria" id="categoria" class="form-control" required> </select>
-									</div>
-									<div class="col-md-3">
-										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
-										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-md-12">
-										<span class="fa fa-cubes"></span>
-										<label for="categoria">Categoria:</label>
-									</div>
-									<div class="col-md-9	">
-										<select name="categoria" id="categoria" class="form-control" required> </select>
-									</div>
-									<div class="col-md-3">
-										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
-										<button class="btn btn-default"><span class="fa fa-edit"></span></button>
-									</div>
-								</div> -->
-								<div class="form-group">
-									<span class="fa fa-cubes"></span>
+									<i class="fa fa-th-list" aria-hidden="true"></i>
 									<label for="categoria">Categoria:</label>
 									<select name="categoria" id="categoria" class="form-control" required> </select>
 								</div>
 								<div class="form-group">
-									<span class="fa fa-cube"></span>
+									<i class="fa fa-list-ul" aria-hidden="true"></i>
 									<label for="problema">Problema:</label>
 									<select name="problema" id="problema" class="form-control" required> </select>
 								</div>
 								<div class="form-group">
-									<span class="fa fa-cube"></span>
+									<i class="fa fa-list" aria-hidden="true"></i>
 									<label for="subproblema">Sub-problema:</label>
 									<select name="subproblema" id="subproblema" class="form-control" required> </select>
 								</div>
@@ -329,6 +290,49 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
 					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div class="modal fade modal-registroServicios" tabindex="9999" role="dialog">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-center">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title"><span class="fa fa-plus"></span> Registrar Servicio.</h4>
+					</div>
+					<form id="registroServicios">
+						<div class="modal-body">
+							<div class="col-md-10 col-md-offset-1">
+								<div class="form-group">
+									<i class="fa fa-th-list" aria-hidden="true"></i>
+									<label for="categoria">Categoria:</label>
+									<input type="text" id="categoria" name="categoria" class="form-control" list="categorias" required autocomplete="off">
+									<input type="hidden" name="idcategoria" id="idcategoria" value="-1">
+									<datalist id="categorias"></datalist>
+								</div>
+								<div class="form-group">
+									<i class="fa fa-list-ul" aria-hidden="true"></i>
+									<label for="problema">Problema:</label>
+									<input type="text" id="problema" name="problema" class="form-control" list="problemas" required autocomplete="off">
+									<input type="hidden" name="idproblema" id="idproblema" value="-1">
+									<datalist id="problemas"></datalist>
+								</div>
+								<div class="form-group">
+									<i class="fa fa-list" aria-hidden="true"></i>
+									<label for="subproblema">Sub-problema:</label>
+									<input type="text" id="subproblema" name="subproblema" class="form-control" required autocomplete="off">
+									<input type="hidden" name="idsubproblema" id="idsubproblema" value="-1">
+									<datalist id="subproblema"></datalist>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Guardar</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
+						</div>
+					</form>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->

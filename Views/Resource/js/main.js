@@ -880,7 +880,6 @@ $(document).ready(function () {
 	// };
 
 
-	$(".modal-servicios").modal("toggle");
 	/*
 	* Servicios
 	*/
@@ -939,7 +938,7 @@ $(document).ready(function () {
 			valor = $(".modal-servicios select#subproblema").val();
 			subproblema = $(".modal-servicios select#subproblema option[value="+valor+"]").html();
 			$(".modal-help h4").html('<span class="fa fa-trash"></span> Eliminar Servicio.');
-			$(".modal-help .help").html('<h4>¿Esta Seguro de eliminar este servicio?</h4> <div class="form-group"><label>Sub-problema:</label> <input type="text" class="form-control" value="'+subproblema+'" disabled> </div>');
+			$(".modal-help .help").html('<h4>¿Esta Seguro de eliminar este servicio?</h4> <div class="form-group"><i class="fa fa-list" aria-hidden="true"></i> <label>Sub-problema:</label> <input type="text" class="form-control" value="'+subproblema+'" disabled> </div>');
 			$(".modal-help .btnn").html('<button type="button" class="btn btn-primary" id="confirmDeleteServicio" ren="'+valor+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
 			$(".modal-help").modal("toggle");
 			$(".modal-help #confirmDeleteServicio").click(function () {
@@ -972,5 +971,144 @@ $(document).ready(function () {
 				});
 			});
 		}
+	});
+	$(".modal-registroServicios datalist#categorias").ready(function () {
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudesRegistro",
+				token: 19
+			},
+			type: "POST",
+			success: function (res) {
+				$(".modal-registroServicios datalist#categorias").html(res);
+			}
+		});
+	});
+	$(".modal-registroServicios input#categoria").change(function () {
+		var html = $(this).val(),
+		id = $("datalist#categorias option[value='"+html+"'").html();
+		if (id) {
+			$.ajax({
+				url: url+"Ajax/buscarSolicitudes",
+				dataType: 'html',
+				data: {
+					operation: "solicitudesRegistro",
+					token: 21,
+					num: id
+				},
+				type: "POST",
+				success: function (res) {
+					$("input[type='hidden']#idcategoria").val(id);
+					$("input[type='hidden']#idproblema").parent().show();
+					$("input#problema").attr("type", "text");
+					$("datalist#problemas").html(res);
+				}
+			});
+		} else {
+			$("input[type='hidden']#idproblema").parent().hide();
+			$("input[type='hidden']#idsubproblema").parent().hide();
+			$("input[type='hidden']#idproblema").val(-1);
+			$("input[type='hidden']#idsubproblema").val(-1);
+			$("input#idcategoria").val(-1);
+			$("input#problema").attr("type", "hidden");
+			$("input#subproblema").attr("type", "hidden");
+			$("input#problema").val("");
+			$("input#subproblema").val("");
+		}
+	});
+	$(".modal-registroServicios input#categoria").change(function () {
+		var html = $(this).val();
+		id = $("datalist#categorias option[value='"+html+"'").html();
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudesRegistro",
+				token: 21,
+				num: id
+			},
+			type: "POST",
+			success: function (res) {
+				$("datalist#problemas").html(res);
+			}
+		});
+	});
+	$(".modal-registroServicios input#problema").change(function () {
+		var html = $(this).val();
+		id = $("datalist#problemas option[value='"+html+"'").html();
+		if (id) {
+			$("input[type='hidden']#idproblema").val(id);
+			$("input#subproblema").attr("type", "text");
+			$("input[type='hidden']#idsubproblema").parent().show();
+		} else {
+			$("input[type='hidden']#idproblema").val(-1);
+			$("input[type='hidden']#idsubproblema").val(-1);
+			$("input#subproblema").attr("type", "hidden");
+			$("input[type='hidden']#idsubproblema").parent().hide();
+		}
+	});
+	$(".modal-servicios #registrarS").click(function () {
+		$("input[type='hidden']#idcategoria").val(-1);
+		$("input[type='hidden']#idproblema").val(-1);
+		$("input[type='hidden']#idsubproblema").val(-1);
+		$("input#problema").attr("type", "text");
+		$("input#problema").attr("value", "");
+		$("input#subproblema").attr("type", "text");
+		$("input#subproblema").attr("value", "");
+		$("input[type='hidden']#idproblema").parent().show();
+		$("input[type='hidden']#idsubproblema").parent().show();
+		$("form#registroServicios")[0].reset();
+		$(".modal-registroServicios").modal("toggle");
+	});
+	$(".modal-servicios #editarS").click(function () {
+		if ($(this).attr("ren")) {
+			nCategoria = $("select#categoria").val();
+			categoria = $("select#categoria option[value="+nCategoria+"]").html();
+			nProblema = $("select#problema").val();
+			problema = $("select#problema option[value="+nProblema+"]").html();
+			nSubproblema = $("select#subproblema").val();
+			subproblema = $("select#subproblema option[value="+nSubproblema+"]").html();
+			$(".modal-registroServicios input#categoria").val(categoria);
+			$(".modal-registroServicios input#idcategoria").val(nCategoria);
+			$(".modal-registroServicios input#problema").val(problema);
+			$(".modal-registroServicios input#idproblema").val(nProblema);
+			$(".modal-registroServicios input#subproblema").val(subproblema);
+			$(".modal-registroServicios input#idsubproblema").val(nSubproblema);
+			$(".modal-registroServicios").modal("toggle");
+		}
+	});
+	$(".modal-registroServicios form#registroServicios").submit(function (e) {
+		e.preventDefault();
+		var data = $(this).serializeArray();
+		data.push({ name: "token", value: "22" });
+
+		$.ajax({
+			url: url+"Ajax/registroServicios",
+			type: "POST",
+			dataType: "json",
+			data: data,
+			beforeSend: function () {
+			}
+		})
+		.done(function(res) {
+			swal({
+				title: '¡Registro Exitoso!',
+				type: 'success',
+				timer: 2000
+			}).then(
+			function () {},
+			function (dismiss) {});
+		})
+		.fail(function() {
+			swal({
+				title: '¡Error al Borrar!',
+				type: 'error',
+				timer: 2000
+			}).then(
+			function () {},
+			function (dismiss) {});
+		});
 	});
 });

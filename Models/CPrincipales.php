@@ -70,6 +70,24 @@ class CPrincipales extends Conexion
 		return $this;
 	}
 
+	public function add_editCategoria($opcion, $id = -1)
+	{
+		$prefijo = ($id == -1) ? 'INSERT INTO ' : 'UPDATE ';
+		$sufijo = ($id == -1) ? ';' : ' WHERE id = ' . $id;
+		$this->sql = $prefijo.'categoria SET opcion = "'.$opcion.'"'.$sufijo;
+		return $this;
+	}
+
+	public function add_editProblemas($tabla, $opcion, $relacion, $id = -1)
+	{
+		$prefijo = ($id == -1) ? 'INSERT INTO ' : 'UPDATE ';
+		$sufijo = ($id == -1) ? ';' : ' WHERE id = ' . $id;
+		$this->sql = $prefijo.$tabla.' SET
+		opcion = "'.$opcion.'",
+		relacion = '.$relacion.$sufijo;
+		return $this;
+	}
+
 	public function barrasEstadisticas()
 	{
 		$where = '';
