@@ -1,5 +1,5 @@
 $(document).ready(function () {
-	var url = 'http://localhost/PAINRA/';
+	var url = $("meta[url]").attr("url");
 	$('#page-loader').fadeOut(1000);
 	$('form').submit(function (e) {
 		e.preventDefault();

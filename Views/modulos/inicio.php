@@ -12,19 +12,19 @@ if ($_SESSION['rol'] == 2) {
 	<h2 class="text-center"> Tiques asignados a <?php echo $asignado ?> </h2>
 	<hr>
 	<div class="row">
-		<div class="notice notice-primary col-md-5 ventana abiertos">
+		<div class="notice notice-primary col-md-5 ventana 1">
 			<strong></strong>
 			<div class="pull-right">
 				<button class="btn btn-sm btn-primary" data-toggle="modal" data-target=".modal-abiertos"><span class="fa fa-eye"></span> Ver</button>
 			</div>
 		</div>
-		<div class="notice notice-warning col-md-5 col-md-offset-2 ventana proceso">
+		<div class="notice notice-warning col-md-5 col-md-offset-2 ventana 2">
 			<strong></strong>
 			<div class="pull-right">
 				<button class="btn btn-sm btn-warning" data-toggle="modal" data-target=".modal-enproceso"><span class="fa fa-eye"></span> Ver</button>
 			</div>
 		</div>
-		<div class="notice notice-danger col-md-5 ventana cerrados">
+		<div class="notice notice-danger col-md-5 ventana 3">
 			<strong></strong>
 			<div class="pull-right">
 				<button class="btn btn-sm btn-danger" data-toggle="modal" data-target=".modal-graphic-porcentaje_departamentos"><span class="fa fa-eye"></span> Ver</button>
@@ -44,3 +44,4 @@ if ($_SESSION['rol'] == 2) {
 		</div>
 	</div>
 </div>
+<?php $a = Views\Modales\Modales::ModalesInicio(); ?>

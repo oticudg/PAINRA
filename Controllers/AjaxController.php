@@ -2,6 +2,7 @@
 
 date_default_timezone_set("America/La_Paz");
 use Models\CPrincipales as CPrincipales;
+use Models\Estadisticas as Estadisticas;
 use Config\MED as MED;
 
 /**
@@ -10,10 +11,12 @@ use Config\MED as MED;
 class AjaxController
 {
 	private $cp;
+	private $es;
 
 	function __construct()
 	{
 		$this->cp = new CPrincipales;
+		$this->es = new Estadisticas;
 	}
 
 	public function index(){}
@@ -27,7 +30,7 @@ class AjaxController
 						$resultado = $this->cp->users(0,0,$_REQUEST['usuario'],0,$_REQUEST['usuario'])->see();
 						if (count($resultado) > 0) {
 							if ($resultado[0]['pass'] === MED::e($_REQUEST['clave'])) {
-								// $_SESSION['usuario']	= $resultado[0]['usuario'];
+								$_SESSION['usuario']	= $resultado[0]['usuario'];
 								$_SESSION['cedula']		= $resultado[0]['cedula'];
 								$_SESSION['validar']	= TRUE;
 								$_SESSION['id']			= $resultado[0]['id'];
@@ -79,7 +82,11 @@ class AjaxController
 	{
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'soportistas') {
 			if ($_REQUEST['token'] == 4) {
-				$soportistas = $this->cp->users()->see();
+				if ($_SESSION['rol'] == 1) {
+					$soportistas = $this->cp->soportistas()->see();
+				} elseif ($_SESSION['rol'] == 2) {
+					$soportistas = $this->cp->soportistas(3, $_SESSION['id_coordinacion'])->see();
+				}
 				$count = 0;
 				echo '
 				<table class="table table-bordered table-hover table-condensed" id="soportistas">
@@ -183,7 +190,7 @@ class AjaxController
 	public function paginacion($var = 0)
 	{
 		if ($_REQUEST['operation'] == 'paginacion') {
-			if ($_REQUEST['token'] == 10) {
+			if ($_REQUEST['token'] == 10 && $_SESSION['validar'] == TRUE) {
 				require_once 'Views/modulos/'.$_REQUEST['modulo'].'.php';	
 			}
 		}
@@ -192,7 +199,7 @@ class AjaxController
 	public function barrasEstadisticas()
 	{
 		if ($_REQUEST['token'] == 11) {
-			$resultado = $this->cp->barrasEstadisticas()->see();
+			$resultado = $this->es->barrasEstadisticas()->see();
 			echo json_encode($resultado);
 		}
 	}
@@ -291,8 +298,37 @@ class AjaxController
 		}
 	}
 
+	public function ticketsAbiertos()
+	{
+		$open = $this->es->mTickets("Abierto")->see();
+		$htmlA = '<div class="col-xs-12">';
+		if ($open != array()) {
+			$htmlA = '<ol class="listaTickets">';
+			foreach ($open as $o) {
+				$htmlA .= '<li> <b><a href="#" ren="'.$o['id'].'" id="abrirTicket">N° '.$o['id'].'</a></b><br>Fecha: '.$o['fecha_apertura'].'<br>Asignado: '.$o['soportista'].'</li>';
+			}
+			$htmlA .= '</ol>';
+		}
+		$htmlA .= '</div>';
+
+		$process = $this->es->mTickets("En proceso")->see();
+		$htmlE = '<div class="col-xs-12">';
+		if ($process != array()) {
+			$htmlE .= '<ol class="listaTickets">';
+			foreach ($process as $p) {
+				$htmlE .= '<li> <b><a href="#" ren="'.$p['id'].'" id="abrirTicket">N° '.$p['id'].'</a></b><br>Fecha: '.$p['fecha_apertura'].'<br>Asignado: '.$p['soportista'].'</li>';
+			}
+			$htmlE .= '</ol>';
+		}
+		$htmlE .= '</div>';
+		
+		$datos = array('abiertos' => $htmlA, 'enproceso' => $htmlE);
+		echo json_encode($datos);
+	}
+
 	public function __destruct()
 	{
 		$this->cp = NULL;
+		$this->es = NULL;
 	}
 } /*Fin de la clase AjaxController*/

@@ -5,7 +5,17 @@
 */
 class CPrincipales extends Conexion
 {
-	public function users($id = -1, $rol = 0, $usuario = 0, $cedula = 0, $email= 0)
+	private $join = 'FROM tickets AS t 
+	INNER JOIN users AS u ON t.registrante = u.usuario
+	INNER JOIN users as u2 ON t.cedula_soporte = u2.cedula
+	INNER JOIN categoria AS c ON t.id_categoriag = c.id
+	INNER JOIN problema_i AS p1 ON t.solicitud = p1.id
+	INNER JOIN problema_ii AS p2 ON t.problema = p2.id
+	INNER JOIN prioridades AS pr ON t.id_prioridad = pr.id
+	INNER JOIN estatus AS e ON t.id_estatus = e.id
+	INNER JOIN coordinaciones AS co ON t.coordinacion = co.id';
+
+	public function users($id= -1, $rol= 0, $usuario= 0, $cedula= 0, $email= 0, $id_coord= 0)
 	{
 		$this->sql = 'SELECT u.*, uc.id_coordinacion, coordinacion, uc.id AS iduc
 		FROM users AS u
@@ -15,8 +25,9 @@ class CPrincipales extends Conexion
 		(u.id = '.$id.' OR '.$id.' = -1) OR
 		(u.rol = "'.$rol.'" OR "'.$rol.'" = -1) OR
 		(u.usuario = "'.$usuario.'" OR "'.$usuario.'" = -1)  OR
-		(u.cedula = "'.$cedula.'" OR "'.$cedula.'" = -1)  OR
-		(u.email = "'.$email.'" OR "'.$email.'" = -1)
+		(u.cedula = "'.$cedula.'" OR "'.$cedula.'" = -1) OR
+		(u.email = "'.$email.'" OR "'.$email.'" = -1) OR
+		(uc.id_coordinacion = "'.$id_coord.'" OR "'.$id_coord.'" = -1)
 		ORDER BY u.nombre ASC;';
 		return $this;
 	}
@@ -32,6 +43,19 @@ class CPrincipales extends Conexion
 		email = "'.$email.'",
 		cedula = '.$cedula.',
 		rol = "'.$rol.'" '.$sufijo;
+		return $this;
+	}
+
+	public function soportistas($rol = -1, $id_coord = -1)
+	{
+		$this->sql = 'SELECT u.*, uc.id_coordinacion, coordinacion, uc.id AS iduc
+		FROM users AS u
+		LEFT JOIN user_coordinacion AS uc ON uc.id_user = u.id
+		LEFT JOIN coordinaciones AS c ON uc.id_coordinacion = c.id
+		WHERE u.delete_at IS NULL AND
+		(u.rol = "'.$rol.'" OR "'.$rol.'" = -1) AND
+		(uc.id_coordinacion = "'.$id_coord.'" OR "'.$id_coord.'" = -1)
+		ORDER BY u.nombre ASC;';
 		return $this;
 	}
 
@@ -85,36 +109,6 @@ class CPrincipales extends Conexion
 		$this->sql = $prefijo.$tabla.' SET
 		opcion = "'.$opcion.'",
 		relacion = '.$relacion.$sufijo;
-		return $this;
-	}
-
-	public function barrasEstadisticas()
-	{
-		$where = '';
-		if ($_SESSION['rol'] == 2) {
-			$where = 'WHERE t.coordinacion = '.$_SESSION['id_coordinacion'];
-		} elseif ($_SESSION['rol'] == 3) {
-			$where = 'WHERE t.cedula_soporte = ' . $_SESSION['cedula'];
-		}
-		$this->sql = 'SELECT e.id, e.descripcion, COUNT(t.id) AS tickets FROM tickets AS t INNER JOIN estatus AS e ON t.id_estatus = e.id
-		'.$where.'GROUP BY 2 ORDER BY 2;';
-		return $this;
-	}
-
-	public function select($tabla, $where = array(array(-1, -1)), $delete = 1)
-	{
-		$this->sql = 'SELECT * FROM '.$tabla;
-		$cont = count($where);
-		if ($cont > 0) {
-			$this->sql .=' WHERE '; 
-			for($i = 0; $i < $cont; $i++){
-				$this->sql .= '('.$where[$i][0].' = "'.$where[$i][1].'" OR '.$where[$i][1].' = -1)';
-				if ( $cont > 0 && $i < $cont-1) { $this->sql .= ' AND '; }
-			}
-		}
-		if ($delete == 1) {
-			$this->sql .= ' AND delete_at IS NULL';
-		}
 		return $this;
 	}
 

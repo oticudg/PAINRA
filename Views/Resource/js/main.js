@@ -1,8 +1,12 @@
 $(document).ready(function () {
-	var url = 'http://localhost/PAINRA/';
+	var url = $("meta[url]").attr("url");
 	/*
 	* Configuraciones
 	*/
+	/*se trae la pantalla de inicio*/
+	content("inicio");
+	/*se llena la tabla de soportistas*/
+	llenarSoportistas();
 	/* Inicializo los tooltips */
 	$('[data-toggle="tooltip"]').tooltip();
 	/*el preload circular*/
@@ -67,11 +71,9 @@ $(document).ready(function () {
 	/* Recarga la pagina por ajax */
 	$("a#enlace").click(function (e) {
 		e.preventDefault();
-		$("#page-loader").fadeIn();
 		$("a#enlace").parent().removeClass("active");
 		$(this).parent().addClass("active");
 		content($(this).attr("href"));
-		$("#page-loader").fadeOut(500);
 	});
 	/* Cierra el login abierto */
 	$("a#logout").click(function (e) {
@@ -120,7 +122,6 @@ $(document).ready(function () {
 			$(".menssage").html('<span class="alert alert-warning" role="alert"><b><span class="glyphicon glyphicon-exclamation-sign"></span> La constraseña debe tener mas de 8 caracteres.</b></span>');
 		}
 	});
-
 	/* 
 	* Departamentos
 	*/
@@ -271,201 +272,212 @@ $(document).ready(function () {
 			$(".modal-registrarDepartamento").modal("toggle");
 		}
 	});
-	// /*ajax para buscar el ticket por el input*/
-	// $("form#ticket").submit(function (e) {
-	// 	e.preventDefault();
-	// 	var data = $(this).serializeArray();
-	// 	if (data[0].value == "") {
-	// 		alert("Debe ingresar un valor numerico");
-	// 	} else {
-	// 		buscarTicket(data[0].value);
-	// 	}
-	// });
-	// /*ajax para registrar ticket*/
-	// $("form#registro").submit(function (e) {
-	// 	e.preventDefault();
-	// 	var data = $(this).serializeArray();
-	// 	data.push({ name: "operation", value: "registrar" });
-	// 	$.ajax({
-	// 		url: "resource/procesos/process.php",
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 		data: data,
-	// 		beforeSend: function () {
-	// 			$('i.fa-spinner').show();
-	// 			$('div.message').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><div class="alert alert-info" role="alert">Enviando Datos...</div>');
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		if (resul.estado == true) {
-	// 			$('div.message').html('<div class="alert alert-success" role="alert">Ticket Registrado con Exito<br>n° de ticket: '+resul.lastId+'.</div>');
-	// 			$('#tabla').DataTable().ajax.reload();
-	// 			setTimeout(function () {
-	// 				$('.modal-registrar').modal('toggle');
-	// 				$("form#registro")[0].reset();
-	// 			}, 5000);
-	// 		}
-	// 		if (resul.estado == false) {
-	// 			$('div.message').html('<div class="alert alert-danger" role="alert">Un Ticket ya se Encuentra Registrado para este Equipo.<br> con el n°: '+resul.ticket+'.</div>');
-	// 		}
-	// 	})
-	// 	.fail(function() {
-	// 		$('div.message').html('<div class="alert alert-danger" role="alert">Error al Enviar los datos.<br>Consulte a su programador. </div>');
-	// 		$('div.message').addClass('bg-danger');
-	// 	})
-	// 	.always(function() {
-	// 		setTimeout(function () {
-	// 			$("form#registro")[0].reset();
-	// 			$('div.message').html('');
-	// 		}, 15000);
-	// 	});
-	// });
-	// /*llena el combo direccion consus respectivas direcciones y el categoria del problema */
-	// $("form#registro select#direccion").ready(function (e) {
-	// 	$.ajax({
-	// 		url: "resource/procesos/direcciones.php?direccion=direccion",
-	// 		type: "POST",
-	// 		dataType: "json"
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#direccion').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#direccion').html('<option>Error al Buscar<option>');
-	// 	});
-	// 	$.ajax({
-	// 		url: "resource/procesos/problemas.php?categoria=categoria",
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#categoria').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#categoria').html('<option>Error al Buscar<option>');
-	// 	});
-	// });
-	// /*llena el combo division buscando con respecto a la direccion seleccionada*/
-	// $("form#registro select#direccion").change(function (e) {
-	// 	var valor = $(this).val();
-	// 	$.ajax({
-	// 		url: "resource/procesos/direcciones.php?division="+valor,
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 		beforeSend: function () {
-	// 			$('form#registro select#division').html('<option>Buscando division...<option>');
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#division').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#division').html('<option>Error al Buscar<option>');
-	// 	});
-	// });
-	// /*llena el combo problema_i buscando con respecto a la categoria seleccionada*/
-	// $("form#registro select#categoria").change(function (e) {
-	// 	var valor = $(this).val();
-	// 	$.ajax({
-	// 		url: "resource/procesos/problemas.php?problema_i="+valor,
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 		beforeSend: function () {
-	// 			$('form#registro select#problema_i').html('<option>Buscando problemas relacionados...<option>');
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#problema_i').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#problema_i').html('<option>Error al Buscar<option>');
-	// 	});
-	// });
-	// /*llena el combo problema_ii buscando con respecto al problema_i seleccionado*/
-	// $("form#registro select#problema_i").change(function (e) {
-	// 	var valor = $(this).val();
-	// 	$.ajax({
-	// 		url: "resource/procesos/problemas.php?problema_ii="+valor,
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 		beforeSend: function () {
-	// 			$('form#registro select#problema_ii').html('<option>Buscando problemas relacionados...<option>');
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#problema_ii').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#problema_ii').html('<option>Error al Buscar<option>');
-	// 	});
-	// });
-	// /*ajax para cerrar tickets*/
-	// $("form#cerrar").submit(function (e) {
-	// 	e.preventDefault();
-	// 	var data = $(this).serializeArray();
-	// 	var cond = true;
-	// 	if (data[7].value == 'Cerrado') {
-	// 		if (data[8].value == '' || data[9].value == '' || data[10].value == '' || data[11].value == '' || data[12].value == '') {
-	// 			$("span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar todos los Datos.</span>');
-	// 			cond = false;
-	// 		}
-	// 		if (data[2].value == '') {
-	// 			$("span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar la solucion.</span>');
-	// 			cond = false;
-	// 		}
-	// 	}
-	// 	if (cond) {
-	// 		data.push({ name: "operation", value: "cerrar" });
-	// 		$.ajax({
-	// 			url: "resource/procesos/process.php",
-	// 			type: "POST",
-	// 			dataType: "json",
-	// 			data: data,
-	// 			beforeSend: function () {
-	// 				$("span.msg").html('<span class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> </span>');
-	// 			}
-	// 		})
-	// 		.done(function(resul) {
-	// 			$("span.msg").html('<span class="alert alert-success" role="alert">Datos Enviados Exitosamente...</span>');
-	// 			$('#tabla').DataTable().ajax.reload();
-	// 			setTimeout(function () {
-	// 				$(".modal-cerrarTicket").modal("toggle");
-	// 				$("form#cerrar")[0].reset();
-	// 			}, 1000);
-	// 		})
-	// 		.fail(function(resul) {
-	// 			$("span.msg").html('<span class="alert alert-danger" role="alert">Error al Recibir Datos, Intente mas tarde.</span>');
-	// 		})
-	// 		.always(function() {
-	// 			setTimeout(function () {
-	// 				$(".fa-spinner").hide();
-	// 			}, 1000);
-	// 		});
-	// 	}
-	// });
-
-	// $("a#abrirTicket").click(function (e) {
-	// 	e.preventDefault();
-	// 	buscarTicket($(this).attr("ren"));
-	// });
-
-
-
-	// $("button#abrirModalRegistrar").click(function () {
-
-	// 	$(".modal-soportista-registrar input#usuario").attr('value', '');
-	// 	$(".modal-soportista-registrar input#nombre").attr('value', '');
-	// 	$(".modal-soportista-registrar input#cedula").attr('value', '');
-	// 	$(".modal-soportista-registrar input#id").attr('value', '-1');
-	// 	$(".modal-soportista-registrar input#email").attr('value', '');
-	// 	$(".modal-soportista-registrar select#privilegio option").removeAttr("selected");
-	// 	$(".modal-soportista-registrar").modal("show");
-	// });
-
-
-	// $(".modal-soportistas-coordinacion form select#tipo").change(function () {
-	// 	$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).val());
-	// });
+	/*
+	* Servicios
+	*/
+	$(".modal-servicios select#categoria").ready(function () {
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudes",
+				token: 16
+			},
+			type: "POST",
+			success: function (res) {
+				$(".modal-servicios select#categoria").html(res);
+			}
+		});
+	});
+	$(".modal-servicios select#categoria").change(function () {
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudes",
+				token: 17,
+				num: $(this).val()
+			},
+			type: "POST",
+			success: function (res) {
+				$(".modal-servicios select#subproblema").html("");
+				$(".modal-servicios select#problema").html(res);
+			}
+		});
+	});
+	$(".modal-servicios select#problema").change(function () {
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudes",
+				token: 18,
+				num: $(this).val()
+			},
+			type: "POST",
+			success: function (res) {
+				$(".modal-servicios select#subproblema").html(res);
+			}
+		});
+	});
+	$(".modal-servicios select#subproblema").change(function () {
+		var num = $(this).val();
+		$(".modal-servicios #editarS").attr("ren", num);
+		$(".modal-servicios #eliminarS").attr("ren", num);
+	});
+	$(".modal-servicios #eliminarS").click(function () {
+		if ($(this).attr("ren")) {
+			valor = $(".modal-servicios select#subproblema").val();
+			subproblema = $(".modal-servicios select#subproblema option[value="+valor+"]").html();
+			$(".modal-help h4").html('<span class="fa fa-trash"></span> Eliminar Servicio.');
+			$(".modal-help .help").html('<h4>¿Esta Seguro de eliminar este servicio?</h4> <div class="form-group"><i class="fa fa-list" aria-hidden="true"></i> <label>Sub-problema:</label> <input type="text" class="form-control" value="'+subproblema+'" disabled> </div>');
+			$(".modal-help .btnn").html('<button type="button" class="btn btn-primary" id="confirmDeleteServicio" ren="'+valor+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
+			$(".modal-help").modal("toggle");
+			$(".modal-help #confirmDeleteServicio").click(function () {
+				$.ajax({
+					url: url+"Ajax/deleteServicio",
+					dataType: 'json',
+					data: {
+						token: 19,
+						num: $(this).attr("ren")
+					},
+					type: "POST",
+					success: function (res) {
+						$(".modal-help").modal("toggle");
+						alerta('¡Borrado Exitoso!', 'success');
+					}
+				}).fail(function() {
+					alerta('¡Error al Borrar!', 'error');
+				});
+			});
+		}
+	});
+	$(".modal-registroServicios datalist#categorias").ready(function () {
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudesRegistro",
+				token: 19
+			},
+			type: "POST",
+			success: function (res) {
+				$(".modal-registroServicios datalist#categorias").html(res);
+			}
+		});
+	});
+	$(".modal-registroServicios input#categoria").change(function () {
+		var html = $(this).val(),
+		id = $("datalist#categorias option[value='"+html+"'").html();
+		if (id) {
+			$.ajax({
+				url: url+"Ajax/buscarSolicitudes",
+				dataType: 'html',
+				data: {
+					operation: "solicitudesRegistro",
+					token: 21,
+					num: id
+				},
+				type: "POST",
+				success: function (res) {
+					$("input[type='hidden']#idcategoria").val(id);
+					$("input[type='hidden']#idproblema").parent().show();
+					$("input#problema").attr("type", "text");
+					$("datalist#problemas").html(res);
+				}
+			});
+		} else {
+			$("input[type='hidden']#idproblema").parent().hide();
+			$("input[type='hidden']#idsubproblema").parent().hide();
+			$("input[type='hidden']#idproblema").val(-1);
+			$("input[type='hidden']#idsubproblema").val(-1);
+			$("input#idcategoria").val(-1);
+			$("input#problema").attr("type", "hidden");
+			$("input#subproblema").attr("type", "hidden");
+			$("input#problema").val("");
+			$("input#subproblema").val("");
+		}
+	});
+	$(".modal-registroServicios input#categoria").change(function () {
+		var html = $(this).val();
+		id = $("datalist#categorias option[value='"+html+"'").html();
+		$.ajax({
+			url: url+"Ajax/buscarSolicitudes",
+			dataType: 'html',
+			data: {
+				operation: "solicitudesRegistro",
+				token: 21,
+				num: id
+			},
+			type: "POST",
+			success: function (res) {
+				$("datalist#problemas").html(res);
+			}
+		});
+	});
+	$(".modal-registroServicios input#problema").change(function () {
+		var html = $(this).val();
+		id = $("datalist#problemas option[value='"+html+"'").html();
+		if (id) {
+			$("input[type='hidden']#idproblema").val(id);
+			$("input#subproblema").attr("type", "text");
+			$("input[type='hidden']#idsubproblema").parent().show();
+		} else {
+			$("input[type='hidden']#idproblema").val(-1);
+			$("input[type='hidden']#idsubproblema").val(-1);
+			$("input#subproblema").attr("type", "hidden");
+			$("input[type='hidden']#idsubproblema").parent().hide();
+		}
+	});
+	$(".modal-servicios #registrarS").click(function () {
+		$("input[type='hidden']#idcategoria").val(-1);
+		$("input[type='hidden']#idproblema").val(-1);
+		$("input[type='hidden']#idsubproblema").val(-1);
+		$("input#problema").attr("type", "text");
+		$("input#problema").attr("value", "");
+		$("input#subproblema").attr("type", "text");
+		$("input#subproblema").attr("value", "");
+		$("input[type='hidden']#idproblema").parent().show();
+		$("input[type='hidden']#idsubproblema").parent().show();
+		$("form#registroServicios")[0].reset();
+		$(".modal-registroServicios").modal("toggle");
+	});
+	$(".modal-servicios #editarS").click(function () {
+		if ($(this).attr("ren")) {
+			nCategoria = $("select#categoria").val();
+			categoria = $("select#categoria option[value="+nCategoria+"]").html();
+			nProblema = $("select#problema").val();
+			problema = $("select#problema option[value="+nProblema+"]").html();
+			nSubproblema = $("select#subproblema").val();
+			subproblema = $("select#subproblema option[value="+nSubproblema+"]").html();
+			$(".modal-registroServicios input#categoria").val(categoria);
+			$(".modal-registroServicios input#idcategoria").val(nCategoria);
+			$(".modal-registroServicios input#problema").val(problema);
+			$(".modal-registroServicios input#idproblema").val(nProblema);
+			$(".modal-registroServicios input#subproblema").val(subproblema);
+			$(".modal-registroServicios input#idsubproblema").val(nSubproblema);
+			$(".modal-registroServicios").modal("toggle");
+		}
+	});
+	$(".modal-registroServicios form#registroServicios").submit(function (e) {
+		e.preventDefault();
+		var data = $(this).serializeArray();
+		data.push({ name: "token", value: "22" });
+		$.ajax({
+			url: url+"Ajax/registroServicios",
+			type: "POST",
+			dataType: "json",
+			data: data,
+			beforeSend: function () {
+			}
+		})
+		.done(function(res) {
+			alerta('¡Registro Exitoso!', 'success');
+		})
+		.fail(function() {
+			alerta('¡Error al Borrar!', 'error');
+		});
+	});
 	/* 
 	* soportistas
 	*/
@@ -669,12 +681,205 @@ $(document).ready(function () {
 			$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al registrar los datos. <span class="glyphicon glyphicon-remove"></span> </div>');
 		});
 	});
+	// /*ajax para buscar el ticket por el input*/
+	// $("form#ticket").submit(function (e) {
+	// 	e.preventDefault();
+	// 	var data = $(this).serializeArray();
+	// 	if (data[0].value == "") {
+	// 		alert("Debe ingresar un valor numerico");
+	// 	} else {
+	// 		buscarTicket(data[0].value);
+	// 	}
+	// });
+	// /*ajax para registrar ticket*/
+	// $("form#registro").submit(function (e) {
+	// 	e.preventDefault();
+	// 	var data = $(this).serializeArray();
+	// 	data.push({ name: "operation", value: "registrar" });
+	// 	$.ajax({
+	// 		url: "resource/procesos/process.php",
+	// 		type: "POST",
+	// 		dataType: "json",
+	// 		data: data,
+	// 		beforeSend: function () {
+	// 			$('i.fa-spinner').show();
+	// 			$('div.message').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><div class="alert alert-info" role="alert">Enviando Datos...</div>');
+	// 		}
+	// 	})
+	// 	.done(function(resul) {
+	// 		if (resul.estado == true) {
+	// 			$('div.message').html('<div class="alert alert-success" role="alert">Ticket Registrado con Exito<br>n° de ticket: '+resul.lastId+'.</div>');
+	// 			$('#tabla').DataTable().ajax.reload();
+	// 			setTimeout(function () {
+	// 				$('.modal-registrar').modal('toggle');
+	// 				$("form#registro")[0].reset();
+	// 			}, 5000);
+	// 		}
+	// 		if (resul.estado == false) {
+	// 			$('div.message').html('<div class="alert alert-danger" role="alert">Un Ticket ya se Encuentra Registrado para este Equipo.<br> con el n°: '+resul.ticket+'.</div>');
+	// 		}
+	// 	})
+	// 	.fail(function() {
+	// 		$('div.message').html('<div class="alert alert-danger" role="alert">Error al Enviar los datos.<br>Consulte a su programador. </div>');
+	// 		$('div.message').addClass('bg-danger');
+	// 	})
+	// 	.always(function() {
+	// 		setTimeout(function () {
+	// 			$("form#registro")[0].reset();
+	// 			$('div.message').html('');
+	// 		}, 15000);
+	// 	});
+	// });
+	// /*llena el combo direccion consus respectivas direcciones y el categoria del problema */
+	// $("form#registro select#direccion").ready(function (e) {
+	// 	$.ajax({
+	// 		url: "resource/procesos/direcciones.php?direccion=direccion",
+	// 		type: "POST",
+	// 		dataType: "json"
+	// 	})
+	// 	.done(function(resul) {
+	// 		$('form#registro select#direccion').html(resul);
+	// 	})
+	// 	.fail(function() {
+	// 		$('form#registro select#direccion').html('<option>Error al Buscar<option>');
+	// 	});
+	// 	$.ajax({
+	// 		url: "resource/procesos/problemas.php?categoria=categoria",
+	// 		type: "POST",
+	// 		dataType: "json",
+	// 	})
+	// 	.done(function(resul) {
+	// 		$('form#registro select#categoria').html(resul);
+	// 	})
+	// 	.fail(function() {
+	// 		$('form#registro select#categoria').html('<option>Error al Buscar<option>');
+	// 	});
+	// });
+	// /*llena el combo division buscando con respecto a la direccion seleccionada*/
+	// $("form#registro select#direccion").change(function (e) {
+	// 	var valor = $(this).val();
+	// 	$.ajax({
+	// 		url: "resource/procesos/direcciones.php?division="+valor,
+	// 		type: "POST",
+	// 		dataType: "json",
+	// 		beforeSend: function () {
+	// 			$('form#registro select#division').html('<option>Buscando division...<option>');
+	// 		}
+	// 	})
+	// 	.done(function(resul) {
+	// 		$('form#registro select#division').html(resul);
+	// 	})
+	// 	.fail(function() {
+	// 		$('form#registro select#division').html('<option>Error al Buscar<option>');
+	// 	});
+	// });
+	// /*llena el combo problema_i buscando con respecto a la categoria seleccionada*/
+	// $("form#registro select#categoria").change(function (e) {
+	// 	var valor = $(this).val();
+	// 	$.ajax({
+	// 		url: "resource/procesos/problemas.php?problema_i="+valor,
+	// 		type: "POST",
+	// 		dataType: "json",
+	// 		beforeSend: function () {
+	// 			$('form#registro select#problema_i').html('<option>Buscando problemas relacionados...<option>');
+	// 		}
+	// 	})
+	// 	.done(function(resul) {
+	// 		$('form#registro select#problema_i').html(resul);
+	// 	})
+	// 	.fail(function() {
+	// 		$('form#registro select#problema_i').html('<option>Error al Buscar<option>');
+	// 	});
+	// });
+	// /*llena el combo problema_ii buscando con respecto al problema_i seleccionado*/
+	// $("form#registro select#problema_i").change(function (e) {
+	// 	var valor = $(this).val();
+	// 	$.ajax({
+	// 		url: "resource/procesos/problemas.php?problema_ii="+valor,
+	// 		type: "POST",
+	// 		dataType: "json",
+	// 		beforeSend: function () {
+	// 			$('form#registro select#problema_ii').html('<option>Buscando problemas relacionados...<option>');
+	// 		}
+	// 	})
+	// 	.done(function(resul) {
+	// 		$('form#registro select#problema_ii').html(resul);
+	// 	})
+	// 	.fail(function() {
+	// 		$('form#registro select#problema_ii').html('<option>Error al Buscar<option>');
+	// 	});
+	// });
+	// /*ajax para cerrar tickets*/
+	// $("form#cerrar").submit(function (e) {
+	// 	e.preventDefault();
+	// 	var data = $(this).serializeArray();
+	// 	var cond = true;
+	// 	if (data[7].value == 'Cerrado') {
+	// 		if (data[8].value == '' || data[9].value == '' || data[10].value == '' || data[11].value == '' || data[12].value == '') {
+	// 			$("span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar todos los Datos.</span>');
+	// 			cond = false;
+	// 		}
+	// 		if (data[2].value == '') {
+	// 			$("span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar la solucion.</span>');
+	// 			cond = false;
+	// 		}
+	// 	}
+	// 	if (cond) {
+	// 		data.push({ name: "operation", value: "cerrar" });
+	// 		$.ajax({
+	// 			url: "resource/procesos/process.php",
+	// 			type: "POST",
+	// 			dataType: "json",
+	// 			data: data,
+	// 			beforeSend: function () {
+	// 				$("span.msg").html('<span class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> </span>');
+	// 			}
+	// 		})
+	// 		.done(function(resul) {
+	// 			$("span.msg").html('<span class="alert alert-success" role="alert">Datos Enviados Exitosamente...</span>');
+	// 			$('#tabla').DataTable().ajax.reload();
+	// 			setTimeout(function () {
+	// 				$(".modal-cerrarTicket").modal("toggle");
+	// 				$("form#cerrar")[0].reset();
+	// 			}, 1000);
+	// 		})
+	// 		.fail(function(resul) {
+	// 			$("span.msg").html('<span class="alert alert-danger" role="alert">Error al Recibir Datos, Intente mas tarde.</span>');
+	// 		})
+	// 		.always(function() {
+	// 			setTimeout(function () {
+	// 				$(".fa-spinner").hide();
+	// 			}, 1000);
+	// 		});
+	// 	}
+	// });
+
+	// $("a#abrirTicket").click(function (e) {
+	// 	e.preventDefault();
+	// 	buscarTicket($(this).attr("ren"));
+	// });
+
+
+
+	// $("button#abrirModalRegistrar").click(function () {
+
+	// 	$(".modal-soportista-registrar input#usuario").attr('value', '');
+	// 	$(".modal-soportista-registrar input#nombre").attr('value', '');
+	// 	$(".modal-soportista-registrar input#cedula").attr('value', '');
+	// 	$(".modal-soportista-registrar input#id").attr('value', '-1');
+	// 	$(".modal-soportista-registrar input#email").attr('value', '');
+	// 	$(".modal-soportista-registrar select#privilegio option").removeAttr("selected");
+	// 	$(".modal-soportista-registrar").modal("show");
+	// });
+
+
+	// $(".modal-soportistas-coordinacion form select#tipo").change(function () {
+	// 	$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).val());
+	// });
 
 	/*
 	* Funciones
 	*/
-	// content("inicio");
-	llenarSoportistas();
 	/* Trae por ajax el contenido de la pagina */
 	function content(pag) {
 		$.ajax({
@@ -685,8 +890,12 @@ $(document).ready(function () {
 				token: 10
 			},
 			type: "POST",
+			beforeSend: function () {
+				$("#page-loader").fadeIn();
+			},
 			success: function (res) {
 				$("div#contenido").html(res);
+				$("#page-loader").fadeOut(500);
 				paginas(pag);
 			}
 		});
@@ -701,18 +910,39 @@ $(document).ready(function () {
 				data: {token: 11}
 			})
 			.done(function(resul) {
-				var abiertos = JSON.parse(resul[0].tickets),
-				proceso = JSON.parse(resul[2].tickets),
-				cerrados = JSON.parse(resul[1].tickets),
-				total = abiertos+proceso+cerrados,
-				efectividad = (cerrados*100)/total;
-				$("div.abiertos strong").html(resul[0].descripcion+": "+resul[0].tickets);
-				$("div.cerrados strong").html(resul[1].descripcion+": "+resul[1].tickets);
-				$("div.proceso strong").html(resul[2].descripcion+": "+resul[2].tickets);
-				$("div.efectividad strong").html("Efectividad: "+efectividad.toFixed(2)+"%");
+				var total = 0;
+				for (var i = 0; i < resul.length; i++) {
+					total += JSON.parse(resul[i].tickets);
+					$("div."+resul[i].id+" strong").html(resul[i].descripcion+": "+resul[i].tickets);
+					if (resul[i].id == 3) {cerrados = JSON.parse(resul[i].tickets);}
+				}
+				if ($("div.1 strong").html() == "") {$("div.1 strong").html("Abierto: 0");}
+				if ($("div.2 strong").html() == "") {$("div.2 strong").html("En proceso: 0");}
+				if ($("div.3 strong").html() == "") {$("div.3 strong").html("Cerrado: 0");}
+				efectividad = (total != 0) ? ((cerrados*100)/total) : 0;
 				$("div.total strong").html("Total de solicitudes: "+total);
+				$("div.efectividad strong").html("Efectividad: "+efectividad.toFixed(2)+"%");
+			});
+			$.ajax({
+				url: url+"Ajax/ticketsAbiertos",
+				dataType: 'json',
+				type: 'POST',
+				data: {token: 23},
+				success: function (res) {
+					$(".modal-abiertos .datos").html(res.abiertos);
+					$(".modal-enproceso .datos").html(res.enproceso);
+				}
 			});
 		}
+	}
+	function alerta(string, tipo) {
+		swal({
+			title: string,
+			type: tipo,
+			timer: 2000
+		}).then(
+		function () {},
+		function (dismiss) {});
 	}
 	/* Arma la tabla de soportistas en el modal */
 	function llenarSoportistas() {
@@ -878,237 +1108,4 @@ $(document).ready(function () {
 	// 		});
 	// 	};
 	// };
-
-
-	/*
-	* Servicios
-	*/
-	$(".modal-servicios select#categoria").ready(function () {
-		$.ajax({
-			url: url+"Ajax/buscarSolicitudes",
-			dataType: 'html',
-			data: {
-				operation: "solicitudes",
-				token: 16
-			},
-			type: "POST",
-			success: function (res) {
-				$(".modal-servicios select#categoria").html(res);
-			}
-		});
-	});
-	$(".modal-servicios select#categoria").change(function () {
-		$.ajax({
-			url: url+"Ajax/buscarSolicitudes",
-			dataType: 'html',
-			data: {
-				operation: "solicitudes",
-				token: 17,
-				num: $(this).val()
-			},
-			type: "POST",
-			success: function (res) {
-				$(".modal-servicios select#subproblema").html("");
-				$(".modal-servicios select#problema").html(res);
-			}
-		});
-	});
-	$(".modal-servicios select#problema").change(function () {
-		$.ajax({
-			url: url+"Ajax/buscarSolicitudes",
-			dataType: 'html',
-			data: {
-				operation: "solicitudes",
-				token: 18,
-				num: $(this).val()
-			},
-			type: "POST",
-			success: function (res) {
-				$(".modal-servicios select#subproblema").html(res);
-			}
-		});
-	});
-	$(".modal-servicios select#subproblema").change(function () {
-		var num = $(this).val();
-		$(".modal-servicios #editarS").attr("ren", num);
-		$(".modal-servicios #eliminarS").attr("ren", num);
-	});
-	$(".modal-servicios #eliminarS").click(function () {
-		if ($(this).attr("ren")) {
-			valor = $(".modal-servicios select#subproblema").val();
-			subproblema = $(".modal-servicios select#subproblema option[value="+valor+"]").html();
-			$(".modal-help h4").html('<span class="fa fa-trash"></span> Eliminar Servicio.');
-			$(".modal-help .help").html('<h4>¿Esta Seguro de eliminar este servicio?</h4> <div class="form-group"><i class="fa fa-list" aria-hidden="true"></i> <label>Sub-problema:</label> <input type="text" class="form-control" value="'+subproblema+'" disabled> </div>');
-			$(".modal-help .btnn").html('<button type="button" class="btn btn-primary" id="confirmDeleteServicio" ren="'+valor+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
-			$(".modal-help").modal("toggle");
-			$(".modal-help #confirmDeleteServicio").click(function () {
-				$.ajax({
-					url: url+"Ajax/deleteServicio",
-					dataType: 'json',
-					data: {
-						token: 19,
-						num: $(this).attr("ren")
-					},
-					type: "POST",
-					success: function (res) {
-						$(".modal-help").modal("toggle");
-						swal({
-							title: '¡Borrado Exitoso!',
-							type: 'success',
-							timer: 2000
-						}).then(
-						function () {},
-						function (dismiss) {});
-					}
-				}).fail(function() {
-					swal({
-						title: '¡Error al Borrar!',
-						type: 'error',
-						timer: 2000
-					}).then(
-					function () {},
-					function (dismiss) {});
-				});
-			});
-		}
-	});
-	$(".modal-registroServicios datalist#categorias").ready(function () {
-		$.ajax({
-			url: url+"Ajax/buscarSolicitudes",
-			dataType: 'html',
-			data: {
-				operation: "solicitudesRegistro",
-				token: 19
-			},
-			type: "POST",
-			success: function (res) {
-				$(".modal-registroServicios datalist#categorias").html(res);
-			}
-		});
-	});
-	$(".modal-registroServicios input#categoria").change(function () {
-		var html = $(this).val(),
-		id = $("datalist#categorias option[value='"+html+"'").html();
-		if (id) {
-			$.ajax({
-				url: url+"Ajax/buscarSolicitudes",
-				dataType: 'html',
-				data: {
-					operation: "solicitudesRegistro",
-					token: 21,
-					num: id
-				},
-				type: "POST",
-				success: function (res) {
-					$("input[type='hidden']#idcategoria").val(id);
-					$("input[type='hidden']#idproblema").parent().show();
-					$("input#problema").attr("type", "text");
-					$("datalist#problemas").html(res);
-				}
-			});
-		} else {
-			$("input[type='hidden']#idproblema").parent().hide();
-			$("input[type='hidden']#idsubproblema").parent().hide();
-			$("input[type='hidden']#idproblema").val(-1);
-			$("input[type='hidden']#idsubproblema").val(-1);
-			$("input#idcategoria").val(-1);
-			$("input#problema").attr("type", "hidden");
-			$("input#subproblema").attr("type", "hidden");
-			$("input#problema").val("");
-			$("input#subproblema").val("");
-		}
-	});
-	$(".modal-registroServicios input#categoria").change(function () {
-		var html = $(this).val();
-		id = $("datalist#categorias option[value='"+html+"'").html();
-		$.ajax({
-			url: url+"Ajax/buscarSolicitudes",
-			dataType: 'html',
-			data: {
-				operation: "solicitudesRegistro",
-				token: 21,
-				num: id
-			},
-			type: "POST",
-			success: function (res) {
-				$("datalist#problemas").html(res);
-			}
-		});
-	});
-	$(".modal-registroServicios input#problema").change(function () {
-		var html = $(this).val();
-		id = $("datalist#problemas option[value='"+html+"'").html();
-		if (id) {
-			$("input[type='hidden']#idproblema").val(id);
-			$("input#subproblema").attr("type", "text");
-			$("input[type='hidden']#idsubproblema").parent().show();
-		} else {
-			$("input[type='hidden']#idproblema").val(-1);
-			$("input[type='hidden']#idsubproblema").val(-1);
-			$("input#subproblema").attr("type", "hidden");
-			$("input[type='hidden']#idsubproblema").parent().hide();
-		}
-	});
-	$(".modal-servicios #registrarS").click(function () {
-		$("input[type='hidden']#idcategoria").val(-1);
-		$("input[type='hidden']#idproblema").val(-1);
-		$("input[type='hidden']#idsubproblema").val(-1);
-		$("input#problema").attr("type", "text");
-		$("input#problema").attr("value", "");
-		$("input#subproblema").attr("type", "text");
-		$("input#subproblema").attr("value", "");
-		$("input[type='hidden']#idproblema").parent().show();
-		$("input[type='hidden']#idsubproblema").parent().show();
-		$("form#registroServicios")[0].reset();
-		$(".modal-registroServicios").modal("toggle");
-	});
-	$(".modal-servicios #editarS").click(function () {
-		if ($(this).attr("ren")) {
-			nCategoria = $("select#categoria").val();
-			categoria = $("select#categoria option[value="+nCategoria+"]").html();
-			nProblema = $("select#problema").val();
-			problema = $("select#problema option[value="+nProblema+"]").html();
-			nSubproblema = $("select#subproblema").val();
-			subproblema = $("select#subproblema option[value="+nSubproblema+"]").html();
-			$(".modal-registroServicios input#categoria").val(categoria);
-			$(".modal-registroServicios input#idcategoria").val(nCategoria);
-			$(".modal-registroServicios input#problema").val(problema);
-			$(".modal-registroServicios input#idproblema").val(nProblema);
-			$(".modal-registroServicios input#subproblema").val(subproblema);
-			$(".modal-registroServicios input#idsubproblema").val(nSubproblema);
-			$(".modal-registroServicios").modal("toggle");
-		}
-	});
-	$(".modal-registroServicios form#registroServicios").submit(function (e) {
-		e.preventDefault();
-		var data = $(this).serializeArray();
-		data.push({ name: "token", value: "22" });
-
-		$.ajax({
-			url: url+"Ajax/registroServicios",
-			type: "POST",
-			dataType: "json",
-			data: data,
-			beforeSend: function () {
-			}
-		})
-		.done(function(res) {
-			swal({
-				title: '¡Registro Exitoso!',
-				type: 'success',
-				timer: 2000
-			}).then(
-			function () {},
-			function (dismiss) {});
-		})
-		.fail(function() {
-			swal({
-				title: '¡Error al Borrar!',
-				type: 'error',
-				timer: 2000
-			}).then(
-			function () {},
-			function (dismiss) {});
-		});
-	});
 });

@@ -17,8 +17,6 @@ class InicioController
 
 	public function index()
 	{
-		$this->cp->barrasEstadisticas();
-
 		if($_SESSION['rol'] == 2) {
 
 		}elseif ($_SESSION['rol'] == 3) {

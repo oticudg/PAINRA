@@ -91,8 +91,11 @@ footer{
   height:70vh;
   overflow-y:scroll;
 }
+body::-webkit-scrollbar-track,
 .overflow::-webkit-scrollbar-track {border-radius:10px; }
+body::-webkit-scrollbar,
 .overflow::-webkit-scrollbar {width:8px; background-color:white; }
+body::-webkit-scrollbar-thumb,
 .overflow::-webkit-scrollbar-thumb {border-radius:10px; background-color:#337ab7; }
 /*preload*/
 #page-loader {
@@ -261,3 +264,13 @@ div#tabla_processing.dataTables_processing:after {
 #graphic{height:500px;}
 .input-group-btn button.btn.btn-default i{line-height:1.1em; }
 div.alert{margin:0;}
+/*lista de los modales abiertos y en proceso*/
+ol.listaTickets{
+  margin-left: 1.8em;
+  display: flex;
+  flex-flow: row wrap;
+}
+ol.listaTickets li{
+  padding-bottom: .8em;
+  width: 50%;
+}
