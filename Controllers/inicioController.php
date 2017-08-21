@@ -15,19 +15,7 @@ class InicioController
 		$this->cp = new CPrincipales;
 	}
 
-	public function index()
-	{
-		if($_SESSION['rol'] == 2) {
+	public function index() {}
 
-		}elseif ($_SESSION['rol'] == 3) {
-
-		} else {
-
-		}
-	}
-
-	public function inicio()
-	{
-
-	}
+	public function inicio() {}
 } /*Fin de la clase InicioController*/

@@ -4,67 +4,13 @@ $(document).ready(function () {
 	* Configuraciones
 	*/
 	/*se trae la pantalla de inicio*/
-	content("inicio");
+	content("personales");
 	/*se llena la tabla de soportistas*/
 	llenarSoportistas();
 	/* Inicializo los tooltips */
 	$('[data-toggle="tooltip"]').tooltip();
 	/*el preload circular*/
 	$("#page-loader").fadeOut(1000);
-	// /*aplicando el metodo datatable al menu.php*/
-	// $("#tabla").DataTable({
-	// 	"order": [ 0, "desc" ],
-	// 	"language": {
-	// 		"sProcessing": "",
-	// 		"sLengthMenu": "Mostrar _MENU_ registros",
-	// 		"sZeroRecords": "No se encontraron resultados",
-	// 		"sEmptyTable": "Ningún dato disponible en esta tabla",
-	// 		"sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-	// 		"sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-	// 		"sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-	// 		"sInfoPostFix": "",
-	// 		"sSearch": "Buscar:",
-	// 		"sUrl": "",
-	// 		"sInfoThousands": ",",
-	// 		"sLoadingRecords": "Cargando...",
-	// 		"oPaginate": {
-	// 			"sFirst": "Primero",
-	// 			"sLast": "ultimo",
-	// 			"sNext": "Siguiente",
-	// 			"sPrevious": "Anterior"
-	// 		},
-	// 		"oAria": {
-	// 			"sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-	// 			"sSortDescending": ": Activar para ordenar la columna de manera descendente"
-	// 		}
-	// 	},
-	// 	"processing": true,
-	// 	"serverSide": true,
-	// 	"ajax": {
-	// 		url: 'resource/procesos/server_side_processing.php',
-	// 		complete: function(data){
-	// 			$("a#abrirTicket2").click(function (e) {
-	// 				e.preventDefault();
-	// 				buscarTicket($(this).attr("ren"));
-	// 			});
-	// 			$("a#editTicket").click(function (e) {
-	// 				e.preventDefault();
-	// 				$("span.msg").html('');
-	// 				cerrarTicket($(this).attr("ren"));
-	// 			});
-	// 		}
-	// 	}
-	// });
-	/*configuracion del datepicker*/
-	// $(".input-daterange").datepicker({
-	// 	todayBtn: "linked",
-	// 	clearBtn: true,
-	// 	language: "es",
-	// 	orientation: "bottom auto",
-	// 	forceParse: false,
-	// 	autoclose: true,
-	// 	todayHighlight: true
-	// });
 	/*
 	* Eventos
 	*/
@@ -933,6 +879,265 @@ $(document).ready(function () {
 					$(".modal-enproceso .datos").html(res.enproceso);
 				}
 			});
+			$.ajax({
+				url: url+"Ajax/graphic_cerrados",
+				type: "POST",
+				dataType: "json",
+				data: {
+					token: 23
+				}
+			})
+			.done(function(resul) {
+				let options = {
+					chart: {
+						renderTo: 'graphic-cerrados',
+						type: 'column',
+						zoomType: 'xy'
+					},
+					title: {
+						text: 'Total de solicitudes:'
+					},
+
+					lang: {
+						downloadJPEG: "descargar imagen JPEG"
+					},
+					subtitle: {
+						text: 'OTIC'
+					},
+					xAxis: {
+						title: {
+							text: 'Total de Solicitudes Realizadas a la OTIC'
+						}
+					},
+					yAxis: {
+						title: {
+							text: 'Numero de Tickets Registrados'
+						}
+					},
+					series: [{
+						colorByPoint: true,
+						showInLegend: false
+					}],
+					credits: {
+						enabled: true,
+						href: "http://www.highcharts.com",
+						style: { "cursor": "pointer", "color": "#555", "fontSize": "10px" },
+						text: "RennySuarez.com"
+					}
+				};
+				options.xAxis.categories = resul.nombre;
+				options.series[0].data = resul.tickets;
+				var chart = Highcharts.chart(options);
+			})
+			.fail(function() {
+				$('#graphic-cerrados').html('<h2 class="text-center">Error al cargar la tabla :(</h2>');
+			});
+			$.ajax({
+				url: url+"Ajax/ticketsdepartamentos",
+				type: "POST",
+				dataType: "json",
+				data: {
+					token: 24,
+				},
+			})
+			.done(function(resul) {
+				let option = {
+					chart: {
+						renderTo: 'graphic-porcentaje_departamentos',
+						plotBackgroundColor: null,
+						plotBorderWidth: null,
+						plotShadow: false,
+						type: 'pie'
+					},
+					title: {
+						text: 'Porcentaje de tickets Cerrados por Departamento'
+					},
+					tooltip: {
+						pointFormat: '{series.name}: {series.y} <b>{point.percentage:.2f}%</b>'
+					},
+					plotOptions: {
+						pie: {
+							allowPointSelect: true,
+							cursor: 'pointer',
+							dataLabels: {
+								enabled: true,
+								format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f} %)',
+								style: {
+									color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+								},
+								connectorColor: '#337ab7'
+							}
+						}
+					},
+					series: [{
+						name: 'Porcentaje Cerrados',
+						data: []
+					}]
+				};
+				for (var i = 0; i < resul.length; i++) {
+					if (i == 0) {
+						option.series[0].data.push({
+							name: resul[i].departamento,
+							y: JSON.parse(resul[i].tickets),
+							sliced: true,
+							selected: true
+						});
+					} else {
+						option.series[0].data.push({
+							name: resul[i].departamento,
+							y: JSON.parse(resul[i].tickets)
+						});
+					}
+				}
+				var chart = Highcharts.chart(option);
+			})
+			.fail(function() {
+				$('#graphic-porcentaje_departamentos').html('<h2 class="text-center">Error al cargar la tabla :(</h2>');
+			});
+		} else if (pag == 'tickets') {
+			// $("#tabla").DataTable({
+			// 	"order": [ 0, "desc" ],
+			// 	"language": {
+			// 		"sProcessing": "",
+			// 		"sLengthMenu": "Mostrar _MENU_ registros",
+			// 		"sZeroRecords": "No se encontraron resultados",
+			// 		"sEmptyTable": "Ningún dato disponible en esta tabla",
+			// 		"sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			// 		"sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+			// 		"sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+			// 		"sInfoPostFix": "",
+			// 		"sSearch": "Buscar:",
+			// 		"sUrl": "",
+			// 		"sInfoThousands": ",",
+			// 		"sLoadingRecords": "Cargando...",
+			// 		"oPaginate": {
+			// 			"sFirst": "Primero",
+			// 			"sLast": "ultimo",
+			// 			"sNext": "Siguiente",
+			// 			"sPrevious": "Anterior"
+			// 		},
+			// 		"oAria": {
+			// 			"sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+			// 			"sSortDescending": ": Activar para ordenar la columna de manera descendente"
+			// 		}
+			// 	},
+			// 	"processing": true,
+			// 	"serverSide": true,
+			// 	"ajax": {
+			// 		url: 'resource/procesos/server_side_processing.php',
+			// 		complete: function(data){
+			// 			$("a#abrirTicket2").click(function (e) {
+			// 				e.preventDefault();
+			// 				buscarTicket($(this).attr("ren"));
+			// 			});
+			// 			$("a#editTicket").click(function (e) {
+			// 				e.preventDefault();
+			// 				$("span.msg").html('');
+			// 				cerrarTicket($(this).attr("ren"));
+			// 			});
+			// 		}
+			// 	}
+			// });
+		} else if (pag == 'departamentos') {
+		} else if (pag == 'personales') {
+			$(".tb_estadistica").hide();
+			/*configuracion del datepicker*/
+			$(".input-daterange").datepicker({
+				todayBtn: "linked",
+				clearBtn: true,
+				language: "es",
+				orientation: "bottom auto",
+				forceParse: false,
+				autoclose: true,
+				todayHighlight: true
+			});
+			$.ajax({
+				url: url+"Ajax/usuarios",
+				dataType: "json",
+				type: "POST",
+				data: {
+					token: 5
+				},
+				success: function (resul) {
+					$("select#responsable").html(resul);
+				}
+			});
+			$("form#form-personales").submit(function (e) {
+				e.preventDefault();
+				var data = $(this).serializeArray();
+				data.push({ name: "token", value: 24 });
+				let option = null;
+				option = {
+					chart: {
+						renderTo: 'grafica_soportistas',
+						polar: true,
+						type: 'line'
+					},
+					title: {
+						text: 'Estatus de Tickets',
+						x: -47
+					},
+					pane: {
+						size: '100%'
+					},
+					xAxis: {
+						categories: ['Cerradas', 'En proceso', 'Abiertas'],
+						tickmarkPlacement: 'on',
+						lineWidth: 0
+					},
+					yAxis: {
+						gridLineInterpolation: 'polygon',
+						lineWidth: 0,
+						min: 0
+					},
+					tooltip: {
+						shared: true,
+						pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y}</b><br/>'
+					},
+					legend: {
+						align: 'right',
+						verticalAlign: 'top',
+						y: 70,
+						layout: 'vertical'
+					},
+					series: [{
+						name: 'Tickets',
+						color: '#337ab7',
+						pointPlacement: 'on'
+					}]
+				};
+				$('#grafica_soportistas').html('');
+				$.ajax({
+					url: url+"Ajax/ticketspersonales",
+					type: "POST",
+					dataType: "json",
+					data: data
+				})
+				.done(function(resul) {
+					$(".tb_estadistica").show();
+					option.series[0].data = [
+					JSON.parse(resul.Cerrado),
+					JSON.parse(resul.Proceso),
+					JSON.parse(resul.Abierto)
+					];
+					var chart = Highcharts.chart(option);
+					$('#Abierto').html(resul.Abierto);
+					$('#Cerrado').html(resul.Cerrado);
+					$('#Proceso').html(resul.Proceso);
+					$('#Total').html(resul.Total);
+					$('#Efectividad').html(resul.Efectividad.toFixed(2));
+					$('h2#nombre').html("Ticket de "+resul.Soportista);
+				})
+				.fail(function(resul) {
+					$('#Abierto').html(0);
+					$('#Cerrado').html(0);
+					$('#Proceso').html(0);
+					$('#Total').html(0);
+					$('#Efectividad').html(0);
+					$('#grafica_soportistas').html('<h2 class="text-center">No posee ticket´s registrados.</h2>');
+				});
+			});
+		} else if (pag == 'mensuales') {
 		}
 	}
 	function alerta(string, tipo) {
@@ -1108,4 +1313,5 @@ $(document).ready(function () {
 	// 		});
 	// 	};
 	// };
+
 });

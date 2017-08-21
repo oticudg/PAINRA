@@ -341,7 +341,7 @@ class Modales
 				<div class="modal-content">
 					<div class="modal-header bg-primary text-center">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title"><span class="fa fa-cog"></span> Ticket´s Abiertos</h4>
+						<h4 class="modal-title"><span class="fa fa-eye"></span> Ticket's Abiertos</h4>
 					</div>
 					<div class="modal-body">
 						<div class="overflow datos"></div>
@@ -359,12 +359,48 @@ class Modales
 				<div class="modal-content">
 					<div class="modal-header bg-primary text-center">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title"><span class="fa fa-cog"></span> Ticket´s En Proceso</h4>
+						<h4 class="modal-title"><span class="fa fa-eye"></span> Ticket's En Proceso</h4>
 					</div>
 					<div class="modal-body">
 						<div class="overflow datos"></div>
 						<div class="clearfix"></div>
 					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div class="modal fade modal-graphic-cerrados" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-center">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title"><span class="fa fa-eye"></span> Total de Ticket's Cerrados</h4>
+					</div>
+					<div class="modal-body">
+						<div id="graphic-cerrados" style="height: 50vh"></div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div class="modal fade modal-graphic-porcentaje_departamentos" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-center">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title"><span class="fa fa-eye"></span> Ticket's Cerrados por Departamentos</h4>
+					</div>
+					<div class="modal-body">
+						<div id="graphic-porcentaje_departamentos" style="height: 50vh"></div>
+					</div>
+					<div class="clearfix"></div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
 					</div>

@@ -4,6 +4,7 @@ date_default_timezone_set("America/La_Paz");
 use Models\CPrincipales as CPrincipales;
 use Models\Estadisticas as Estadisticas;
 use Config\MED as MED;
+use Config\Fechas as Fechas;
 
 /**
 * Metodos para los procedimientos ajax
@@ -18,8 +19,6 @@ class AjaxController
 		$this->cp = new CPrincipales;
 		$this->es = new Estadisticas;
 	}
-
-	public function index(){}
 
 	public function login()
 	{
@@ -119,7 +118,7 @@ class AjaxController
 	{
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'verU') {
 			if ($_REQUEST['token'] == 5) {
-				$user = $this->cp->users(MED::d($_REQUEST['num']))->see();
+				$user = $this->cp->users($_REQUEST['num'])->see();
 				echo json_encode($user);
 			}
 		}
@@ -191,7 +190,7 @@ class AjaxController
 	{
 		if ($_REQUEST['operation'] == 'paginacion') {
 			if ($_REQUEST['token'] == 10 && $_SESSION['validar'] == TRUE) {
-				require_once 'Views/modulos/'.$_REQUEST['modulo'].'.php';	
+				require_once 'Views/modulos/'.$_REQUEST['modulo'].'.php';
 			}
 		}
 	}
@@ -199,7 +198,7 @@ class AjaxController
 	public function barrasEstadisticas()
 	{
 		if ($_REQUEST['token'] == 11) {
-			$resultado = $this->es->barrasEstadisticas()->see();
+			$resultado = $this->es->barrasEstadisticas($_SESSION['rol'])->see();
 			echo json_encode($resultado);
 		}
 	}
@@ -300,7 +299,7 @@ class AjaxController
 
 	public function ticketsAbiertos()
 	{
-		$open = $this->es->mTickets("Abierto")->see();
+		$open = $this->es->mTickets("Abierto", $_SESSION['rol'])->see();
 		$htmlA = '<div class="col-xs-12">';
 		if ($open != array()) {
 			$htmlA = '<ol class="listaTickets">';
@@ -311,7 +310,7 @@ class AjaxController
 		}
 		$htmlA .= '</div>';
 
-		$process = $this->es->mTickets("En proceso")->see();
+		$process = $this->es->mTickets("En proceso", $_SESSION['rol'])->see();
 		$htmlE = '<div class="col-xs-12">';
 		if ($process != array()) {
 			$htmlE .= '<ol class="listaTickets">';
@@ -321,9 +320,65 @@ class AjaxController
 			$htmlE .= '</ol>';
 		}
 		$htmlE .= '</div>';
-		
+
 		$datos = array('abiertos' => $htmlA, 'enproceso' => $htmlE);
 		echo json_encode($datos);
+	}
+
+	public function graphic_cerrados()
+	{
+		$resultado = $this->es->ticketsPorSoportistas()->see();
+		foreach ($resultado as $r) {
+			$nombre[] = $r['nombre'];
+			$tickets[] = $r['tickets'];
+		}
+		$nombre = json_encode($nombre);
+		$tickets = str_replace('"', '', json_encode($tickets));
+		echo '{"nombre": '.$nombre.',"tickets":'.$tickets.'}';
+	}
+
+	public function ticketsdepartamentos()
+	{
+		$resultado = $this->es->ticketsPorDepartamentos()->see();
+		echo json_encode($resultado);
+	}
+
+	public function ticketspersonales()
+	{
+		if ($_REQUEST['fstart'] != '' && $_REQUEST['fend'] != '') {
+			$fstart = Fechas::fechaSql($_REQUEST['fstart']);
+			$fend = Fechas::fechaSql($_REQUEST['fend']);
+		} else {
+			$fstart = 0;
+			$fend = 0;
+		}
+		$resultado = $this->es->estatusPersonal($_REQUEST['responsable'], $fstart, $fend)->see();
+		$abierto = 0; $proceso = 0; $cerrado = 0;
+		foreach ($resultado as $r) {
+			switch ($r['id_estatus']) {
+				case '1': $abierto = $r['tickets']; break;
+				case '2': $proceso = $r['tickets']; break;
+				case '3': $cerrado = $r['tickets']; break;
+			}
+		}
+		$totalSolicitudes = $abierto+$proceso+$cerrado;
+		$efectividad = ( $totalSolicitudes > 0  ) ? (($cerrado * 100) / $totalSolicitudes) : 0 ;
+		echo json_encode(array('Abierto' => $abierto,
+			'Proceso' => $proceso,
+			'Cerrado' => $cerrado,
+			'Total' => $totalSolicitudes,
+			'Efectividad' => $efectividad,
+			'Soportista' => $resultado[0]['nombre']));
+	}
+
+	public function usuarios()
+	{
+		$users = $this->cp->select('users', array(array('rol', 3)), 1)->see();
+		$html = '<option value="">Escoja una opción</option>';
+		foreach ($users as $u) {
+			$html .= '<option value="'.$u['cedula'].'">'.$u['nombre'].'</option>';
+		}
+		echo json_encode($html);
 	}
 
 	public function __destruct()
