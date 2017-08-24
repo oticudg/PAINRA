@@ -5,8 +5,6 @@
 */
 class Estadisticas extends Conexion
 {
-	// private $join = 'FROM tickets AS t INNER JOIN categoria AS c ON t.id_categoriag = c.id';
-	// INNER JOIN direccion AS d ON t.departamento = d.id
 	private $join = 'FROM tickets AS t 
 	INNER JOIN users AS u ON t.registrante = u.usuario
 	INNER JOIN users as u2 ON t.cedula_soporte = u2.cedula
@@ -77,4 +75,35 @@ class Estadisticas extends Conexion
 		GROUP BY t.id_estatus';
 		return $this;
 	}
-} /* Fin de la clase ConsultasPrincipales */
+
+	public function ticketsMensuales($año = -1)
+	{
+		$this->sql = 'SELECT YEAR(fecha_apertura) AS a, MONTH(fecha_apertura) AS mes, count(*) AS tickets
+		FROM tickets AS t INNER JOIN users AS u ON t.cedula_soporte = u.cedula
+		INNER JOIN problema_i AS p1 ON t.solicitud = p1.id
+		INNER JOIN problema_ii AS p2 ON t.problema = p2.id
+		INNER JOIN division AS d ON t.id_secciones = d.id
+		WHERE YEAR(fecha_apertura) = '.$año.' OR '.$año.' = -1
+		GROUP BY 1, mes';
+		return $this;
+	}
+
+	public function estatusSimple($idDepartamento, $fechaI, $fechaF)
+	{
+		$this->sql = 'SELECT t.id_estatus, e.descripcion, COUNT(t.id_departamento) AS tickets, d.opcion AS departamento
+		FROM tickets AS t LEFT JOIN direccion AS d ON t.id_departamento = d.id
+		INNER JOIN estatus AS e ON t.id_estatus = e.id
+		WHERE t.id_departamento = '.$idDepartamento.' AND  t.fechaCierre
+		BETWEEN "'.$fechaI.'" AND "'.$fechaF.'" GROUP BY 1';
+		return $this;
+	}
+
+	public function estatusCoordinacion($departamento, $fechaI, $fechaF)
+	{
+		$this->sql = 'SELECT co.coordinacion, e.descripcion, count(*) AS tickets
+		'.$this->join.'
+		WHERE t.coordinacion = '.$departamento.' AND t.fechaCierre BETWEEN "'.$fechaI.'" AND "'.$fechaF.'"
+		GROUP BY 2';
+		return $this;
+	}
+} /* Fin de la clase Estadisticas */

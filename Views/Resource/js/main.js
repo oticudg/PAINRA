@@ -4,7 +4,7 @@ $(document).ready(function () {
 	* Configuraciones
 	*/
 	/*se trae la pantalla de inicio*/
-	content("personales");
+	content("inicio");
 	/*se llena la tabla de soportistas*/
 	llenarSoportistas();
 	/* Inicializo los tooltips */
@@ -827,27 +827,41 @@ $(document).ready(function () {
 	* Funciones
 	*/
 	/* Trae por ajax el contenido de la pagina */
+	var lastPag = '';
 	function content(pag) {
-		$.ajax({
-			url: url+"Ajax/paginacion",
-			data: {
-				modulo: pag,
-				operation: "paginacion",
-				token: 10
-			},
-			type: "POST",
-			beforeSend: function () {
-				$("#page-loader").fadeIn();
-			},
-			success: function (res) {
-				$("div#contenido").html(res);
-				$("#page-loader").fadeOut(500);
-				paginas(pag);
-			}
-		});
+		if (lastPag != pag) {
+			$.ajax({
+				url: url+"Ajax/paginacion",
+				data: {
+					modulo: pag,
+					operation: "paginacion",
+					token: 10
+				},
+				type: "POST",
+				beforeSend: function () {
+					$("#page-loader").fadeIn();
+				},
+				success: function (res) {
+					$("div#contenido").html(res);
+					lastPag = pag;
+					$("#page-loader").fadeOut(500);
+					paginas(pag);
+				}
+			});
+		}
 	};
 	/* funcion que carga el contenido de las vistas que trae el ajax */
 	function paginas(pag) {
+		/*configuracion del datepicker*/
+		$(".input-daterange").datepicker({
+			todayBtn: "linked",
+			clearBtn: true,
+			language: "es",
+			orientation: "bottom auto",
+			forceParse: false,
+			autoclose: true,
+			todayHighlight: true
+		});
 		if (pag == 'inicio') {
 			$.ajax({
 				url: url+"Ajax/barrasEstadisticas",
@@ -1039,18 +1053,87 @@ $(document).ready(function () {
 			// 	}
 			// });
 		} else if (pag == 'departamentos') {
+			$("form#formDepartamentos").submit(function (e) {
+				e.preventDefault();
+				var data = $(this).serializeArray();
+				data.push({ name: "token", value: 26 });
+				$.ajax({
+					url: url+"Ajax/tablaEstDepartamentos",
+					type: "POST",
+					dataType: "json",
+					data: data,
+					beforeSend:function () {
+						$("#page-loader").fadeIn();
+					},
+					success: function (resul) {
+						var options = {
+							chart: {
+								renderTo: 'graphic',
+								type: 'column'
+							},
+							title: {
+								text: 'Numero de Registros'
+							},
+							subtitle: {
+								text: ''
+							},
+							xAxis: {
+								categories: [],
+								title: {
+									text: ''
+								},
+								crosshair: true
+							},
+							yAxis: {
+								min: 0,
+								title: {
+									text: ''
+								}
+							},
+							tooltip: {
+								headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+								pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+								'<td style="padding:0"><b>{point.y} </b></td></tr>',
+								footerFormat: '</table>',
+								shared: true,
+								useHTML: true
+							},
+							plotOptions: {
+								column: {
+									pointPadding: 0.2,
+									borderWidth: 0
+								}
+							},
+							series: [{
+								name: "Registros",
+								data: []
+							}]
+						};
+						$("div#estadistica").show();
+						let name = (data[2].name == 'Total') ? 'Coordinación' : 'Departamento'
+						$("div#estadistica h2").html(resul.h2);
+						$("div#estadistica table tbody").html("");
+						$("div#estadistica table tfoot").html("");
+						$("div#estadistica #graphic").html("");
+						if (resul.tbody) {
+						$("div#estadistica table tbody").html(resul.tbody);
+						$("div#estadistica table tfoot").html(resul.tfoot);
+							let len = resul.grafica.total.length
+							for(i=0; i<=len ;i++){
+								options.series[0].data.push(resul.grafica.total[i]);
+								options.xAxis.categories.push((i+1)+": "+resul.grafica.coordinacion[i]);
+							}
+							options.title.text="<h1>Tickets Totales</h1>";
+							chart = new Highcharts.Chart(options);
+						}
+						$("#page-loader").fadeOut(500);
+					}
+				}).fail(function(resul) {
+					$('#graphic').html('<h2 class="text-center">Error al cargar la tabla :(</h2>');
+				});
+			});
 		} else if (pag == 'personales') {
 			$(".tb_estadistica").hide();
-			/*configuracion del datepicker*/
-			$(".input-daterange").datepicker({
-				todayBtn: "linked",
-				clearBtn: true,
-				language: "es",
-				orientation: "bottom auto",
-				forceParse: false,
-				autoclose: true,
-				todayHighlight: true
-			});
 			$.ajax({
 				url: url+"Ajax/usuarios",
 				dataType: "json",
@@ -1111,7 +1194,10 @@ $(document).ready(function () {
 					url: url+"Ajax/ticketspersonales",
 					type: "POST",
 					dataType: "json",
-					data: data
+					data: data,
+					beforeSend: function () {
+						$("#page-loader").fadeIn();
+					}
 				})
 				.done(function(resul) {
 					$(".tb_estadistica").show();
@@ -1135,9 +1221,91 @@ $(document).ready(function () {
 					$('#Total').html(0);
 					$('#Efectividad').html(0);
 					$('#grafica_soportistas').html('<h2 class="text-center">No posee ticket´s registrados.</h2>');
+				})
+				.always(function () {
+					$("#page-loader").fadeOut(500);
 				});
 			});
 		} else if (pag == 'mensuales') {
+			$.ajax({
+				url: url+"Ajax/usuarios",
+				dataType: "json",
+				type: "POST",
+				data: {
+					token: 5
+				},
+				success: function (resul) {
+					$("select#responsable").html(resul);
+				}
+			});
+			var options = {
+				chart: {
+					renderTo: 'container',
+				},
+				title: {
+					text: 'Tickets Registrados Mensualmente (2014-2017)'
+				},
+				subtitle: {
+					text: ''
+				},
+				yAxis: {
+					title: {
+						text: 'Numero de Tickets'
+					}
+				},
+				legend: {
+					layout: 'vertical',
+					align: 'right',
+					verticalAlign: 'middle'
+				},
+				tooltip: {
+					headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+					pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+					'<td style="padding:0"><b>{point.y} Tickets</b></td></tr>',
+					footerFormat: '</table>',
+					shared: true,
+					useHTML: true
+				},
+				plotOptions: {
+					series: {
+						pointStart: 1
+					}
+				},
+				series: []
+			};
+			$.ajax({
+				url: url+"Ajax/ticketsMensuales",
+				type: "POST",
+				dataType: "json",
+				data: {
+					token: 26,
+					"graphic": 3
+				},
+			})
+			.done(function(resul) {
+				for (var i = 0; i < resul.length; i++) {
+					options.series[i] = {
+						name: resul[i][0].a,
+						data: []
+					};
+					var count = 1;
+					for (var o = 0; o < resul[i].length; o++) {
+						if (count !== JSON.parse(resul[i][o].mes)) {
+							for (var z = 1; z <= JSON.parse(resul[i][o].mes)-1; z++) {
+								options.series[i].data.push(null);
+							}
+							o--; count++;
+						} else {
+							options.series[i].data.push(JSON.parse(resul[i][o].tickets));
+							count++;
+						}
+					}
+				};
+				Highcharts.chart(options);
+			})
+			.fail(function() {
+				$('#container').html('<h2 class="text-center">Error al cargar la tabla :(</h2>');
+			});
 		}
 	}
 	function alerta(string, tipo) {

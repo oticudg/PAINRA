@@ -12,7 +12,7 @@ class Request
 			$ruta = array_filter($ruta);
 			if ($ruta[0] == 'index.php') {
 				if (isset($_SESSION['validar'])) {
-					$this->controlador = 'inicio';
+					$this->controlador = 'Inicio';
 				} else {
 					$this->controlador = 'Login';
 				}
@@ -24,7 +24,7 @@ class Request
 			$this->argumento = $ruta;
 		} else {
 			if (isset($_SESSION['validar'])) {
-				$this->controlador = 'inicio';
+				$this->controlador = 'Inicio';
 			} else {
 				$this->controlador = 'Login';
 			}

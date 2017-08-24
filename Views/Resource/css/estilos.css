@@ -1,5 +1,5 @@
 * {margin:0; padding:0; box-sizing:border-box;}
-body{padding-top:9vh !important; margin-bottom:8vh !important;}
+body{padding-top:51px !important; margin-bottom:8vh !important;}
 .bgbody{
   background-image:url(../../resource/imagenes/blackp.jpg);
   background-position:center;
@@ -273,4 +273,7 @@ ol.listaTickets{
 ol.listaTickets li{
   padding-bottom: .8em;
   width: 50%;
+}
+@media print {
+  footer, nav.navbar, header, a, button[type="submit"], input[type="submit"] {display:none;}
 }

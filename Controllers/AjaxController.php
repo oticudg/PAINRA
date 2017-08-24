@@ -118,7 +118,7 @@ class AjaxController
 	{
 		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'verU') {
 			if ($_REQUEST['token'] == 5) {
-				$user = $this->cp->users($_REQUEST['num'])->see();
+				$user = $this->cp->users(MED::d($_REQUEST['num']))->see();
 				echo json_encode($user);
 			}
 		}
@@ -379,6 +379,103 @@ class AjaxController
 			$html .= '<option value="'.$u['cedula'].'">'.$u['nombre'].'</option>';
 		}
 		echo json_encode($html);
+	}
+
+	public function ticketsMensuales($año = -1)
+	{
+		for ($i=2014; $i <= date('Y'); $i++) {
+			$resultado[] = $this->es->ticketsMensuales($i)->see();
+		}
+		echo json_encode($resultado);
+	}
+
+	public function tablaEstDepartamentos()
+	{
+		$h2 = ($_REQUEST['estadistica'] == 'Total') ? 'Estatus de solicitudes según cada Coordinación de la OTIC.' : 'Direcciones '.$_REQUEST['estadistica'].'.';
+
+		$fechaI = (!empty($_REQUEST['fstart'])) ? Fechas::fechaSql($_REQUEST['fstart']) : '2013-01-01';
+		$fechaF = (!empty($_REQUEST['fend'])) ? Fechas::fechaSql($_REQUEST['fend']) : '2099-01-01';
+
+		if ($_REQUEST['estadistica'] == 'Administrativas') { 
+			$Departamento = 1;
+			$ids = array(1, 2, 3, 4, 5, 6, 7, 8);
+		}
+		elseif ($_REQUEST['estadistica'] == 'Médicas') { 
+			$Departamento = 1;
+			$ids = array(9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
+		}
+		elseif ($_REQUEST['estadistica'] == 'Total') {
+			$Coordinacion = 1;
+			$ids = array(1, 2, 3);
+		}
+
+		$count = 0; $tticket = 0; $tabierto = 0; $tproceso = 0; $tcerrado = 0;
+		foreach ($ids as $d) {
+			if (isset($Departamento)) {
+				$resultado = $this->es->estatusSimple($d, $fechaI, $fechaF)->see();
+			} elseif (isset($Coordinacion)) {
+				$resultado = $this->es->estatusCoordinacion($d, $fechaI, $fechaF)->see();
+			}
+			if ($resultado) {
+				$estatus[$count] = self::organizarResulDep($resultado);
+				$estatus[$count]['n'] = $count+1;
+				$estatus[$count]['Departamento'] = (isset($resultado[0]['departamento'])) ? $resultado[0]['departamento'] : $resultado[0]['coordinacion'];
+				$tticket += $estatus[$count]['Total'];
+				$tabierto += $estatus[$count]['Abierto'];
+				$tproceso += $estatus[$count]['En proceso'];
+				$tcerrado += $estatus[$count]['Cerrado'];
+				$count++;
+			}
+		}
+		if ($resultado) {
+			foreach ($estatus as $g) {
+				$coordinacion[] = (isset($g['coordinacion'])) ? $g['coordinacion'] : $g['Departamento'];
+				$total[] = $g['Total'];
+			}
+			$tbody = '';
+			foreach ($estatus as $e) {
+				$tbody .= '<tr>
+					<td>'.$e['n'].'</td>
+					<td>'.$e['Departamento'].'</td>
+					<td>'.$e['Cerrado'].'</td>
+					<td>'.$e['En proceso'].'</td>
+					<td>'.$e['Abierto'].'</td>
+					<td>'.$e['Total'].'</td>
+					<td>'.(($e['Total'] == 0 ) ? '0,00' : number_format(($e['Cerrado']*100/$e['Total']),2,',','')).'</td>
+				</tr>';
+			}
+			$tfoot = '<td>O</td>
+				<td>Sub - Total</td>
+				<td>'.$tcerrado.'</td>
+				<td>'.$tproceso.'</td>
+				<td>'.$tabierto.'</td>
+				<td>'.$tticket.'</td>
+				<td>'.(($tticket == 0 ) ? '0,00' : number_format(($tcerrado*100/$tticket),2,',','')).'</td>';
+			echo json_encode(array('h2' => $h2, 'tbody' => $tbody, 'tfoot' => $tfoot, 'grafica' => array('coordinacion' => $coordinacion, 'total' => $total)));
+		} else {
+			echo json_encode(array('h2' => 'No Existen tickets registrados.'));
+		}
+	}
+
+	public static function organizarResulDep($resultado)
+	{
+		$abierto = 0; $proceso = 0; $cerrado = 0;
+		foreach ($resultado as $r) {
+			switch ($r['descripcion']) {
+				case 'Abierto': $abierto = $r['tickets']; break;
+				case 'En proceso': $proceso = $r['tickets']; break;
+				case 'Cerrado': $cerrado = $r['tickets']; break;
+			}
+		}
+		return array('Abierto' => $abierto, 
+					'En proceso' => $proceso, 
+					'Cerrado' => $cerrado, 
+					'Total' => ($abierto + $proceso + $cerrado)
+					);
+	}
+
+	public function departamentos()
+	{
 	}
 
 	public function __destruct()
