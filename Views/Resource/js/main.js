@@ -221,6 +221,8 @@ $(document).ready(function () {
 	/*
 	* Servicios
 	*/
+	$(".modal-servicios").modal("toggle");
+	var addEditservicios;
 	$(".modal-servicios select#categoria").ready(function () {
 		$.ajax({
 			url: url+"Ajax/buscarSolicitudes",
@@ -236,6 +238,11 @@ $(document).ready(function () {
 		});
 	});
 	$(".modal-servicios select#categoria").change(function () {
+		var num = $(this).val();
+		$(".modal-servicios #editarS").attr("ren", num);
+		$(".modal-servicios #editarS").attr("num", 1);
+		$(".modal-servicios #eliminarS").attr("ren", num);
+		$(".modal-servicios #eliminarS").attr("num", 1);
 		$.ajax({
 			url: url+"Ajax/buscarSolicitudes",
 			dataType: 'html',
@@ -252,6 +259,11 @@ $(document).ready(function () {
 		});
 	});
 	$(".modal-servicios select#problema").change(function () {
+		var num = $(this).val();
+		$(".modal-servicios #editarS").attr("ren", num);
+		$(".modal-servicios #editarS").attr("num", 2);
+		$(".modal-servicios #eliminarS").attr("ren", num);
+		$(".modal-servicios #eliminarS").attr("num", 2);
 		$.ajax({
 			url: url+"Ajax/buscarSolicitudes",
 			dataType: 'html',
@@ -269,23 +281,29 @@ $(document).ready(function () {
 	$(".modal-servicios select#subproblema").change(function () {
 		var num = $(this).val();
 		$(".modal-servicios #editarS").attr("ren", num);
+		$(".modal-servicios #editarS").attr("num", 3);
 		$(".modal-servicios #eliminarS").attr("ren", num);
+		$(".modal-servicios #eliminarS").attr("num", 3);
 	});
 	$(".modal-servicios #eliminarS").click(function () {
 		if ($(this).attr("ren")) {
-			valor = $(".modal-servicios select#subproblema").val();
-			subproblema = $(".modal-servicios select#subproblema option[value="+valor+"]").html();
+			num = $(this).attr("num");
 			$(".modal-help h4").html('<span class="fa fa-trash"></span> Eliminar Servicio.');
-			$(".modal-help .help").html('<h4>¿Esta Seguro de eliminar este servicio?</h4> <div class="form-group"><i class="fa fa-list" aria-hidden="true"></i> <label>Sub-problema:</label> <input type="text" class="form-control" value="'+subproblema+'" disabled> </div>');
-			$(".modal-help .btnn").html('<button type="button" class="btn btn-primary" id="confirmDeleteServicio" ren="'+valor+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
-			$(".modal-help").modal("toggle");
+			if (num == 1) {select = "categoria";}
+			else if (num == 2) {select = "problema";}
+			else if (num == 3) {select = "subproblema"; }
+			valor = $(".modal-servicios select#"+select).val();
+			elemento = $(".modal-servicios select#"+select+" option[value="+valor+"]").html();
+			$(".modal-help .help").html('<h4>¿Esta Seguro de eliminar este servicio?</h4> <div class="form-group"><i class="fa fa-list" aria-hidden="true"></i> <label>'+select+':</label> <input type="text" class="form-control" value="'+elemento+'" disabled> </div>');
+			$(".modal-help .btnn").html('<button type="button" class="btn btn-primary" id="confirmDeleteServicio" ren="'+valor+'" num="'+num+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>');
 			$(".modal-help #confirmDeleteServicio").click(function () {
 				$.ajax({
 					url: url+"Ajax/deleteServicio",
 					dataType: 'json',
 					data: {
 						token: 19,
-						num: $(this).attr("ren")
+						ren: $(this).attr("ren"),
+						num: $(this).attr("num")
 					},
 					type: "POST",
 					success: function (res) {
@@ -296,6 +314,7 @@ $(document).ready(function () {
 					alerta('¡Error al Borrar!', 'error');
 				});
 			});
+			$(".modal-help").modal("toggle");
 		}
 	});
 	$(".modal-registroServicios datalist#categorias").ready(function () {
@@ -332,7 +351,7 @@ $(document).ready(function () {
 					$("datalist#problemas").html(res);
 				}
 			});
-		} else {
+		} else if (addEditservicios != 2) {
 			$("input[type='hidden']#idproblema").parent().hide();
 			$("input[type='hidden']#idsubproblema").parent().hide();
 			$("input[type='hidden']#idproblema").val(-1);
@@ -368,7 +387,7 @@ $(document).ready(function () {
 			$("input[type='hidden']#idproblema").val(id);
 			$("input#subproblema").attr("type", "text");
 			$("input[type='hidden']#idsubproblema").parent().show();
-		} else {
+		} else if (addEditservicios != 2) {
 			$("input[type='hidden']#idproblema").val(-1);
 			$("input[type='hidden']#idsubproblema").val(-1);
 			$("input#subproblema").attr("type", "hidden");
@@ -376,6 +395,7 @@ $(document).ready(function () {
 		}
 	});
 	$(".modal-servicios #registrarS").click(function () {
+		addEditservicios = 1;
 		$("input[type='hidden']#idcategoria").val(-1);
 		$("input[type='hidden']#idproblema").val(-1);
 		$("input[type='hidden']#idsubproblema").val(-1);
@@ -389,19 +409,38 @@ $(document).ready(function () {
 		$(".modal-registroServicios").modal("toggle");
 	});
 	$(".modal-servicios #editarS").click(function () {
+		$("form#registroServicios")[0].reset();
+		addEditservicios = 2;
 		if ($(this).attr("ren")) {
-			nCategoria = $("select#categoria").val();
-			categoria = $("select#categoria option[value="+nCategoria+"]").html();
-			nProblema = $("select#problema").val();
-			problema = $("select#problema option[value="+nProblema+"]").html();
-			nSubproblema = $("select#subproblema").val();
-			subproblema = $("select#subproblema option[value="+nSubproblema+"]").html();
-			$(".modal-registroServicios input#categoria").val(categoria);
-			$(".modal-registroServicios input#idcategoria").val(nCategoria);
-			$(".modal-registroServicios input#problema").val(problema);
-			$(".modal-registroServicios input#idproblema").val(nProblema);
-			$(".modal-registroServicios input#subproblema").val(subproblema);
-			$(".modal-registroServicios input#idsubproblema").val(nSubproblema);
+			num = $(this).attr("num");
+			if (num >= 1) {
+				nCategoria = $("select#categoria").val();
+				categoria = $("select#categoria option[value="+nCategoria+"]").html();
+				$(".modal-registroServicios input#categoria").val(categoria);
+				$(".modal-registroServicios input#idcategoria").val(nCategoria);
+				if (num >= 2) {
+					nProblema = $("select#problema").val();
+					problema = $("select#problema option[value="+nProblema+"]").html();
+					$(".modal-registroServicios input#problema").val(problema);
+					$(".modal-registroServicios input#idproblema").val(nProblema);
+					$(".modal-registroServicios input#problema").parent().show();
+				}
+				if (num >= 3) {
+					nSubproblema = $("select#subproblema").val();
+					subproblema = $("select#subproblema option[value="+nSubproblema+"]").html();
+					$(".modal-registroServicios input#subproblema").val(subproblema);
+					$(".modal-registroServicios input#idsubproblema").val(nSubproblema);
+					$(".modal-registroServicios input#subproblema").parent().show();
+				}
+			}
+			if ($(".modal-registroServicios input#problema").val() == '') {
+				$(".modal-registroServicios input#idproblema").parent().hide();
+				$(".modal-registroServicios input#idproblema").val(-1);
+			}
+			if ($(".modal-registroServicios input#subproblema").val() == '') {
+				$(".modal-registroServicios input#idsubproblema").parent().hide();
+				$(".modal-registroServicios input#idsubproblema").val(-1);
+			}
 			$(".modal-registroServicios").modal("toggle");
 		}
 	});
@@ -1116,8 +1155,8 @@ $(document).ready(function () {
 						$("div#estadistica table tfoot").html("");
 						$("div#estadistica #graphic").html("");
 						if (resul.tbody) {
-						$("div#estadistica table tbody").html(resul.tbody);
-						$("div#estadistica table tfoot").html(resul.tfoot);
+							$("div#estadistica table tbody").html(resul.tbody);
+							$("div#estadistica table tfoot").html(resul.tfoot);
 							let len = resul.grafica.total.length
 							for(i=0; i<=len ;i++){
 								options.series[0].data.push(resul.grafica.total[i]);

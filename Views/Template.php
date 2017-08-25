@@ -79,9 +79,9 @@ class Template {
 							<?php if ($_SESSION['rol'] == 1): ?>
 							<li><a href="#" data-toggle="modal" data-target=".modal-departamentos"><i class="fa fa-cubes" aria-hidden="true"></i> Departamentos</a></li>
 							<li role="separator" class="divider"></li>
+							<?php endif ?>
 							<li><a href="#" data-toggle="modal" data-target=".modal-servicios"><i class="glyphicon glyphicon-inbox" aria-hidden="true"></i> Servicios</a></li>
 							<li role="separator" class="divider"></li>
-							<?php endif ?>
 							<li><a href="#" data-toggle="modal" data-target=".modal-soportistas"><i class="fa fa-user-circle-o" aria-hidden="true"></i> Usuarios</a></li>
 							<li role="separator" class="divider"></li>
 						<?php } ?>

@@ -279,7 +279,13 @@ class AjaxController
 	public function deleteServicio()
 	{
 		if ($_REQUEST['token'] == 19) {
-			echo $this->cp->confirmDelete('problema_ii', $_REQUEST['num'])->save();
+			if ($_REQUEST['num'] == 1) {
+				echo $this->cp->confirmDelete('categoria', $_REQUEST['ren'])->save();
+			} elseif ($_REQUEST['num'] == 2) {
+				echo $this->cp->confirmDelete('problema_i', $_REQUEST['ren'])->save();
+			} elseif ($_REQUEST['num'] == 3) {
+				echo $this->cp->confirmDelete('problema_ii', $_REQUEST['ren'])->save();
+			}
 		}
 	}
 

@@ -8,9 +8,9 @@ class Modales
 	{
 		if ($_SESSION['rol'] <= 2) {
 			Self::Soportistas();
+			Self::servicios();
 			if ($_SESSION['rol'] == 1) {
 				Self::departamentos();
-				Self::servicios();
 			}
 		}
 	}
