@@ -6,7 +6,9 @@ $(document).ready(function () {
 	/*se trae la pantalla de inicio*/
 	content("inicio");
 	/*se llena la tabla de soportistas*/
-	llenarSoportistas();
+	$("a[data-target='.modal-soportistas']").click(function () {
+		llenarSoportistas();
+	});
 	/* Inicializo los tooltips */
 	$('[data-toggle="tooltip"]').tooltip();
 	/*el preload circular*/
@@ -71,7 +73,8 @@ $(document).ready(function () {
 	/* 
 	* Departamentos
 	*/
-	$(".modal-departamentos select#direccion").ready(function () {
+	var addEditdepartamentos;
+	$("a[data-target='.modal-departamentos']").click(function () {
 		$.ajax({
 			url: url+"Ajax/buscarDepartamento",
 			dataType: 'html',
@@ -86,6 +89,8 @@ $(document).ready(function () {
 		});
 	});
 	$(".modal-departamentos select#direccion").change(function () {
+		$(".modal-departamentos button#editarD, .modal-departamentos button#eliminarD").attr("ren", $(this).val());
+		$(".modal-departamentos button#editarD, .modal-departamentos button#eliminarD").attr("num", 1);
 		$.ajax({
 			url: url+"Ajax/buscarDepartamento",
 			dataType: 'html',
@@ -100,28 +105,68 @@ $(document).ready(function () {
 			}
 		});
 	});
+	$(".modal-departamentos select#division").change(function () {
+		$(".modal-departamentos button#editarD, .modal-departamentos button#eliminarD").attr("ren", $(this).val());
+		$(".modal-departamentos button#editarD, .modal-departamentos button#eliminarD").attr("num", 2);
+	});
 	$(".modal-departamentos button#registrarD").click(function () {
-		$(".modal-registrarDepartamento form#registrarDepartamento")[0].reset();
+		addEditdepartamentos = 1;
+		$.ajax({
+			url: url+"Ajax/buscarDepartamento",
+			dataType: 'html',
+			data: {
+				operation: "departamentos",
+				token: 16
+			},
+			type: "POST",
+			success: function (res) {
+				$(".modal-registrarDepartamento datalist#direcciones").html(res);
+			}
+		});
+		$("form#registrarDepartamento")[0].reset();
 		$("input#id_direccion").val(-1);
+		$("input#division").val("");
 		$("input#id_division").val(-1);
 		$(".modal-registrarDepartamento h4").html('<span class="fa fa-plus"></span> Registrar Departamento');
 		$("form#registrarDepartamento input#division").parent().show();
 		$("form#registrarDepartamento input#division").attr("type", "text");
 		$(".modal-registrarDepartamento").modal("toggle");
 	});
-	$(".modal-departamentos select#division").change(function () {
-		$(".modal-departamentos button#editarD").attr("ren", $(this).val())
-		$(".modal-departamentos button#eliminarD").attr("ren", $(this).val())
+	$("form#registrarDepartamento input#direccion").change(function () {
+		textI = $(this).val();
+		valor = null;
+		for (var i = 0; i < $(".modal-departamentos select#direccion option").length; i++) {
+			textS = $(".modal-departamentos select#direccion option")[i].innerHTML;
+			if (textI == textS) {
+				valor = $(".modal-departamentos select#direccion option")[i].value;
+			}
+		}
+		if (valor) {
+			$("form#registrarDepartamento input#division").parent().show();
+			$("form#registrarDepartamento input#division").attr("type", "text");
+			$("form#registrarDepartamento input#id_direccion").val(valor);
+		} else {
+			$("form#registrarDepartamento input#id_direccion").val(-1);
+			$("form#registrarDepartamento input#division").parent().hide();
+			$("form#registrarDepartamento input#division").attr("type", "hidden");
+		}
 	});
 	$(".modal-departamentos button#eliminarD").click(function () {
 		if ($(this).attr("ren")) {
-			direccion = $("select#direccion").val();
-			direccion = $("select#direccion option[value="+direccion+"]").text();
-			division = $("select#division").val();
-			division = $("select#division option[value="+division+"]").text();
+			num = $(this).attr("num");
+			divdivi = '';
 			$(".modal-help h4").html('<span class="fa fa-trash"></span> Eliminar Departamento');
-			$(".modal-help .modal-body .help").html('<h3 class="text-center">¿Esta seguro de eliminar este departamento?</h3> <div class="col-md-8 col-md-offset-2 help"> <div class="form-group"> <span class="fa fa-cubes"></span> <label for="direccion">Dirección:</label> <input type="text" id="direccion" class="form-control" name="direccion" readonly value="'+direccion+'"> </div> <div class="form-group"> <span class="fa fa-cube"></span> <label for="division">División:</label> <input type="text" id="division" class="form-control" name="division" readonly value="'+division+'"> </div> </div>');
-			$(".modal-help .modal-footer .btnn").html('<button class="btn btn-primary" id="confirmarDep" ren="'+$(this).attr("ren")+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>')
+			if (num >= 1) {
+				direccion = $("select#direccion").val();
+				direccion = $("select#direccion option[value="+direccion+"]").text();
+				if (num >= 2) {
+					division = $("select#division").val();
+					division = $("select#division option[value="+division+"]").text();
+					divdivi = '<div class="form-group"> <span class="fa fa-cube"></span> <label for="division">División:</label> <input type="text" id="division" class="form-control" name="division" readonly value="'+division+'"> </div> </div>';
+				}
+			}
+			$(".modal-help .modal-body .help").html('<h3 class="text-center">¿Esta seguro de eliminar este departamento?</h3> <div class="col-md-8 col-md-offset-2 help"> <div class="form-group"> <span class="fa fa-cubes"></span> <label for="direccion">Dirección:</label> <input type="text" id="direccion" class="form-control" name="direccion" readonly value="'+direccion+'"> </div>'+divdivi);
+			$(".modal-help .modal-footer .btnn").html('<button class="btn btn-primary" id="confirmarDep" ren="'+$(this).attr("ren")+'" num="'+$(this).attr("num")+'"><span class="glyphicon glyphicon-ok"></span> Confirmar</button>')
 			$(".modal-help").modal("toggle");
 			$(".modal-help button#confirmarDep").click(function () {
 				$.ajax({
@@ -129,39 +174,19 @@ $(document).ready(function () {
 					dataType: 'json',
 					data: {
 						token: 14,
-						num: $(this).attr("ren")
+						id: $(this).attr("ren"),
+						num: $(this).attr("num")
 					},
 					type: "POST",
 					success: function (res) {
-						swal({
-							title: '¡Borrado Exitoso!',
-							type: 'success',
-							timer: 2000
-						}).then(
-						function () {},
-						function (dismiss) {
-							$(".modal-help").modal("toggle");
-							direccion = $("select#direccion").val("");
-							division = $("select#division").val("");
-						});
+						alerta('¡Borrado Exitoso!', 'success')
+						$(".modal-help").modal("toggle");
+						direccion = $("select#direccion").val("");
+						division = $("select#division").val("");
 					}
 				});
 			});
 		}
-	});
-	$("datalist#direcciones").ready(function () {
-		$.ajax({
-			url: url+"Ajax/buscarDepartamento",
-			dataType: 'html',
-			data: {
-				operation: "departamentos",
-				token: 12
-			},
-			type: "POST",
-			success: function (res) {
-				$(".modal-registrarDepartamento datalist#direcciones").html(res);
-			}
-		});
 	});
 	$(".modal-registrarDepartamento form#registrarDepartamento").submit(function (e) {
 		e.preventDefault();
@@ -193,37 +218,39 @@ $(document).ready(function () {
 			});
 		});
 	});
-	$("form#registrarDepartamento input#direccion").change(function () {
-		num = $("datalist#direcciones option[value='"+$(this).val()+"']").attr("ren");
-		if (num) {
-			$("form#registrarDepartamento input#id_direccion").val(num);
-			$("form#registrarDepartamento input#division").parent().show();
-			$("form#registrarDepartamento input#division").attr("type", "text");
-		} else {
-			$("form#registrarDepartamento input#division").parent().hide();
-			$("form#registrarDepartamento input#division").attr("type", "hidden");
-		}
-	});
 	$(".modal-departamentos button#editarD").click(function () {
+		addEditdepartamentos = 2;
 		if ($(this).attr("ren")) {
-			iddireccion = $(".modal-departamentos select#direccion").val();
-			direccion = $(".modal-departamentos select#direccion option[value="+iddireccion+"]").html();
-			iddivision = $("select#division").val();
-			division = $("select#division option[value="+iddivision+"]").text();
-			$("form#registrarDepartamento input#direccion").val(direccion);
-			$("form#registrarDepartamento input#id_direccion").val(iddireccion);
-			$("form#registrarDepartamento input#division").val(division);
-			$("form#registrarDepartamento input#id_division").val(iddivision);
+			num = $(this).attr("num");
+			$("form#registrarDepartamento input#division").val("");
 			$(".modal-registrarDepartamento h4").html('<span class="fa fa-edit"></span> Editar Departamento');
+			if (num >= 1) {
+				iddireccion = $(".modal-departamentos select#direccion").val();
+				direccion = $(".modal-departamentos select#direccion option[value="+iddireccion+"]").html();
+				$("form#registrarDepartamento input#direccion").val(direccion);
+				$("form#registrarDepartamento input#id_direccion").val(iddireccion);
+				if (num >= 2) {
+					iddivision = $("select#division").val();
+					division = $("select#division option[value="+iddivision+"]").text();
+					$("form#registrarDepartamento input#division").val(division);
+					$("form#registrarDepartamento input#id_division").val(iddivision);
+					$("form#registrarDepartamento input#division").parent().show();
+					$("form#registrarDepartamento input#division").attr("type", "text");
+				}
+			}
+			if ($("form#registrarDepartamento input#division").val() == "" ) {
+				$("form#registrarDepartamento input#division").parent().hide();
+				$("form#registrarDepartamento input#division").attr("type", "hidden");
+				$("form#registrarDepartamento input#id_division").val(-1);
+			}
 			$(".modal-registrarDepartamento").modal("toggle");
 		}
 	});
 	/*
 	* Servicios
 	*/
-	$(".modal-servicios").modal("toggle");
 	var addEditservicios;
-	$(".modal-servicios select#categoria").ready(function () {
+	$("a[data-target='.modal-servicios']").click(function () {
 		$.ajax({
 			url: url+"Ajax/buscarSolicitudes",
 			dataType: 'html',
@@ -309,6 +336,7 @@ $(document).ready(function () {
 					success: function (res) {
 						$(".modal-help").modal("toggle");
 						alerta('¡Borrado Exitoso!', 'success');
+						$(".modal-servicios select#"+select+" option[value="+valor+"]").remove();
 					}
 				}).fail(function() {
 					alerta('¡Error al Borrar!', 'error');
@@ -317,7 +345,7 @@ $(document).ready(function () {
 			$(".modal-help").modal("toggle");
 		}
 	});
-	$(".modal-registroServicios datalist#categorias").ready(function () {
+	$("button#registrarS, button#editarS").click(function () {
 		$.ajax({
 			url: url+"Ajax/buscarSolicitudes",
 			dataType: 'html',
@@ -666,16 +694,21 @@ $(document).ready(function () {
 			$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al registrar los datos. <span class="glyphicon glyphicon-remove"></span> </div>');
 		});
 	});
-	// /*ajax para buscar el ticket por el input*/
-	// $("form#ticket").submit(function (e) {
-	// 	e.preventDefault();
-	// 	var data = $(this).serializeArray();
-	// 	if (data[0].value == "") {
-	// 		alert("Debe ingresar un valor numerico");
-	// 	} else {
-	// 		buscarTicket(data[0].value);
-	// 	}
-	// });
+
+	/*
+	* Tickets
+	*/
+	// $(".modal-abrirTicket").modal("toggle");
+	/*ajax para buscar el ticket por el input*/
+	$("form#ticket").submit(function (e) {
+		e.preventDefault();
+		var data = $(this).serializeArray();
+		if (data[0].value == "") {
+			alerta('¡Debe de ingresar un valor numérico!', 'error');
+		} else {
+			buscarTicket(data[0].value);
+		}
+	});
 	// /*ajax para registrar ticket*/
 	// $("form#registro").submit(function (e) {
 	// 	e.preventDefault();
@@ -1394,60 +1427,58 @@ $(document).ready(function () {
 			$(".tabla-soportistas").html('<h2 class="text-center">Error al Cargar...<br>Consulte al Programador.</h2>');
 		});
 	}
-
-	// function buscarTicket(num) {
-	// 	if (!isNaN(num)) {
-	// 		$.ajax({
-	// 			url: "resource/procesos/process.php?operation=ticket",
-	// 			type: "POST",
-	// 			dataType: "json",
-	// 			data: { "ticket": num },
-	// 			beforeSend: function () {
-	// 				$("#page-loader").show();
-	// 			}
-	// 		})
-	// 		.done(function(resul) {
-	// 			$('.modal-abrirTicket span.error').html('');
-	// 			$('.modal-abrirTicket .modal-title').html("<h3>Ticket n°: "+resul[0].ide+".</h3>");
-	// 			$('.modal-abrirTicket .fecha_apertura').html(resul[0].fecha_apertura);
-	// 			$('.modal-abrirTicket .hora').html(resul[0].hora);
-	// 			$('.modal-abrirTicket .registrante').html(resul[0].registrante);
-	// 			$('.modal-abrirTicket .departamento').html(resul[0].departamento);
-	// 			$('.modal-abrirTicket .seccion').html(resul[0].seccion);
-	// 			$('.modal-abrirTicket .solicitante').html(resul[0].solicitante);
-	// 			$('.modal-abrirTicket .detalles').html(resul[0].detalleF);
-	// 			$('.modal-abrirTicket .problema').html(resul[0].problema);
-	// 			$('.modal-abrirTicket .problema_especifico').html(resul[0].problema_especifico);
-	// 			$('.modal-abrirTicket .solucion').html(resul[0].solucion);
-	// 			$('.modal-abrirTicket .estatus').html(resul[0].estatus);
-	// 			$('.modal-abrirTicket .estatus').removeClass('bg-danger bg-success bg-info');
-	// 			switch (resul[0].estatus){
-	// 				case("Abierto"): $('.modal-abrirTicket .estatus').addClass('bg-danger');
-	// 				break;
-	// 				case("En proceso"): $('.modal-abrirTicket .estatus').addClass('bg-info');
-	// 				break;
-	// 				case('Cerrado'): $('.modal-abrirTicket .estatus').addClass('bg-success');
-	// 			}
-	// 			$('.modal-abrirTicket .responsable').html(resul[0].cedula_soporte);
-	// 			$('.modal-abrirTicket .ultimo').html(resul[0].transferencia);
-	// 			$('.modal-abrirTicket .colaborador').html(resul[0].colaborador);
-	// 			$('.modal-abrirTicket .informe').html(resul[0].solucion);
-	// 			$('.modal-abrirTicket .serial').html(resul[0].serial);
-	// 			$('.modal-abrirTicket .prioridad').html(resul[0].prioridad);
-	// 			$('.modal-abrirTicket .print').html('<a id="imprimir" class="btn btn-success" href="reportes/informe.php?num='+resul[0].ide+'"> <span class="glyphicon glyphicon-print"></span> </a> ');
-	// 			$('.modal-abrirTicket').modal('show');
-	// 		})
-	// 		.fail(function() {
-	// 			$('.modal-abrirTicketError .modal-title').html("<h3>Error al Buscar.</h3>");
-	// 			$('.modal-abrirTicketError div.error').html('<div class="alert alert-danger" role="alert"> <h3 class="text-center"> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> El ticket n°:'+num+'<br> No se Encuentra Registrado. </h3> </div>');
-	// 			$('.modal-abrirTicketError').modal('show');
-	// 		})
-	// 		.always(function() {
-	// 			$("#page-loader").fadeOut(1000);
-	// 			$("form#ticket")[0].reset();
-	// 		});
-	// 	};
-	// };
+	function buscarTicket(num) {
+		$.ajax({
+			url: url+"Ajax/verTicket",
+			type: "POST",
+			dataType: "json",
+			data: { ticket: num, token: 27 },
+			beforeSend: function () {
+				$("#page-loader").show();
+			},
+			success: function (resul) {
+				if (resul == "") {
+					alerta("El ticket n°:"+num+" Buscado No se Encuentra Registrado.");
+				} else {
+					$('.modal-abrirTicket .modal-title').html("<h3>Ticket n°: "+resul[0].id+".</h3>");
+					$('.modal-abrirTicket .fecha_apertura').html(resul[0].fecha_apertura);
+					$('.modal-abrirTicket .hora').html(resul[0].hora);
+					$('.modal-abrirTicket .registrante').html(resul[0].registrante);
+					$('.modal-abrirTicket .departamento').html(resul[0].direccion);
+					$('.modal-abrirTicket .seccion').html(resul[0].seccion);
+					$('.modal-abrirTicket .solicitante').html(resul[0].solicitante);
+					$('.modal-abrirTicket .detalles').html(resul[0].detalleF);
+					$('.modal-abrirTicket .problema').html(resul[0].problema);
+					$('.modal-abrirTicket .subproblema').html(resul[0].subproblema);
+					$('.modal-abrirTicket .solucion').html(resul[0].solucion);
+					$('.modal-abrirTicket .estatus').html(resul[0].estatus);
+					$('.modal-abrirTicket .estatus').removeClass('bg-danger bg-success bg-info');
+					switch (resul[0].estatus){
+						case("Abierto"): $('.modal-abrirTicket .estatus').addClass('bg-danger');
+						break;
+						case("En proceso"): $('.modal-abrirTicket .estatus').addClass('bg-info');
+						break;
+						case('Cerrado'): $('.modal-abrirTicket .estatus').addClass('bg-success');
+					}
+					$('.modal-abrirTicket .responsable').html(resul[0].soportista);
+					$('.modal-abrirTicket .ultimo').html(resul[0].transferencia);
+					$('.modal-abrirTicket .colaborador').html(resul[0].colaborador);
+					$('.modal-abrirTicket .prioridad').html(resul[0].prioridad);
+					$('.modal-abrirTicket .informe').html(resul[0].solucion);
+					$('.modal-abrirTicket .serial').html(resul[0].serial);
+					$('.modal-abrirTicket a#imprimir').attr("href", url+"Views/reportes/informe.php?num="+resul[0].id);
+					$('.modal-abrirTicket').modal('show');
+				}
+			}
+		})
+		.fail(function() {
+			alerta("El ticket n°:"+num+" Buscado No se Encuentra Registrado.");
+		})
+		.always(function() {
+			$("#page-loader").fadeOut(1000);
+			$("form#ticket")[0].reset();
+		});
+	};
 
 	// function cerrarTicket(num) {
 	// 	if (!isNaN(num)) {

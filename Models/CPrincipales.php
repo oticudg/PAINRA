@@ -5,15 +5,7 @@
 */
 class CPrincipales extends Conexion
 {
-	private $join = 'FROM tickets AS t 
-	INNER JOIN users AS u ON t.registrante = u.usuario
-	INNER JOIN users as u2 ON t.cedula_soporte = u2.cedula
-	INNER JOIN categoria AS c ON t.id_categoriag = c.id
-	INNER JOIN problema_i AS p1 ON t.solicitud = p1.id
-	INNER JOIN problema_ii AS p2 ON t.problema = p2.id
-	INNER JOIN prioridades AS pr ON t.id_prioridad = pr.id
-	INNER JOIN estatus AS e ON t.id_estatus = e.id
-	INNER JOIN coordinaciones AS co ON t.coordinacion = co.id';
+
 
 	public function users($id= -1, $rol= 0, $usuario= 0, $cedula= 0, $email= 0, $id_coord= 0)
 	{
@@ -109,6 +101,24 @@ class CPrincipales extends Conexion
 		$this->sql = $prefijo.$tabla.' SET
 		opcion = "'.$opcion.'",
 		relacion = '.$relacion.$sufijo;
+		return $this;
+	}
+
+	public function verTicket($id = -1)
+	{
+		$this->sql = "SELECT t.id, t.fecha_apertura, t.hora, u.nombre AS registrante, u2.nombre AS soportista, pr.descripcion AS prioridad, e.descripcion AS estatus, co.coordinacion, p1.opcion AS problema, p2.opcion AS subproblema, t.fechaCierre, t.horaCierre, t.colaborador, t.solucion, t.solicitante, t.detalleF, t.serial, u3.nombre AS transferencia, d.opcion AS direccion, di.opcion AS seccion
+		FROM tickets AS t 
+		INNER JOIN users AS u ON t.registrante = u.usuario
+		INNER JOIN users as u2 ON t.cedula_soporte = u2.cedula
+		INNER JOIN users as u3 ON t.transferencia = u3.usuario
+		INNER JOIN prioridades AS pr ON t.id_prioridad = pr.id
+		INNER JOIN estatus AS e ON t.id_estatus = e.id
+		INNER JOIN coordinaciones AS co ON t.coordinacion = co.id
+		INNER JOIN problema_i AS p1 ON t.solicitud = p1.id
+		INNER JOIN problema_ii AS p2 ON t.problema = p2.id
+		INNER JOIN direccion AS d ON t.id_departamento = d.id
+		INNER JOIN division AS di ON t.id_secciones = di.id
+		WHERE t.id = ".$id." OR ".$id." = -1";
 		return $this;
 	}
 

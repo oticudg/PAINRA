@@ -419,6 +419,96 @@ class Modales
 	public function __destruct()
 	{
 		?>
+		<div class="modal fade modal-abrirTicket" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-md" role="document">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-center">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title"><span class="fa fa-eye"></span> Ver ticket</h4>
+					</div>
+					<div class="modal-body">
+						<div class="col-md-10 col-md-offset-1">
+							<table id="datosTicket" class="table table-bordered table-condensed table-hover table-striped">
+								<tr>
+									<td>Fecha de Solicitud:</td>
+									<td class="fecha_apertura"></td>
+								</tr>
+								<tr>
+									<td>Hora:</td>
+									<td class="hora"></td>
+								</tr>
+								<tr>
+									<td>Registrante:</td>
+									<td class="registrante"></td>
+								</tr>
+								<tr>
+									<td>Departamento:</td>
+									<td class="departamento"></td>
+								</tr>
+								<tr>
+									<td>seccion:</td>
+									<td class="seccion"></td>
+								</tr>
+								<tr>
+									<td>Solicitante:</td>
+									<td class="solicitante"></td>
+								</tr>
+								<tr>
+									<td>Problema Descrito:</td>
+									<td class="detalles"></td>
+								</tr>
+								<tr>
+									<td>Problema informático:</td>
+									<td class="problema"></td>
+								</tr>
+								<tr>
+									<td>Problema especifico:</td>
+									<td class="subproblema"></td>
+								</tr>
+								<tr>
+									<td>Solución aplicada:</td>
+									<td class="solucion"></td>
+								</tr>
+								<tr>
+									<td>Estatus de la solicitud:</td>
+									<td class="estatus"></td>
+								</tr>
+								<tr>
+									<td>Responsable:</td>
+									<td class="responsable"></td>
+								</tr>
+								<tr>
+									<td>Último en revisar:</td>
+									<td class="ultimo"></td>
+								</tr>
+								<tr>
+									<td>Colaborador:</td>
+									<td class="colaborador"></td>
+								</tr>
+								<tr>
+									<td>prioridad:</td>
+									<td class="prioridad"></td>
+								</tr>
+								<tr>
+									<td>Informe técnico:</td>
+									<td class="informe"></td>
+								</tr>
+								<tr>
+									<td>Serial:</td>
+									<td class="serial"></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="modal-footer">
+						<a id="imprimir" class="btn btn-warning" href="#" data-toggle="tooltip" data-placement="top" title="Imprimir Informe"><span class="glyphicon glyphicon-print"></span></a>
+						<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		
 		<div class="modal fade modal-contraseña" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">

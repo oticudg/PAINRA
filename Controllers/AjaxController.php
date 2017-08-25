@@ -231,9 +231,13 @@ class AjaxController
 	public function deleteDepartamento()
 	{
 		if ($_REQUEST['token'] == 14) {
-			echo $this->cp->confirmDelete('division', $_REQUEST['num'])->save();
+			if ($_REQUEST['num'] == 1) {
+				echo $this->cp->confirmDelete('direccion', $_REQUEST['id'])->save();
+			} elseif ($_REQUEST['num'] == 2) {
+				echo $this->cp->confirmDelete('division', $_REQUEST['id'])->save();
+			}
 		}
-	}
+	}	
 
 	public function registrarDepartamento()
 	{
@@ -480,8 +484,10 @@ class AjaxController
 					);
 	}
 
-	public function departamentos()
+	public function verTicket()
 	{
+		$sql = $this->cp->verTicket($_REQUEST['ticket'])->see();
+		echo json_encode($sql);
 	}
 
 	public function __destruct()
