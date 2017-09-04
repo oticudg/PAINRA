@@ -15,3 +15,4 @@
 		</thead>
 	</table>
 </div>
+<?php Views\Modales\Modales::Tickets() ?>

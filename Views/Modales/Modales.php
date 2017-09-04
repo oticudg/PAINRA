@@ -18,7 +18,7 @@ class Modales
 	public function Soportistas()
 	{
 		?>
-		<div class="modal fade modal-soportistas" tabindex="-1" role="dialog">
+		<div class="modal fade modal-soportistas" tabindex="9999" role="dialog">
 			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
 					<div class="modal-header bg-primary text-center">
@@ -81,8 +81,13 @@ class Modales
 									</div>
 									<div class="form-group">
 										<span class="fa fa-id-card"></span>
-										<label for="email">Email</label>
-										<input type="email" id="cedula" class="form-control" name="email" placeholder="Ingrese el correo electronico" required>
+										<label for="email">Email:</label>
+										<input type="email" id="email" class="form-control" name="email" placeholder="Ingrese el correo electronico" required>
+									</div>
+									<div class="form-group">
+										<span class="fa fa-key"></span>
+										<label for="pass">Contraseña:</label>
+										<input type="password" id="pass" class="form-control" name="pass" placeholder="Ingrese la Contraseña" minlength="8">
 									</div>
 									<div class="form-group">
 										<span class="fa fa-calendar"></span>
@@ -336,7 +341,7 @@ class Modales
 	static function ModalesInicio()
 	{
 		?>
-		<div class="modal fade modal-abiertos" tabindex="9999" role="dialog">
+		<div class="modal fade modal-abiertos" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-md" role="document">
 				<div class="modal-content">
 					<div class="modal-header bg-primary text-center">
@@ -354,7 +359,7 @@ class Modales
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
 
-		<div class="modal fade modal-enproceso" tabindex="9999" role="dialog">
+		<div class="modal fade modal-enproceso" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-md" role="document">
 				<div class="modal-content">
 					<div class="modal-header bg-primary text-center">
@@ -410,9 +415,109 @@ class Modales
 		<?php
 	}
 
-	public function prueba()
+	public function Tickets()
 	{
 		?>
+		<div class="modal fade modal-registrar" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-center">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title"><span class="fa fa-plus"></span> Registrar ticket</h4>
+					</div>
+					<form id="registro">
+						<div class="modal-body">
+							<div class="col-md-6">
+								<div class="form-group">
+									<span class="fa fa-calendar"></span>
+									<label for="fecha">Fecha de apertura:</label>
+									<input type="text" id="fecha" class="form-control" name="fecha" readonly>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-clock-o"></span>
+									<label for="hora">Hora de apertura:</label>
+									<input type="text" id="hora" class="form-control" name="hora" readonly>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-user-circle"></span>
+									<label for="solicitante">*Solicitante:</label>
+									<input type="text" id="solicitante" class="form-control" name="solicitante" required placeholder="Nombre y aprellido del solicitante">
+								</div>
+								<div class="form-group">
+									<span class="fa fa-building"></span>
+									<label for="direccion">*Departamento:</label>
+									<select id="direccion" class="form-control" name="direccion" required>
+										<option value="">Seleccione el departamento</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-building"></span>
+									<label for="division">*Division:</label>
+									<select id="division" class="form-control" name="division" required></select>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-file-text"></span>
+									<label for="detalles">*Resumen del Problema Informático:</label><br>
+									<textarea id="detalles" class="form-control" name="detalles" placeholder="Coloque el resumen de la solicitud realizada por usuario" required></textarea><br>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-group"></span>
+									<label for="colaborador">Colaborador (Seleccione Presionando "control"):</label><br>
+									<select id="colaborador" class="form-control" name="colaborador[]" multiple required>
+										<option value="Sin colaborador" selected>Sin colaborador</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<span class="fa fa-barcode"></span>
+									<label for="serial">BN / Serial:</label>
+									<input type="text" id="serial" class="form-control" name="serial" placeholder="Serial del Bien Nacional">
+								</div>
+								<div class="form-group">
+									<span class="fa fa-sort-numeric-asc"></span>
+									<label for="prioridad">*Prioridad:</label>
+									<select  id="prioridad" class="form-control" name="prioridad" required>
+										<option value="Bajo">Bajo</option>
+										<option value="Medio">Medio</option> 
+										<option value="Alto">Alto</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-id-card-o"></span>
+									<label for="cedulaTecnico">*Responsable:</label>
+									<select id="cedulaTecnico" class="form-control" name="cedulaTecnico" required>
+									</select>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-exclamation-triangle"></span>
+									<label for="categoria">*Categoria del Problema:</label>
+									<select id="categoria" class="form-control" name="categoria" required></select>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-exclamation-triangle"></span>
+									<label for="problema_i">*Problema Informático:</label>
+									<select id="problema_i" class="form-control" name="problema_i" required></select>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-exclamation-triangle"></span>
+									<label for="problema_ii">*Problema especifico:</label>
+									<select id="problema_ii" class="form-control" name="problema_ii" required></select>
+								</div>
+								<div class="message text-center"> </div>
+							</div>
+							<input type="hidden" name="id" value="-1" />
+							<input type="hidden" name="token" value="3" />
+						</div>
+						<div class="clearfix"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
+							<button type="submit" class="btn btn-primary"><span class="fa fa-check"></span> Guardar</button>
+						</div>
+					</form>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
 		<?php
 	}
 

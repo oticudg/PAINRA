@@ -3,9 +3,12 @@
 * Metodos de arreglo de fechas
 */
 class Fechas {
-	public static function fechaSql($fecha)
+	public static function sql($fecha)
 	{
-		$fecha = explode('/', $fecha);
-		return $fecha[2].'-'.$fecha[1].'-'.$fecha[0];
+		return date('Y-m-d', strtotime($fecha));
+	}
+	public static function normal($fecha)
+	{
+		return date('d-m-Y', strtotime($fecha));
 	}
 } /* Fin de la clase Fechas */

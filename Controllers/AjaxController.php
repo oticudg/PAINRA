@@ -28,7 +28,7 @@ class AjaxController
 					if( !empty($_REQUEST['usuario']) || !empty($_REQUEST['clave']) ) {
 						$resultado = $this->cp->users(0,0,$_REQUEST['usuario'],0,$_REQUEST['usuario'])->see();
 						if (count($resultado) > 0) {
-							if ($resultado[0]['pass'] === MED::e($_REQUEST['clave'])) {
+							if ($resultado[0]['pass'] === md5(MED::e($_REQUEST['clave']))) {
 								$_SESSION['usuario']	= $resultado[0]['usuario'];
 								$_SESSION['cedula']		= $resultado[0]['cedula'];
 								$_SESSION['validar']	= TRUE;
@@ -69,7 +69,7 @@ class AjaxController
 				if (isset($_REQUEST['newpass']) && isset($_REQUEST['confirmacion'])) {
 					if( !empty($_REQUEST['newpass']) || !empty($_REQUEST['confirmacion']) ){
 						if ($_REQUEST['newpass'] === $_REQUEST['confirmacion']) {
-							echo $this->cp->cambioPass($_SESSION['id'], MED::e($_REQUEST['newpass']))->save();
+							echo $this->cp->cambioPass($_SESSION['id'], md5(MED::e($_REQUEST['newpass'])))->save();
 						}
 					}
 				}
@@ -145,7 +145,13 @@ class AjaxController
 					$resultado = false;
 				} else {
 					$rol = ($_SESSION['rol'] == 1) ? $_REQUEST['rol'] : 3;
-					$pass = ($_REQUEST['id'] == -1) ? MED::e($_REQUEST['cedula']) : '';
+					if ($_REQUEST['id'] == -1) {
+						$pass = md5(MED::e($_REQUEST['cedula']));
+					} elseif ($_REQUEST['id'] > 0 && !empty($_REQUEST['pass'])) {
+						$pass = md5(MED::e($_REQUEST['pass']));
+					} else {
+						$pass = '';
+					}
 					$resultado = $this->cp->add_editUser(
 						$_REQUEST['usuario'],
 						$_REQUEST['nombre'],
@@ -356,8 +362,8 @@ class AjaxController
 	public function ticketspersonales()
 	{
 		if ($_REQUEST['fstart'] != '' && $_REQUEST['fend'] != '') {
-			$fstart = Fechas::fechaSql($_REQUEST['fstart']);
-			$fend = Fechas::fechaSql($_REQUEST['fend']);
+			$fstart = Fechas::Sql($_REQUEST['fstart']);
+			$fend = Fechas::Sql($_REQUEST['fend']);
 		} else {
 			$fstart = 0;
 			$fend = 0;
@@ -391,6 +397,25 @@ class AjaxController
 		echo json_encode($html);
 	}
 
+	public function responsable()
+	{
+		if ($_SESSION['rol'] == 2) {
+			$rol = 3;
+		} else {
+			$rol = 2;
+		}
+		if ($_SESSION['rol'] == 3) {
+			$users = $this->cp->select('users', array(array('cedula', $_SESSION['cedula'])))->see();
+		} else {
+			$users = $this->cp->select('users', array(array('rol', $rol)))->see();
+		}
+		$html = '<option value="">Seleccione una opción</option>';
+		foreach ($users as $u) {
+			$html .= '<option value="'.$u['cedula'].'">'.$u['nombre'].'</option>';
+		}
+		echo json_encode($html);
+	}
+
 	public function ticketsMensuales($año = -1)
 	{
 		for ($i=2014; $i <= date('Y'); $i++) {
@@ -403,8 +428,8 @@ class AjaxController
 	{
 		$h2 = ($_REQUEST['estadistica'] == 'Total') ? 'Estatus de solicitudes según cada Coordinación de la OTIC.' : 'Direcciones '.$_REQUEST['estadistica'].'.';
 
-		$fechaI = (!empty($_REQUEST['fstart'])) ? Fechas::fechaSql($_REQUEST['fstart']) : '2013-01-01';
-		$fechaF = (!empty($_REQUEST['fend'])) ? Fechas::fechaSql($_REQUEST['fend']) : '2099-01-01';
+		$fechaI = (!empty($_REQUEST['fstart'])) ? Fechas::Sql($_REQUEST['fstart']) : '2013-01-01';
+		$fechaF = (!empty($_REQUEST['fend'])) ? Fechas::Sql($_REQUEST['fend']) : '2099-01-01';
 
 		if ($_REQUEST['estadistica'] == 'Administrativas') { 
 			$Departamento = 1;

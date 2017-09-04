@@ -29,7 +29,7 @@ class CPrincipales extends Conexion
 		$prefijo = ($id == -1) ? 'INSERT INTO ' : 'UPDATE ';
 		$sufijo = ($id == -1) ? ';' : ' WHERE id = ' . $id;
 		$this->sql = $prefijo.' users SET 
-		'.(($id == -1) ? 'pass = "'.$pass.'",' : '').'
+		'.(($pass != '') ? 'pass = "'.$pass.'",' : '').'
 		usuario = "'.$usuario.'",
 		nombre = "'.$nombre.'",
 		email = "'.$email.'",

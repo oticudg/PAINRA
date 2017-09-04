@@ -4,7 +4,7 @@ $(document).ready(function () {
 	* Configuraciones
 	*/
 	/*se trae la pantalla de inicio*/
-	content("inicio");
+	content("tickets");
 	/*se llena la tabla de soportistas*/
 	$("a[data-target='.modal-soportistas']").click(function () {
 		llenarSoportistas();
@@ -531,6 +531,8 @@ $(document).ready(function () {
 	});
 	/* Abre el modal para registrar nuevo usuario */
 	$("button.btn.btn-small.btn-primary#registrarU").click(function () {
+		$(".modal-soportista-registrar input#pass").attr("type", "hidden");
+		$(".modal-soportista-registrar input#pass").parent().hide();
 		$("form#registrar-soportista.form")[0].reset();
 		$(".modal-soportista-registrar select#rol").val("");
 		$(".modal-soportista-registrar").modal("show");
@@ -538,6 +540,8 @@ $(document).ready(function () {
 	});
 	/* Abre el modal para editar usuario */
 	$("button.btn#editarU").click(function (e) {
+		$(".modal-soportista-registrar input#pass").attr("type", "password");
+		$(".modal-soportista-registrar input#pass").parent().show();
 		e.preventDefault();
 		if ($(this).attr("ren")) {
 			$.ajax({
@@ -556,6 +560,7 @@ $(document).ready(function () {
 				$(".modal-soportista-registrar input#cedula").val(resul[0].cedula);
 				$(".modal-soportista-registrar input#id").val(resul[0].id);
 				$(".modal-soportista-registrar input#email").val(resul[0].email);
+				$(".modal-soportista-registrar select#rol option").removeAttr("selected");
 				$(".modal-soportista-registrar select#rol option").removeAttr("selected");
 				var option = $(".modal-soportista-registrar select#rol option");
 				for (var i = 0; i < option.length; i++) {
@@ -694,7 +699,6 @@ $(document).ready(function () {
 			$("span.msgcoordinacion").html('<div class="alert alert-danger" role="alert"> Error al registrar los datos. <span class="glyphicon glyphicon-remove"></span> </div>');
 		});
 	});
-
 	/*
 	* Tickets
 	*/
@@ -709,124 +713,7 @@ $(document).ready(function () {
 			buscarTicket(data[0].value);
 		}
 	});
-	// /*ajax para registrar ticket*/
-	// $("form#registro").submit(function (e) {
-	// 	e.preventDefault();
-	// 	var data = $(this).serializeArray();
-	// 	data.push({ name: "operation", value: "registrar" });
-	// 	$.ajax({
-	// 		url: "resource/procesos/process.php",
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 		data: data,
-	// 		beforeSend: function () {
-	// 			$('i.fa-spinner').show();
-	// 			$('div.message').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><div class="alert alert-info" role="alert">Enviando Datos...</div>');
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		if (resul.estado == true) {
-	// 			$('div.message').html('<div class="alert alert-success" role="alert">Ticket Registrado con Exito<br>n° de ticket: '+resul.lastId+'.</div>');
-	// 			$('#tabla').DataTable().ajax.reload();
-	// 			setTimeout(function () {
-	// 				$('.modal-registrar').modal('toggle');
-	// 				$("form#registro")[0].reset();
-	// 			}, 5000);
-	// 		}
-	// 		if (resul.estado == false) {
-	// 			$('div.message').html('<div class="alert alert-danger" role="alert">Un Ticket ya se Encuentra Registrado para este Equipo.<br> con el n°: '+resul.ticket+'.</div>');
-	// 		}
-	// 	})
-	// 	.fail(function() {
-	// 		$('div.message').html('<div class="alert alert-danger" role="alert">Error al Enviar los datos.<br>Consulte a su programador. </div>');
-	// 		$('div.message').addClass('bg-danger');
-	// 	})
-	// 	.always(function() {
-	// 		setTimeout(function () {
-	// 			$("form#registro")[0].reset();
-	// 			$('div.message').html('');
-	// 		}, 15000);
-	// 	});
-	// });
-	// /*llena el combo direccion consus respectivas direcciones y el categoria del problema */
-	// $("form#registro select#direccion").ready(function (e) {
-	// 	$.ajax({
-	// 		url: "resource/procesos/direcciones.php?direccion=direccion",
-	// 		type: "POST",
-	// 		dataType: "json"
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#direccion').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#direccion').html('<option>Error al Buscar<option>');
-	// 	});
-	// 	$.ajax({
-	// 		url: "resource/procesos/problemas.php?categoria=categoria",
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#categoria').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#categoria').html('<option>Error al Buscar<option>');
-	// 	});
-	// });
-	// /*llena el combo division buscando con respecto a la direccion seleccionada*/
-	// $("form#registro select#direccion").change(function (e) {
-	// 	var valor = $(this).val();
-	// 	$.ajax({
-	// 		url: "resource/procesos/direcciones.php?division="+valor,
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 		beforeSend: function () {
-	// 			$('form#registro select#division').html('<option>Buscando division...<option>');
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#division').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#division').html('<option>Error al Buscar<option>');
-	// 	});
-	// });
-	// /*llena el combo problema_i buscando con respecto a la categoria seleccionada*/
-	// $("form#registro select#categoria").change(function (e) {
-	// 	var valor = $(this).val();
-	// 	$.ajax({
-	// 		url: "resource/procesos/problemas.php?problema_i="+valor,
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 		beforeSend: function () {
-	// 			$('form#registro select#problema_i').html('<option>Buscando problemas relacionados...<option>');
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#problema_i').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#problema_i').html('<option>Error al Buscar<option>');
-	// 	});
-	// });
-	// /*llena el combo problema_ii buscando con respecto al problema_i seleccionado*/
-	// $("form#registro select#problema_i").change(function (e) {
-	// 	var valor = $(this).val();
-	// 	$.ajax({
-	// 		url: "resource/procesos/problemas.php?problema_ii="+valor,
-	// 		type: "POST",
-	// 		dataType: "json",
-	// 		beforeSend: function () {
-	// 			$('form#registro select#problema_ii').html('<option>Buscando problemas relacionados...<option>');
-	// 		}
-	// 	})
-	// 	.done(function(resul) {
-	// 		$('form#registro select#problema_ii').html(resul);
-	// 	})
-	// 	.fail(function() {
-	// 		$('form#registro select#problema_ii').html('<option>Error al Buscar<option>');
-	// 	});
-	// });
+
 	// /*ajax para cerrar tickets*/
 	// $("form#cerrar").submit(function (e) {
 	// 	e.preventDefault();
@@ -870,29 +757,6 @@ $(document).ready(function () {
 	// 			}, 1000);
 	// 		});
 	// 	}
-	// });
-
-	// $("a#abrirTicket").click(function (e) {
-	// 	e.preventDefault();
-	// 	buscarTicket($(this).attr("ren"));
-	// });
-
-
-
-	// $("button#abrirModalRegistrar").click(function () {
-
-	// 	$(".modal-soportista-registrar input#usuario").attr('value', '');
-	// 	$(".modal-soportista-registrar input#nombre").attr('value', '');
-	// 	$(".modal-soportista-registrar input#cedula").attr('value', '');
-	// 	$(".modal-soportista-registrar input#id").attr('value', '-1');
-	// 	$(".modal-soportista-registrar input#email").attr('value', '');
-	// 	$(".modal-soportista-registrar select#privilegio option").removeAttr("selected");
-	// 	$(".modal-soportista-registrar").modal("show");
-	// });
-
-
-	// $(".modal-soportistas-coordinacion form select#tipo").change(function () {
-	// 	$(".modal-soportistas-coordinacion input#iduc").attr("value", $(this).val());
 	// });
 
 	/*
@@ -963,6 +827,10 @@ $(document).ready(function () {
 				success: function (res) {
 					$(".modal-abiertos .datos").html(res.abiertos);
 					$(".modal-enproceso .datos").html(res.enproceso);
+					$("a#abrirTicket").click(function (e) {
+						e.preventDefault();
+						buscarTicket($(this).attr("ren"));
+					});
 				}
 			});
 			$.ajax({
@@ -1081,6 +949,171 @@ $(document).ready(function () {
 				$('#graphic-porcentaje_departamentos').html('<h2 class="text-center">Error al cargar la tabla :(</h2>');
 			});
 		} else if (pag == 'tickets') {
+			$("button[data-target='.modal-registrar']").click(function () {
+				$("form#registro")[0].reset();
+				let time = new Date();
+				let fecha_apertura = time.getDate()+"-"+(time.getMonth()+1)+"-"+time.getFullYear();
+				let hora_apertura = time.getHours()+":"+time.getMinutes();
+				$(".modal-registrar input#fecha").val(fecha_apertura);
+				$(".modal-registrar input#hora").val(hora_apertura);
+				$(".modal-registrar select#privilegio option").removeAttr("selected");
+				$.ajax({
+					url: url+"Ajax/buscarDepartamento",
+					type: "POST",
+					data: {
+						token: 12,
+						operation: "departamentos"
+					}
+				})
+				.done(function(resul) {
+					$('form#registro select#direccion').html(resul);
+				})
+				.fail(function() {
+					$('form#registro select#direccion').html('<option value="">Error al Con el servidor.<option>');
+				});
+				$.ajax({
+					url: url+"Ajax/usuarios",
+					type: "POST",
+					data: {token: 12}
+				})
+				.done(function(resul) {
+					$('form#registro select#colaborador').html(JSON.parse(resul));
+				})
+				.fail(function() {
+					$('form#registro select#colaborador').html('<option value="">Error al Con el servidor.<option>');
+				});
+				$.ajax({
+					url: url+"Ajax/responsable",
+					type: "POST",
+					data: {token: 12}
+				})
+				.done(function(resul) {
+					$('form#registro select#cedulaTecnico').html(JSON.parse(resul));
+				})
+				.fail(function() {
+					$('form#registro select#cedulaTecnico').html('<option value="">Error al Con el servidor.<option>');
+				});
+				$.ajax({
+					url: url+"Ajax/buscarSolicitudes",
+					type: "POST",
+					data: {
+						token: 16,
+						operation: "solicitudes"
+					}
+				})
+				.done(function(resul) {
+					$('form#registro select#categoria').html(resul);
+				})
+				.fail(function() {
+					$('form#registro select#categoria').html('<option>Error al Con el servidor.<option>');
+				});
+			});
+			/*llena el combo division buscando con respecto a la direccion seleccionada*/
+			$("form#registro select#direccion").change(function (e) {
+				var valor = $(this).val();
+				$.ajax({
+					url: url+"Ajax/buscarDepartamento",
+					type: "POST",
+					data: {
+						token: 13,
+						operation: "departamentos",
+						num: valor
+					},
+					beforeSend: function () {
+						$('form#registro select#division').html('<option value="">Buscando division...<option>');
+					}
+				})
+				.done(function(resul) {
+					$('form#registro select#division').html(resul);
+				})
+				.fail(function() {
+					$('form#registro select#direccion').html('<option value="">Error al Con el servidor.<option>');
+				});
+			});
+			/*llena el combo problema_i buscando con respecto a la categoria seleccionada*/
+			$("form#registro select#categoria").change(function (e) {
+				var valor = $(this).val();
+				$.ajax({
+					url: url+"Ajax/buscarSolicitudes",
+					type: "POST",
+					data: {
+						token: 17,
+						operation: "solicitudes",
+						num: valor
+					},
+					beforeSend: function () {
+						$('form#registro select#problema_i').html('<option>Buscando problemas relacionados...<option>');
+					}
+				})
+				.done(function(resul) {
+					$('form#registro select#problema_i').html(resul);
+				})
+				.fail(function() {
+					$('form#registro select#problema_i').html('<option>Error al Con el servidor.<option>');
+				});
+			});
+			/*llena el combo problema_ii buscando con respecto al problema_i seleccionado*/
+			$("form#registro select#problema_i").change(function (e) {
+				var valor = $(this).val();
+				$.ajax({
+					url: url+"Ajax/buscarSolicitudes",
+					type: "POST",
+					data: {
+						token: 18,
+						operation: "solicitudes",
+						num: valor
+					},
+					beforeSend: function () {
+						$('form#registro select#problema_ii').html('<option>Buscando problemas relacionados...<option>');
+					}
+				})
+				.done(function(resul) {
+					$('form#registro select#problema_ii').html(resul);
+				})
+				.fail(function() {
+					$('form#registro select#problema_i').html('<option>Error al Con el servidor.<option>');
+				});
+			});
+			/* ajax para registrar ticket */
+			// $("form#registro").submit(function (e) {
+			// 	e.preventDefault();
+			// 	var data = $(this).serializeArray();
+			// 	data.push({ name: "operation", value: "registrar" });
+			// 	$.ajax({
+			// 		url: "resource/procesos/process.php",
+			// 		type: "POST",
+			// 		dataType: "json",
+			// 		data: data,
+			// 		beforeSend: function () {
+			// 			$('i.fa-spinner').show();
+			// 			$('div.message').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><div class="alert alert-info" role="alert">Enviando Datos...</div>');
+			// 		}
+			// 	})
+			// 	.done(function(resul) {
+			// 		if (resul.estado == true) {
+			// 			$('div.message').html('<div class="alert alert-success" role="alert">Ticket Registrado con Exito<br>n° de ticket: '+resul.lastId+'.</div>');
+			// 			$('#tabla').DataTable().ajax.reload();
+			// 			setTimeout(function () {
+			// 				$('.modal-registrar').modal('toggle');
+			// 				$("form#registro")[0].reset();
+			// 			}, 5000);
+			// 		}
+			// 		if (resul.estado == false) {
+			// 			$('div.message').html('<div class="alert alert-danger" role="alert">Un Ticket ya se Encuentra Registrado para este Equipo.<br> con el n°: '+resul.ticket+'.</div>');
+			// 		}
+			// 	})
+			// 	.fail(function() {
+			// 		$('div.message').html('<div class="alert alert-danger" role="alert">Error al Enviar los datos.<br>Consulte a su programador. </div>');
+			// 		$('div.message').addClass('bg-danger');
+			// 	})
+			// 	.always(function() {
+			// 		setTimeout(function () {
+			// 			$("form#registro")[0].reset();
+			// 			$('div.message').html('');
+			// 		}, 15000);
+			// 	});
+			// });
+			/*llena el combo direccion consus respectivas direcciones y el categoria del problema */
 			// $("#tabla").DataTable({
 			// 	"order": [ 0, "desc" ],
 			// 	"language": {
@@ -1440,6 +1473,7 @@ $(document).ready(function () {
 				if (resul == "") {
 					alerta("El ticket n°:"+num+" Buscado No se Encuentra Registrado.");
 				} else {
+					$('.modal-abrirTicket').css({"z-index": "99999"});
 					$('.modal-abrirTicket .modal-title').html("<h3>Ticket n°: "+resul[0].id+".</h3>");
 					$('.modal-abrirTicket .fecha_apertura').html(resul[0].fecha_apertura);
 					$('.modal-abrirTicket .hora').html(resul[0].hora);
@@ -1478,7 +1512,7 @@ $(document).ready(function () {
 			$("#page-loader").fadeOut(1000);
 			$("form#ticket")[0].reset();
 		});
-	};
+	}
 
 	// function cerrarTicket(num) {
 	// 	if (!isNaN(num)) {
@@ -1551,5 +1585,4 @@ $(document).ready(function () {
 	// 		});
 	// 	};
 	// };
-
 });
