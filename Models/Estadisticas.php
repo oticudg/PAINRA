@@ -12,7 +12,7 @@ class Estadisticas extends Conexion
 		if ($rol == 2) {
 			$where = 'WHERE t.coordinacion = '.$_SESSION['id_coordinacion'];
 		} elseif ($rol == 3) {
-			$where = 'WHERE t.cedula_soporte = ' . $_SESSION['cedula'];
+			$where = 'WHERE t.id_soporte = ' . $_SESSION['cedula'];
 		}
 		$this->sql = 'SELECT e.id, e.descripcion, COUNT(t.id) AS tickets 
 		'.$this->join.' '.$where.'
@@ -25,7 +25,7 @@ class Estadisticas extends Conexion
 		if ($rol == 2) {
 			$where = 'AND t.coordinacion = '.$_SESSION['id_coordinacion'];
 		} elseif ($rol == 3) {
-			$where = 'AND t.cedula_soporte = '.$_SESSION['cedula'];
+			$where = 'AND t.id_soporte = '.$_SESSION['cedula'];
 		} else {
 			$where = '';
 		}
@@ -42,7 +42,7 @@ class Estadisticas extends Conexion
 			$where = ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 4) ? '' : 'WHERE t.coordinacion ='.$_SESSION['id_coordinacion'];
 		}
 		$this->sql = 'SELECT u.nombre, count(*) AS tickets
-		FROM tickets AS t INNER JOIN users AS u	ON t.cedula_soporte = u.cedula '.$where.'
+		FROM tickets AS t INNER JOIN users AS u	ON t.id_soporte = u.id '.$where.'
 		GROUP BY 1;';
 		return $this;
 	}
@@ -59,11 +59,11 @@ class Estadisticas extends Conexion
 	public function estatusPersonal($cedula, $fechaI, $fechaF)
 	{
 		$fecha = ($fechaI == 0 || $fechaF == 0) ? '' : 'AND fecha_apertura BETWEEN "'.$fechaI.'" AND "'.$fechaF.'"';
-		$this->sql = 'SELECT t.id_estatus, e.descripcion, count(*) AS tickets, us.nombre
-		FROM tickets AS t INNER JOIN users AS u ON u.cedula = t.cedula_soporte
+		$this->sql = 'SELECT t.id_estatus, e.descripcion, count(*) AS tickets, u.nombre
+		FROM tickets AS t 
+		INNER JOIN users AS u ON t.id_soporte = u.id 
 		INNER JOIN estatus AS e ON t.id_estatus = e.id
-		INNER JOIN users as us ON t.cedula_soporte = us.cedula
-		WHERE t.cedula_soporte = '.$cedula.' '.$fecha.'
+		WHERE t.id_soporte = '.$cedula.' '.$fecha.'
 		GROUP BY t.id_estatus';
 		return $this;
 	}
@@ -71,7 +71,7 @@ class Estadisticas extends Conexion
 	public function ticketsMensuales($año = -1)
 	{
 		$this->sql = 'SELECT YEAR(fecha_apertura) AS a, MONTH(fecha_apertura) AS mes, count(*) AS tickets
-		FROM tickets AS t INNER JOIN users AS u ON t.cedula_soporte = u.cedula
+		FROM tickets AS t INNER JOIN users AS u ON t.id_soporte = u.id
 		INNER JOIN problema_i AS p1 ON t.solicitud = p1.id
 		INNER JOIN problema_ii AS p2 ON t.problema = p2.id
 		INNER JOIN division AS d ON t.id_secciones = d.id
@@ -85,7 +85,7 @@ class Estadisticas extends Conexion
 		$this->sql = 'SELECT t.id_estatus, e.descripcion, COUNT(t.id_departamento) AS tickets, d.opcion AS departamento
 		FROM tickets AS t LEFT JOIN direccion AS d ON t.id_departamento = d.id
 		INNER JOIN estatus AS e ON t.id_estatus = e.id
-		WHERE t.id_departamento = '.$idDepartamento.' AND  t.fechaCierre
+		WHERE t.id_departamento = '.$idDepartamento.' AND  t.fecha_cierre
 		BETWEEN "'.$fechaI.'" AND "'.$fechaF.'" GROUP BY 1';
 		return $this;
 	}
@@ -94,7 +94,7 @@ class Estadisticas extends Conexion
 	{
 		$this->sql = 'SELECT co.coordinacion, e.descripcion, count(*) AS tickets
 		'.$this->join.'
-		WHERE t.coordinacion = '.$departamento.' AND t.fechaCierre BETWEEN "'.$fechaI.'" AND "'.$fechaF.'"
+		WHERE t.coordinacion = '.$departamento.' AND t.fecha_cierre BETWEEN "'.$fechaI.'" AND "'.$fechaF.'"
 		GROUP BY 2';
 		return $this;
 	}

@@ -45,18 +45,18 @@ class Template {
 			</div>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					<li><a href="inicio" id="enlace" class="text-center"><span class="fa fa-home"></span> Inicio </a></li>
-					<li><a href="tickets" id="enlace" class="text-center"><span class="fa fa-ticket" class="text-center"></span> Tickets</a></li>
+					<li><a href="inicio" id="enlace" class="text-"><span class="fa fa-home"></span> Inicio </a></li>
+					<li><a href="tickets" id="enlace" class="text-"><span class="fa fa-ticket"></span> Tickets</a></li>
 					<li class="dropdown text-center">
 						<a href="#" class="dropdown-toggle btneffect" data-toggle="dropdown" data-hover="dropdown" role="button"><span class="fa fa-bar-chart"></span> Estadisticas
 							<span class="caret"></span>
 						</a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu menup">
 							<li><a href="departamentos" id="enlace"><span class="glyphicon glyphicon-calendar"></span> Departamentos </a></li>
 							<li class="divider"><a href="#"></a></li>
 							<li><a href="personales" id="enlace"><span class="fa fa-user-circle-o"></span> Personales </a></li>
 							<li class="divider"><a href="#"></a></li>
-							<li><a href="mensuales" id="enlace"><i class="fa fa-table" aria-hidden="true"></i> Mensuales</a></li>
+							<li><a href="mensuales" id="enlace"><span class="fa fa-table" aria-hidden="true"></span> Mensuales</a></li>
 						</ul>
 					</li>
 					<div class="col-sm- col-md-5 hidden-sm">
@@ -64,7 +64,7 @@ class Template {
 							<div class="input-group">
 								<input type="number" id="numero" class="form-control" placeholder="Buscar ticket" name="ticket" placeholder="Ingresa el n° del ticket" min="1">
 								<div class="input-group-btn">
-									<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+									<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
 								</div>
 								<input type="hidden" name="token" value="4">
 							</div>
@@ -74,15 +74,15 @@ class Template {
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><b>Bienvenido, <?php echo $_SESSION['nombre']; ?> <span class="caret"></span></b></a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu menup">
 						<?php if ($_SESSION['rol'] < 3) { ?>
 							<?php if ($_SESSION['rol'] == 1): ?>
-							<li><a href="#" data-toggle="modal" data-target=".modal-departamentos"><i class="fa fa-cubes" aria-hidden="true"></i> Departamentos</a></li>
+							<li><a href="#" data-toggle="modal" data-target=".modal-departamentos"><span class="fa fa-cubes" aria-hidden="true"></span>Departamentos</a></li>
 							<li role="separator" class="divider"></li>
 							<?php endif ?>
-							<li><a href="#" data-toggle="modal" data-target=".modal-servicios"><i class="glyphicon glyphicon-inbox" aria-hidden="true"></i> Servicios</a></li>
+							<li><a href="#" data-toggle="modal" data-target=".modal-servicios"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Servicios</a></li>
 							<li role="separator" class="divider"></li>
-							<li><a href="#" data-toggle="modal" data-target=".modal-soportistas"><i class="fa fa-user-circle-o" aria-hidden="true"></i> Usuarios</a></li>
+							<li><a href="#" data-toggle="modal" data-target=".modal-soportistas"><span class="fa fa-user-circle-o" aria-hidden="true"></span> Usuarios</a></li>
 							<li role="separator" class="divider"></li>
 						<?php } ?>
 							<li><a href="#" data-toggle="modal" data-target=".modal-contraseña"><span class="glyphicon glyphicon-cog"></span> Cambiar Contraseña</a></li>
@@ -128,7 +128,7 @@ class Template {
 <script src="<?php Route::js('highcharts') ?>"></script>
 <script src="<?php Route::js('exporting') ?>"></script>
 <script src="<?php Route::js('sweetalert2.min') ?>"></script>
-<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script src="<?php Route::js('highcharts-more') ?>"></script>
 <script src="Views/resource/js/main.js"></script>
 </html>
 <?php

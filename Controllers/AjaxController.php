@@ -89,22 +89,22 @@ class AjaxController
 				$count = 0;
 				echo '
 				<table class="table table-bordered table-hover table-condensed" id="soportistas">
-					<thead>
-						<tr>
-							<th width="5%">N°</th>
-							<th>Nombre</th>
-							<th>Cédula</th>
-							<th>Coordinación</th>
-						</tr>
-					</thead>
-					<tbody>';
+				<thead>
+				<tr>
+				<th width="5%">N°</th>
+				<th>Nombre</th>
+				<th>Cédula</th>
+				<th>Coordinación</th>
+				</tr>
+				</thead>
+				<tbody>';
 				foreach ($soportistas as $s) {
 					echo '
 					<tr id="soportista" ren="'.MED::e($s['id']).'" rol="'.$s['rol'].'" '.((isset($s['coordinacion'])) ? 'coord="'.$s['iduc'].'" idcoor="'.$s['id_coordinacion'].'"' : "").'>
-						<td>'.++$count.'</td>
-						<td>'.$s['nombre'].'</td>
-						<td>'.$s['cedula'].'</td>
-						<td class="'.(($s['coordinacion'] == '' && ($s['rol'] == 3 || $s['rol'] == 2)) ? 'bg-danger' : '').'">'.$s['coordinacion'].'</td>
+					<td>'.++$count.'</td>
+					<td>'.$s['nombre'].'</td>
+					<td>'.$s['cedula'].'</td>
+					<td class="'.(($s['coordinacion'] == '' && ($s['rol'] == 3 || $s['rol'] == 2)) ? 'bg-danger' : '').'">'.$s['coordinacion'].'</td>
 					</tr>';
 				}
 				echo '
@@ -160,7 +160,7 @@ class AjaxController
 						$rol,
 						$pass,
 						$_REQUEST['id']
-						)->save();
+					)->save();
 				}
 				echo json_encode($resultado);
 			}
@@ -192,13 +192,37 @@ class AjaxController
 		}
 	}
 
-	public function paginacion($var = 0)
+	public function paginacion()
 	{
 		if ($_REQUEST['operation'] == 'paginacion') {
-			if ($_REQUEST['token'] == 10 && $_SESSION['validar'] == TRUE) {
-				require_once 'Views/modulos/'.$_REQUEST['modulo'].'.php';
+			if ($_SESSION['validar'] == TRUE) {
+				if (empty($_REQUEST['modulo'])) {
+					if (isset($_SESSION['pagina'])) {
+						$modulo = $_SESSION['pagina'];
+					} else {
+						$modulo = 'inicio';
+					}
+				} else {
+					$modulo = $_REQUEST['modulo'];
+				}
+				require_once 'Views/modulos/'.$modulo.'.php';
+				$_SESSION['pagina'] = $modulo;
 			}
 		}
+	}
+
+	public function pagina()
+	{
+		if (empty($_REQUEST['modulo'])) {
+			if (isset($_SESSION['pagina'])) {
+				$modulo = $_SESSION['pagina'];
+			} else {
+				$modulo = 'inicio';
+			}
+		} else {
+			$modulo = $_REQUEST['modulo'];
+		}
+		echo json_encode($modulo);
 	}
 
 	public function barrasEstadisticas()
@@ -249,11 +273,11 @@ class AjaxController
 	{
 		if ($_REQUEST['token'] == 15) {
 			$this->cp->add_editDireccion($_REQUEST['direccion'],
-										$_REQUEST['id_direccion'])->save();
+				$_REQUEST['id_direccion'])->save();
 			if (isset($_REQUEST['division']) && $_REQUEST['id_direccion'] != -1) {
 				$this->cp->add_editDivision($_REQUEST['division'],
-										$_REQUEST['id_direccion'],
-										$_REQUEST['id_division'])->save();
+					$_REQUEST['id_direccion'],
+					$_REQUEST['id_division'])->save();
 			}
 			echo(1);
 		}
@@ -261,7 +285,7 @@ class AjaxController
 
 	public function buscarSolicitudes()
 	{
-		echo '<option>Seleccione una opción</option>';
+		echo '<option value="">Seleccione una opción</option>';
 		if ($_REQUEST['operation'] == 'solicitudes') {
 			if ($_REQUEST['token'] == 16) {
 				$resultado = $this->cp->select('categoria')->see();
@@ -384,17 +408,19 @@ class AjaxController
 			'Cerrado' => $cerrado,
 			'Total' => $totalSolicitudes,
 			'Efectividad' => $efectividad,
-			'Soportista' => $resultado[0]['nombre']));
+			'Soportista' => $resultado[0]['nombre']
+		));
 	}
 
 	public function usuarios()
 	{
 		$users = $this->cp->select('users', array(array('rol', 3)), 1)->see();
-		$html = '<option value="">Escoja una opción</option>';
+		$html2 = $html = '<option value="" selected>Escoja una opción</option>';
 		foreach ($users as $u) {
-			$html .= '<option value="'.$u['cedula'].'">'.$u['nombre'].'</option>';
+			$html .= '<option value="'.$u['id'].'">'.$u['nombre'].'</option>';
+			$html2 .= '<option value="'.$u['nombre'].'">'.$u['nombre'].'</option>';
 		}
-		echo json_encode($html);
+		echo json_encode(array('soportistas' => $html, 'colaboradores' => $html2));
 	}
 
 	public function responsable()
@@ -405,13 +431,13 @@ class AjaxController
 			$rol = 2;
 		}
 		if ($_SESSION['rol'] == 3) {
-			$users = $this->cp->select('users', array(array('cedula', $_SESSION['cedula'])))->see();
+			$users = $this->cp->users(0, 0, 0, $_SESSION['cedula'])->see();
 		} else {
-			$users = $this->cp->select('users', array(array('rol', $rol)))->see();
+			$users = $this->cp->users(0, $rol)->see();
 		}
 		$html = '<option value="">Seleccione una opción</option>';
 		foreach ($users as $u) {
-			$html .= '<option value="'.$u['cedula'].'">'.$u['nombre'].'</option>';
+			$html .= '<option value="'.$u['id'].'" coord="'.$u['id_coordinacion'].'">'.$u['nombre'].'</option>';
 		}
 		echo json_encode($html);
 	}
@@ -434,12 +460,10 @@ class AjaxController
 		if ($_REQUEST['estadistica'] == 'Administrativas') { 
 			$Departamento = 1;
 			$ids = array(1, 2, 3, 4, 5, 6, 7, 8);
-		}
-		elseif ($_REQUEST['estadistica'] == 'Médicas') { 
+		} elseif ($_REQUEST['estadistica'] == 'Médicas') {
 			$Departamento = 1;
 			$ids = array(9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19);
-		}
-		elseif ($_REQUEST['estadistica'] == 'Total') {
+		} elseif ($_REQUEST['estadistica'] == 'Total') {
 			$Coordinacion = 1;
 			$ids = array(1, 2, 3);
 		}
@@ -470,22 +494,22 @@ class AjaxController
 			$tbody = '';
 			foreach ($estatus as $e) {
 				$tbody .= '<tr>
-					<td>'.$e['n'].'</td>
-					<td>'.$e['Departamento'].'</td>
-					<td>'.$e['Cerrado'].'</td>
-					<td>'.$e['En proceso'].'</td>
-					<td>'.$e['Abierto'].'</td>
-					<td>'.$e['Total'].'</td>
-					<td>'.(($e['Total'] == 0 ) ? '0,00' : number_format(($e['Cerrado']*100/$e['Total']),2,',','')).'</td>
+				<td>'.$e['n'].'</td>
+				<td>'.$e['Departamento'].'</td>
+				<td>'.$e['Cerrado'].'</td>
+				<td>'.$e['En proceso'].'</td>
+				<td>'.$e['Abierto'].'</td>
+				<td>'.$e['Total'].'</td>
+				<td>'.(($e['Total'] == 0 ) ? '0,00' : number_format(($e['Cerrado']*100/$e['Total']),2,',','')).'</td>
 				</tr>';
 			}
 			$tfoot = '<td>O</td>
-				<td>Sub - Total</td>
-				<td>'.$tcerrado.'</td>
-				<td>'.$tproceso.'</td>
-				<td>'.$tabierto.'</td>
-				<td>'.$tticket.'</td>
-				<td>'.(($tticket == 0 ) ? '0,00' : number_format(($tcerrado*100/$tticket),2,',','')).'</td>';
+			<td>Sub - Total</td>
+			<td>'.$tcerrado.'</td>
+			<td>'.$tproceso.'</td>
+			<td>'.$tabierto.'</td>
+			<td>'.$tticket.'</td>
+			<td>'.(($tticket == 0 ) ? '0,00' : number_format(($tcerrado*100/$tticket),2,',','')).'</td>';
 			echo json_encode(array('h2' => $h2, 'tbody' => $tbody, 'tfoot' => $tfoot, 'grafica' => array('coordinacion' => $coordinacion, 'total' => $total)));
 		} else {
 			echo json_encode(array('h2' => 'No Existen tickets registrados.'));
@@ -503,16 +527,154 @@ class AjaxController
 			}
 		}
 		return array('Abierto' => $abierto, 
-					'En proceso' => $proceso, 
-					'Cerrado' => $cerrado, 
-					'Total' => ($abierto + $proceso + $cerrado)
-					);
+			'En proceso' => $proceso, 
+			'Cerrado' => $cerrado, 
+			'Total' => ($abierto + $proceso + $cerrado)
+		);
 	}
 
 	public function verTicket()
 	{
-		$sql = $this->cp->verTicket($_REQUEST['ticket'])->see();
-		echo json_encode($sql);
+		$ticket = $this->cp->verTicket($_REQUEST['ticket'])->see();
+		$ticket[0]['fecha_apertura'] = Fechas::normal($ticket[0]['fecha_apertura']);
+		// $resultado = $this->cp->ultimoEnRevisar($_SESSION['id'], $_REQUEST['ticket'])->save();
+		if (!empty($ticket[0]['serial'])) {
+			$computador = $this->cp->computador($ticket[0]['serial'])->see();
+			$resultado = array_merge($ticket, $computador);
+			echo json_encode($resultado);
+		} else {
+			echo json_encode($ticket);
+		}
+	}
+
+	public function registrarTicket()
+	{
+		$resultado = $this->cp->validarTicketSemana(
+			$_REQUEST['solicitante'],
+			$_REQUEST['direccion'],
+			$_REQUEST['categoria'],
+			$_REQUEST['serial'])->see();
+		if (isset($resultado[0])) {
+			echo(json_encode(array('ticket' => $resultado[0]['id'], 'estado' => false)));
+			return;
+		}
+		if (!empty($_REQUEST['serial'])) {
+			$resultado = $this->cp->computador($_REQUEST['serial'])->see();
+			if (isset($resultado[0]['id'])) {
+				$resultado = $this->cp->add_editComputador($_REQUEST['serial'], '', '', '', '', '')->save();
+			}
+		}
+
+		$colaborador = (!empty($_REQUEST['colaborador'])) ? implode(', ', $_REQUEST['colaborador']) : '';
+		$estado = $this->cp->add_editTicket(
+			date("Y-m-d"),
+			$_SESSION['id'],
+			date('H:i'),
+			$_REQUEST['solicitante'],
+			$_REQUEST['direccion'],
+			$_REQUEST['division'],
+			$_REQUEST['categoria'],
+			$_REQUEST['problema_i'],
+			$_REQUEST['problema_ii'],
+			$_REQUEST['serial'],
+			strtoupper($_REQUEST['detalles']),
+			'',
+			$_REQUEST['prioridad'],
+			1,
+			$_REQUEST['coordinacion'],
+			$_REQUEST['idTecnico'],
+			$colaborador,
+			$_SESSION['id'],
+			'NULL',
+			'NULL')->save();
+		if ($estado) {
+			$lastId = $this->cp->lastTicket()->see();
+		} else {
+			echo(json_encode(array('estado' => $estado)));
+			
+		}
+		echo(json_encode(array('estado' => $estado, 'lastId' => $lastId[0]['lastId'])));
+	}
+
+	public function cerrarTicket()
+	{
+		if ($_REQUEST['serial'] !== $_REQUEST['idserial']) {
+			if ($_REQUEST['idserial'] == '-1' && !empty($_REQUEST['serial'])) {
+				$this->cp->add_editComputador(
+					$_REQUEST['serial'],
+					$_REQUEST['modelo'],
+					$_REQUEST['disco'],
+					$_REQUEST['memoria'],
+					$_REQUEST['procesador'],
+					$_REQUEST['observaciones'])->save();
+			} elseif($_REQUEST['idserial'] !== '-1') {
+				$this->cp->add_editComputador(
+					$_REQUEST['serial'],
+					$_REQUEST['modelo'],
+					$_REQUEST['disco'],
+					$_REQUEST['memoria'],
+					$_REQUEST['procesador'],
+					$_REQUEST['observaciones'],
+					$_REQUEST['idserial'])->save();
+			}
+		}
+		$estado = $this->cp->add_editTicket(
+			NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+			$_REQUEST['serial'],
+			NULL,
+			$_REQUEST['solucion'],
+			$_REQUEST['prioridad'],
+			$_REQUEST['estatus'],
+			NULL,
+			(($_REQUEST['responsable'] == '') ? NULL : $_REQUEST['responsable']),
+			($_REQUEST['colaborador'] == '') ? NULL : implode(', ', $_REQUEST['colaborador']),
+			$_SESSION['id'],
+			NULL,
+			$_SESSION['id'],
+			$_REQUEST['id'])->save();
+		echo json_encode(array('estado' => $estado));
+	}
+
+	public function server_side_processing()
+	{
+		$resultado = $this->cp->totalTickets()->see();
+		$totalFiltered = $totalData = $resultado[0]['total'];
+
+		if( !empty($_REQUEST['search']['value']) ) {
+			$resultado = $this->cp->totalTickets($_REQUEST['search']['value'])->see();
+			$totalFiltered = $resultado[0]['total'];
+		}
+
+		$resultado = $this->cp->datosTickets($_REQUEST['search']['value'], $_REQUEST['order'][0]['column'], $_REQUEST['order'][0]['dir'], $_REQUEST['start'], $_REQUEST['length'])->see();
+		$data = array();
+		foreach ($resultado as $r) {
+			$nestedData = array();
+			$nestedData[] = '<a href="#" ren="'.$r['id'].'" id="abrirTicket2">'.$r['id'].'</a>';
+			$nestedData[] = Fechas::normal($r['fecha_apertura']).'<br>'.$r['hora'];
+			$nestedData[] = $r['solicitante'].'<br>'.$r['division'];
+			$nestedData[] = $r['problem'].'<br>'.$r['subproblem'];
+			$nestedData[] = $r['nombre'].'<br>'.$r['colaborador'];
+			$nestedData[] = $r['estatus'];
+			$nestedData[] = '
+			<div class="btn-group" role="group">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			Acciones <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+			<li><a href="#" ren="'.$r['id'].'" id="abrirTicket2">Detalles</a></li>
+			'.(($_SESSION['rol'] < 4) ? '<li><a href="#" ren="'.$r['id'].'" id="editTicket">Modificar</a></li>' : '').'
+			<li><a href="reportes/informe.php?num='.$r['id'].'">Informe</a></li>
+			</ul>
+			</div>';
+			$data[] = $nestedData;
+		}
+
+		echo json_encode(array(
+			'draw'            => intval( $_REQUEST['draw'] ),
+			'recordsTotal'    => intval( $totalData ),
+			'recordsFiltered' => intval( $totalFiltered ),
+			'data'            => $data
+		));
 	}
 
 	public function __destruct()

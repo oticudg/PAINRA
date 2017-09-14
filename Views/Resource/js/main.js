@@ -1,10 +1,10 @@
 $(document).ready(function () {
-	var url = $("meta[url]").attr("url");
+	const url = $("meta[url]").attr("url");
 	/*
 	* Configuraciones
 	*/
 	/*se trae la pantalla de inicio*/
-	content("tickets");
+	content();
 	/*se llena la tabla de soportistas*/
 	$("a[data-target='.modal-soportistas']").click(function () {
 		llenarSoportistas();
@@ -702,7 +702,6 @@ $(document).ready(function () {
 	/*
 	* Tickets
 	*/
-	// $(".modal-abrirTicket").modal("toggle");
 	/*ajax para buscar el ticket por el input*/
 	$("form#ticket").submit(function (e) {
 		e.preventDefault();
@@ -714,57 +713,12 @@ $(document).ready(function () {
 		}
 	});
 
-	// /*ajax para cerrar tickets*/
-	// $("form#cerrar").submit(function (e) {
-	// 	e.preventDefault();
-	// 	var data = $(this).serializeArray();
-	// 	var cond = true;
-	// 	if (data[7].value == 'Cerrado') {
-	// 		if (data[8].value == '' || data[9].value == '' || data[10].value == '' || data[11].value == '' || data[12].value == '') {
-	// 			$("span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar todos los Datos.</span>');
-	// 			cond = false;
-	// 		}
-	// 		if (data[2].value == '') {
-	// 			$("span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar la solucion.</span>');
-	// 			cond = false;
-	// 		}
-	// 	}
-	// 	if (cond) {
-	// 		data.push({ name: "operation", value: "cerrar" });
-	// 		$.ajax({
-	// 			url: "resource/procesos/process.php",
-	// 			type: "POST",
-	// 			dataType: "json",
-	// 			data: data,
-	// 			beforeSend: function () {
-	// 				$("span.msg").html('<span class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> </span>');
-	// 			}
-	// 		})
-	// 		.done(function(resul) {
-	// 			$("span.msg").html('<span class="alert alert-success" role="alert">Datos Enviados Exitosamente...</span>');
-	// 			$('#tabla').DataTable().ajax.reload();
-	// 			setTimeout(function () {
-	// 				$(".modal-cerrarTicket").modal("toggle");
-	// 				$("form#cerrar")[0].reset();
-	// 			}, 1000);
-	// 		})
-	// 		.fail(function(resul) {
-	// 			$("span.msg").html('<span class="alert alert-danger" role="alert">Error al Recibir Datos, Intente mas tarde.</span>');
-	// 		})
-	// 		.always(function() {
-	// 			setTimeout(function () {
-	// 				$(".fa-spinner").hide();
-	// 			}, 1000);
-	// 		});
-	// 	}
-	// });
-
 	/*
 	* Funciones
 	*/
 	/* Trae por ajax el contenido de la pagina */
 	var lastPag = '';
-	function content(pag) {
+	function content(pag = '') {
 		if (lastPag != pag) {
 			$.ajax({
 				url: url+"Ajax/paginacion",
@@ -781,7 +735,19 @@ $(document).ready(function () {
 					$("div#contenido").html(res);
 					lastPag = pag;
 					$("#page-loader").fadeOut(500);
-					paginas(pag);
+					$("a#enlace").parent().removeClass("active");
+					$.ajax({
+						url: url+"Ajax/pagina",
+						dataType: 'json',
+						data: {
+							modulo: pag,
+							token: 10
+						},
+						success: function (res) {
+							paginas(res);
+							$("a#enlace[href='"+res+"']").parent().addClass("active");
+						}
+					});
 				}
 			});
 		}
@@ -949,6 +915,137 @@ $(document).ready(function () {
 				$('#graphic-porcentaje_departamentos').html('<h2 class="text-center">Error al cargar la tabla :(</h2>');
 			});
 		} else if (pag == 'tickets') {
+			$(".modal-registrar select#categoria").change(function () {
+				let input = $(".modal-registrar input#serial");
+				if ($(this).val() == 4 || $(this).val() == 13 || $(this).val() == 3) {
+					input.attr("type", "text");
+					input.parent().show();
+				} else {
+					input.parent().hide();
+					input.attr("type", "hidden");
+				}
+			});
+			/* ajax para registrar ticket */
+			$(".modal-registrar form#registro").submit(function (e) {
+				e.preventDefault();
+				var data = $(this).serializeArray();
+				data.push({ name: "operation", value: "registrar" });
+				$.ajax({
+					url: url+"Ajax/registrarTicket",
+					type: "POST",
+					dataType: "json",
+					data: data,
+					beforeSend: function () {
+						$('i.fa-spinner').show();
+						$('div.message').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><div class="alert alert-info" role="alert">Enviando Datos...</div>');
+					}
+				})
+				.done(function(resul) {
+					if (resul.estado == true) {
+						$('div.message').html('<div class="alert alert-success" role="alert">Ticket Registrado con Exito<br>n° de ticket: '+resul.lastId+'.</div>');
+						$('#tabla').DataTable().ajax.reload();
+						setTimeout(function () {
+							$('.modal-registrar').modal('toggle');
+							$("form#registro")[0].reset();
+							$('div.message').html('');
+						}, 2500);
+					} else {
+						if (resul.ticket) {
+							$('div.message').html('<div class="alert alert-danger" role="alert">Un Ticket ya se Encuentra Registrado para este Equipo.<br> con el n°: '+resul.ticket+'.</div>');
+						} else {
+							$('div.message').html('<div class="alert alert-danger" role="alert">¡Error al realizar el registro!.</div>');
+						}
+					}
+				})
+				.fail(function() {
+					$('div.message').addClass('bg-danger');
+					$('div.message').html('<div class="alert alert-danger" role="alert">Error al Enviar los datos. </div>');
+				});
+			});
+			/*ajax para cerrar tickets*/
+			$("form#cerrar").submit(function (e) {
+				e.preventDefault();
+				var data = $(this).serializeArray();
+				$(".modal-cerrarTicket span.msg").html('');
+				tiposerial = $(".modal-cerrarTicket input#serial").attr("type");
+				if (data[6].value == 3) {
+					if (tiposerial !== "hidden") {
+						if (data[7].value == '') {
+							$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar el serial del equipo.</span>');
+							return;
+						}
+						if (data[9].value == '' || data[10].value == '' || data[11].value == '' || data[12].value == '' || data[13].value == '') {
+							$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar todos los Datos.</span>');
+							return;
+						}
+					}
+					if (data[2].value == '') {
+						$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar la solución.</span>');
+						return;
+					}
+				}
+				data.push({ name: "operation", value: "cerrar" });
+				$.ajax({
+					url: url+"Ajax/cerrarTicket",
+					type: "POST",
+					dataType: "json",
+					data: data,
+					beforeSend: function () {
+						$(".modal-cerrarTicket span.msg").html('<span class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i> </span>');
+					}
+				})
+				.done(function(resul) {
+					if (resul.estado == true) {
+						$(".modal-cerrarTicket span.msg").html('<span class="alert alert-success" role="alert">Datos Enviados Exitosamente...</span>');
+						$('#tabla').DataTable().ajax.reload();
+						setTimeout(function () {
+							$(".modal-cerrarTicket").modal("toggle");
+							$("form#cerrar")[0].reset();
+						}, 1000);
+					} else {
+						$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Error al registrar el ticket...</span>');
+					}
+				})
+				.fail(function(resul) {
+					$(".modal-cerrarTicket span.msg").html('<span class="alert alert-danger" role="alert">Error al Recibir Datos.</span>');
+				})
+				.always(function() {
+					setTimeout(function () {
+						$(".fa-spinner").hide();
+					}, 1000);
+				});
+			});
+			$.ajax({
+				url: url+"Ajax/usuarios",
+				type: "POST",
+				dataType: "json",
+				data: {token: 12}
+			})
+			.done(function(resul) {
+				$('form#registro select#colaborador').html(resul.colaboradores);
+				$('.modal-cerrarTicket select#colaborador').html(resul.colaboradores);
+			})
+			.fail(function() {
+				$('form#registro select#colaborador').html('<option value="">Error al Con el servidor.<option>');
+				$('.modal-cerrarTicket select#colaborador').html('<option value="">Error al Con el servidor.<option>');
+			});
+			$.ajax({
+				url: url+"Ajax/responsable",
+				type: "POST",
+				data: {token: 12}
+			})
+			.done(function(resul) {
+				$('form#registro select#idTecnico').html(JSON.parse(resul));
+				$('.modal-cerrarTicket select#responsable').html(JSON.parse(resul));
+			})
+			.fail(function() {
+				$('form#registro select#idTecnico').html('<option value="">Error al Con el servidor.<option>');
+				$('.modal-cerrarTicket select#responsable').html('<option value="">Error al Con el servidor.<option>');
+			});
+			$("select#idTecnico").change(function () {
+				let coord = $("select#idTecnico option[value='"+$(this).val()+"']").attr("coord");
+				$("form#registro input[name='coordinacion']").val(coord);
+			});
 			$("button[data-target='.modal-registrar']").click(function () {
 				$("form#registro")[0].reset();
 				let time = new Date();
@@ -970,28 +1067,6 @@ $(document).ready(function () {
 				})
 				.fail(function() {
 					$('form#registro select#direccion').html('<option value="">Error al Con el servidor.<option>');
-				});
-				$.ajax({
-					url: url+"Ajax/usuarios",
-					type: "POST",
-					data: {token: 12}
-				})
-				.done(function(resul) {
-					$('form#registro select#colaborador').html(JSON.parse(resul));
-				})
-				.fail(function() {
-					$('form#registro select#colaborador').html('<option value="">Error al Con el servidor.<option>');
-				});
-				$.ajax({
-					url: url+"Ajax/responsable",
-					type: "POST",
-					data: {token: 12}
-				})
-				.done(function(resul) {
-					$('form#registro select#cedulaTecnico').html(JSON.parse(resul));
-				})
-				.fail(function() {
-					$('form#registro select#cedulaTecnico').html('<option value="">Error al Con el servidor.<option>');
 				});
 				$.ajax({
 					url: url+"Ajax/buscarSolicitudes",
@@ -1074,89 +1149,51 @@ $(document).ready(function () {
 					$('form#registro select#problema_i').html('<option>Error al Con el servidor.<option>');
 				});
 			});
-			/* ajax para registrar ticket */
-			// $("form#registro").submit(function (e) {
-			// 	e.preventDefault();
-			// 	var data = $(this).serializeArray();
-			// 	data.push({ name: "operation", value: "registrar" });
-			// 	$.ajax({
-			// 		url: "resource/procesos/process.php",
-			// 		type: "POST",
-			// 		dataType: "json",
-			// 		data: data,
-			// 		beforeSend: function () {
-			// 			$('i.fa-spinner').show();
-			// 			$('div.message').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><div class="alert alert-info" role="alert">Enviando Datos...</div>');
-			// 		}
-			// 	})
-			// 	.done(function(resul) {
-			// 		if (resul.estado == true) {
-			// 			$('div.message').html('<div class="alert alert-success" role="alert">Ticket Registrado con Exito<br>n° de ticket: '+resul.lastId+'.</div>');
-			// 			$('#tabla').DataTable().ajax.reload();
-			// 			setTimeout(function () {
-			// 				$('.modal-registrar').modal('toggle');
-			// 				$("form#registro")[0].reset();
-			// 			}, 5000);
-			// 		}
-			// 		if (resul.estado == false) {
-			// 			$('div.message').html('<div class="alert alert-danger" role="alert">Un Ticket ya se Encuentra Registrado para este Equipo.<br> con el n°: '+resul.ticket+'.</div>');
-			// 		}
-			// 	})
-			// 	.fail(function() {
-			// 		$('div.message').html('<div class="alert alert-danger" role="alert">Error al Enviar los datos.<br>Consulte a su programador. </div>');
-			// 		$('div.message').addClass('bg-danger');
-			// 	})
-			// 	.always(function() {
-			// 		setTimeout(function () {
-			// 			$("form#registro")[0].reset();
-			// 			$('div.message').html('');
-			// 		}, 15000);
-			// 	});
-			// });
 			/*llena el combo direccion consus respectivas direcciones y el categoria del problema */
-			// $("#tabla").DataTable({
-			// 	"order": [ 0, "desc" ],
-			// 	"language": {
-			// 		"sProcessing": "",
-			// 		"sLengthMenu": "Mostrar _MENU_ registros",
-			// 		"sZeroRecords": "No se encontraron resultados",
-			// 		"sEmptyTable": "Ningún dato disponible en esta tabla",
-			// 		"sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-			// 		"sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-			// 		"sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-			// 		"sInfoPostFix": "",
-			// 		"sSearch": "Buscar:",
-			// 		"sUrl": "",
-			// 		"sInfoThousands": ",",
-			// 		"sLoadingRecords": "Cargando...",
-			// 		"oPaginate": {
-			// 			"sFirst": "Primero",
-			// 			"sLast": "ultimo",
-			// 			"sNext": "Siguiente",
-			// 			"sPrevious": "Anterior"
-			// 		},
-			// 		"oAria": {
-			// 			"sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-			// 			"sSortDescending": ": Activar para ordenar la columna de manera descendente"
-			// 		}
-			// 	},
-			// 	"processing": true,
-			// 	"serverSide": true,
-			// 	"ajax": {
-			// 		url: 'resource/procesos/server_side_processing.php',
-			// 		complete: function(data){
-			// 			$("a#abrirTicket2").click(function (e) {
-			// 				e.preventDefault();
-			// 				buscarTicket($(this).attr("ren"));
-			// 			});
-			// 			$("a#editTicket").click(function (e) {
-			// 				e.preventDefault();
-			// 				$("span.msg").html('');
-			// 				cerrarTicket($(this).attr("ren"));
-			// 			});
-			// 		}
-			// 	}
-			// });
+			$("#tabla").DataTable({
+				"order": [ 0, "desc" ],
+				"language": {
+					"sProcessing": "",
+					"sLengthMenu": "Mostrar _MENU_ registros",
+					"sZeroRecords": "No se encontraron resultados",
+					"sEmptyTable": "Ningún dato disponible en esta tabla",
+					"sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+					"sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+					"sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+					"sInfoPostFix": "",
+					"sSearch": "Buscar:",
+					"sUrl": "",
+					"sInfoThousands": ",",
+					"sLoadingRecords": "Cargando...",
+					"oPaginate": {
+						"sFirst": "Primero",
+						"sLast": "ultimo",
+						"sNext": "Siguiente",
+						"sPrevious": "Anterior"
+					},
+					"oAria": {
+						"sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+						"sSortDescending": ": Activar para ordenar la columna de manera descendente"
+					}
+				},
+				"processing": true,
+				"serverSide": true,
+				"ajax": {
+					url: url+'Ajax/server_side_processing',
+					data: {token: 30},
+					complete: function(data){
+						$("a#abrirTicket2").click(function (e) {
+							e.preventDefault();
+							buscarTicket($(this).attr("ren"));
+						});
+						$("a#editTicket").click(function (e) {
+							e.preventDefault();
+							$("span.msg").html('');
+							cerrarTicket($(this).attr("ren"));
+						});
+					}
+				}
+			});
 		} else if (pag == 'departamentos') {
 			$("form#formDepartamentos").submit(function (e) {
 				e.preventDefault();
@@ -1215,12 +1252,13 @@ $(document).ready(function () {
 							}]
 						};
 						$("div#estadistica").show();
-						let name = (data[2].name == 'Total') ? 'Coordinación' : 'Departamento'
+						let name = (data[2].name == 'Total') ? 'Coordinación' : 'Departamento';
 						$("div#estadistica h2").html(resul.h2);
 						$("div#estadistica table tbody").html("");
 						$("div#estadistica table tfoot").html("");
 						$("div#estadistica #graphic").html("");
 						if (resul.tbody) {
+							$("div#graphic").show();
 							$("div#estadistica table tbody").html(resul.tbody);
 							$("div#estadistica table tfoot").html(resul.tfoot);
 							let len = resul.grafica.total.length
@@ -1230,6 +1268,8 @@ $(document).ready(function () {
 							}
 							options.title.text="<h1>Tickets Totales</h1>";
 							chart = new Highcharts.Chart(options);
+						} else {
+							$("div#graphic").hide();
 						}
 						$("#page-loader").fadeOut(500);
 					}
@@ -1247,7 +1287,7 @@ $(document).ready(function () {
 					token: 5
 				},
 				success: function (resul) {
-					$("select#responsable").html(resul);
+					$("select#responsable").html(resul.soportistas);
 				}
 			});
 			$("form#form-personales").submit(function (e) {
@@ -1340,7 +1380,7 @@ $(document).ready(function () {
 					token: 5
 				},
 				success: function (resul) {
-					$("select#responsable").html(resul);
+					$("select#responsable").html(resul.soportistas);
 				}
 			});
 			var options = {
@@ -1461,6 +1501,7 @@ $(document).ready(function () {
 		});
 	}
 	function buscarTicket(num) {
+		if (isNaN(num)) {return; }
 		$.ajax({
 			url: url+"Ajax/verTicket",
 			type: "POST",
@@ -1513,76 +1554,86 @@ $(document).ready(function () {
 			$("form#ticket")[0].reset();
 		});
 	}
-
-	// function cerrarTicket(num) {
-	// 	if (!isNaN(num)) {
-	// 		$.ajax({
-	// 			url: "resource/procesos/process.php?operation=ticket",
-	// 			type: "POST",
-	// 			dataType: "json",
-	// 			data: { "ticket": num },
-	// 			beforeSend: function () {
-	// 				$("#page-loader").show();
-	// 			}
-	// 		})
-	// 		.done(function(resul) {
-	// 			if (resul[0].estatus == 'Cerrado') {
-	// 				$('.modal-abrirTicketError').modal('show');
-	// 				$('.modal-abrirTicketError .modal-title').html('<h2>Ticket Cerrado</h2>');
-	// 				$('.modal-abrirTicketError .modal-body .error').html('<div class="alert alert-danger" role="alert"> <h3 class="text-center"> <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> El ticket n°:'+resul[0].ide+'<br> Ya Se Encuentra Cerrado. </h3></div>');
-	// 			} else {
-	// 				$('.modal-cerrarTicket .modal-title').html("<h3>Resultado del Ticket n°: "+resul[0].ide+".</h3>");
-	// 				$('.modal-cerrarTicket .fecha_apertura').html(resul[0].fecha_apertura);
-	// 				$('.modal-cerrarTicket .registrante').html(resul[0].registrante);
-	// 				$('.modal-cerrarTicket .responsable').html(resul[0].cedula_soporte);
-	// 				$('.modal-cerrarTicket .departamento').html(resul[0].departamento);
-	// 				$('.modal-cerrarTicket .seccion').html(resul[0].seccion);
-	// 				$('.modal-cerrarTicket .solicitante').html(resul[0].solicitante);
-	// 				$('.modal-cerrarTicket .estatus').html(resul[0].estatus);
-	// 				$('.modal-cerrarTicket .colaborador').html(resul[0].colaborador);
-	// 				$('.modal-cerrarTicket input#id').attr('value', resul[0].ide);
-	// 				$('.modal-cerrarTicket input#solucion').attr('value', resul[0].solucion);
-	// 				$('.modal-cerrarTicket .print').html('<a id="imprimir" class="btn btn-success" href="reportes/informe.php?num='+resul[0].ide+'"> <span class="glyphicon glyphicon-print"></span> </a> ');
-	// 				as = $('.modal-cerrarTicket select#responsable option');
-	// 				for (var i = 0; i < as.length; i++) {
-	// 					if (resul[0].cedula_soporte == as[i].text) {
-	// 						as[i].setAttribute("selected", "");
-	// 					}
-	// 				}
-	// 				if (resul[0].serial != '') {
-	// 					$('.modal-cerrarTicket #serial').attr("value", resul[0].serial);
-	// 				}
-	// 				$('input#radioEstatus').removeAttr("checked");
-	// 				$('select#prioridad2 option').removeAttr("selected");
-	// 				r = $('input#radioEstatus');
-	// 				as = $('select#prioridad2 option');
-	// 				for (var i = 0; i < 3; i++) {
-	// 					if (resul[0].estatus == r[i].value) {
-	// 						r[i].setAttribute("checked", "");
-	// 					}
-	// 					if (resul[0].prioridad == as[i].value) {
-	// 						as[i].setAttribute("selected", "");
-	// 					}
-	// 				}
-	// 				if (resul[1]) {
-	// 					$('.modal-cerrarTicket input#modelo').attr('value', resul[1].modelo);
-	// 					$('.modal-cerrarTicket input#disco').attr('value', resul[1].disco);
-	// 					$('.modal-cerrarTicket input#memoria').attr('value', resul[1].memoria);
-	// 					$('.modal-cerrarTicket input#procesador').attr('value', resul[1].procesador);
-	// 					$('.modal-cerrarTicket input#observaciones').attr('value', resul[1].observaciones);
-	// 					$('.modal-cerrarTicket input#idserial').attr('value', resul[1].id);
-	// 				}
-	// 				$('.modal-cerrarTicket').modal('show');
-	// 			}
-	// 		})
-	// 		.fail(function() {
-	// 			$('.modal-abrirTicketError .modal-title').html("<h3>Error al Buscar.</h3>");
-	// 			$('.modal-abrirTicketError div.error').html('<div class="alert alert-danger" role="alert"> <h3 class="text-center"> <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"> El ticket n°:'+num+'<br> No se Encuentra Registrado </h3></div>');
-	// 			$('.modal-abrirTicketError').modal('show');
-	// 		})
-	// 		.always(function() {
-	// 			$("#page-loader").fadeOut(1000);
-	// 		});
-	// 	};
-	// };
+	function cerrarTicket(num) {
+		if (!isNaN(num)) {
+			$.ajax({
+				url: url+"Ajax/verTicket",
+				type: "POST",
+				dataType: "json",
+				data: { ticket: num, token: 31 },
+				beforeSend: function () {
+					$("#page-loader").show();
+				}
+			})
+			.done(function(resul) {
+				if (resul[0].estatus == 'Cerrado') {
+					alerta('¡<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> El ticket n°:'+resul[0].id+'<br> Ya Se Encuentra Cerrado.!', 'error');
+				} else {
+					$("form#cerrar")[0].reset();
+					$('.modal-cerrarTicket .fecha_apertura').html(resul[0].fecha_apertura);
+					$('.modal-cerrarTicket .registrante').html(resul[0].registrante);
+					$('.modal-cerrarTicket .responsable').html(resul[0].soportista);
+					$('.modal-cerrarTicket .departamento').html(resul[0].direccion);
+					$('.modal-cerrarTicket .seccion').html(resul[0].seccion);
+					$('.modal-cerrarTicket .solicitante').html(resul[0].solicitante);
+					$('.modal-cerrarTicket .estatus').html(resul[0].estatus);
+					$('.modal-cerrarTicket .colaborador').html(resul[0].colaborador);
+					$('.modal-cerrarTicket .print').html('<a id="imprimir" class="btn btn-warning" href="reportes/informe.php?num='+resul[0].id+'"> <span class="glyphicon glyphicon-print"></span> </a> ');
+					$('.modal-cerrarTicket input#id').val(resul[0].id);
+					$('.modal-cerrarTicket input#solucion').val(resul[0].solucion);
+					$('select#prioridad2').val(resul[0].id_prioridad);
+					// as = $('.modal-cerrarTicket select#responsable option');
+					// for (var i = 0; i < as.length; i++) {
+					// 	existe = '';
+					// 	if (resul[0].id_soporte == as[i].value) {
+					// 		existe = i = as.length;
+					// 	}
+					// }
+					// if (existe != '') {
+					// 	$('.modal-cerrarTicket select#responsable').val(resul[0].id_soportista);
+					// } else {
+					// 	$('.modal-cerrarTicket select#responsable').append('<option value="'+resul[0].id_soportista+'">'+resul[0].soportista+'</option>');
+					// }
+					$('.modal-cerrarTicket input#radioEstatus').removeAttr("checked");
+					$('.modal-cerrarTicket input#radioEstatus[value="'+resul[0].id_estatus+'"]').attr("checked", "");
+					$('.modal-cerrarTicket input#idserial').val(-1);
+					if (resul[0].id_categoriag == 4 || resul[0].id_categoriag == 9 || resul[0].id_categoriag == 13) {
+						$('.modal-cerrarTicket #serial').show();
+						$('.modal-cerrarTicket input#serial').parent().show();
+						$('.modal-cerrarTicket input#serial').val(resul[0].serial);
+						$('.modal-cerrarTicket input#serial').attr("type", "text");
+						$('.modal-cerrarTicket #serial input').attr('type', "text");
+						if (resul[1]) {
+							$('.modal-cerrarTicket input#modelo').val(resul[1].modelo);
+							$('.modal-cerrarTicket input#disco').val(resul[1].disco);
+							$('.modal-cerrarTicket input#memoria').val(resul[1].memoria);
+							$('.modal-cerrarTicket input#procesador').val(resul[1].procesador);
+							$('.modal-cerrarTicket input#observaciones').val(resul[1].observaciones);
+							$('.modal-cerrarTicket input#idserial').val(resul[1].id);
+						} else {
+							$('.modal-cerrarTicket input#modelo').val('');
+							$('.modal-cerrarTicket input#disco').val('');
+							$('.modal-cerrarTicket input#memoria').val('');
+							$('.modal-cerrarTicket input#procesador').val('');
+							$('.modal-cerrarTicket input#observaciones').val('');
+							$('.modal-cerrarTicket input#idserial').val('');
+						}
+					} else {
+						$('.modal-cerrarTicket #serial').hide();
+						$('.modal-cerrarTicket input#serial').parent().hide();
+						$('.modal-cerrarTicket input#serial').val(-1);
+						$('.modal-cerrarTicket input#serial').attr("type", "hidden");
+						$('.modal-cerrarTicket #serial input').attr('type', "hidden");
+					}
+					$('.modal-cerrarTicket').modal('show');
+				}
+			})
+			.fail(function() {
+				alerta('¡Error al Buscar. <br> Ticket no encontrado!', 'error');
+			})
+			.always(function() {
+				$("#page-loader").fadeOut(1000);
+			});
+		}
+	}
 });

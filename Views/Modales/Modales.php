@@ -415,9 +415,162 @@ class Modales
 		<?php
 	}
 
-	public function Tickets()
+	static public function Tickets()
 	{
 		?>
+		<div class="modal fade modal-cerrarTicket" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-md" role="document">
+				<div class="modal-content">
+					<form id="cerrar" method="POST" action="test/index.php">
+						<div class="modal-header bg-primary text-center">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title"><span class="fa fa-plus"></span> Modificación de ticket</h4>
+						</div>
+						<div class="modal-body">
+							<div class="col-md-10 col-md-offset-1">
+								<div class="row">
+									<div class="col-md-5">
+										Fecha de apertura: <br><small class="fecha_apertura"></small>.
+									</div>
+									<div class="col-md-5">
+										Solicitante: <br><small class="solicitante"></small>.
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										Registrante: <br><small class="registrante"></small>.
+									</div>
+									<div class="col-md-5">
+										Responsable: <br><small class="responsable"></small>.
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										Departamento: <br><small class="departamento"></small>.
+									</div>
+									<div class="col-md-5">
+										Seccion: <br><small class="seccion"></small>.
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-5">
+										Estatus: <br><small class="estatus"></small>.
+									</div>
+									<div class="col-md-5">
+										Colaborador: <br><small class="colaborador"></small>.
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="id" name="id">
+							<input type="hidden" name="token" value="5">
+							<div class="col-md-12">
+								<div class="form-group">
+									<span class="fa fa-"></span>
+									<label for="solucion">Trabajo Realizado:</label>
+									<input type="text" id="solucion" class="form-control" name="solucion">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<span class="fa fa-"></span>
+									<label for="prioridad2">Prioridad de Atención:</label>
+									<select name="prioridad" id="prioridad2" class="form-control" required>
+										<option value="" selected>Seleccione la prioridad</option>
+										<option value="1">Alto</option>
+										<option value="2">Medio</option>
+										<option value="3">Bajo</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-"></span>
+									<label for="colaborador">Colaborador:</label>
+									<select id="colaborador" class="form-control" name="colaborador[]" multiple></select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<span class="fa fa-"></span>
+									<label for="responsable">Transferir ticket:</label>
+									<select name="responsable" id="responsable" class="form-control">
+										<option value=""></option>
+									</select>
+								</div>
+								<div class="form-group">
+									<span>Estatus: </span><br>
+									<div class="radio">
+										<label>
+											<input type="radio" name="estatus" id="radioEstatus" value="1">
+											Abierto.
+										</label>
+									</div>
+									<div class="radio">
+										<label>
+											<input type="radio" name="estatus" id="radioEstatus" value="2">
+											En Proceso.
+										</label>
+									</div>
+									<div class="radio">
+										<label>
+											<input type="radio" name="estatus" id="radioEstatus" value="3">
+											Cerrado.
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<span class="fa fa-"></span>
+									<label for="serial">Serial del equipo:</label>
+									<input type="text" id="serial" class="form-control" name="serial" placeholder="Debe ingresar un serial.">
+									<input type="hidden" id="idserial" name="idserial">
+								</div>
+							</div>
+							<div id="serial" class="col-md-12">
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="fa fa-"></span>
+										<label for="memoria">Memoria del equipo:</label>
+										<input type="text" id="memoria" class="form-control" name="memoria" placeholder="Ingrese un memoria.">
+									</div>
+									<div class="form-group">
+										<span class="fa fa-"></span>
+										<label for="procesador">Procesador del equipo:</label>
+										<input type="text" id="procesador" class="form-control" name="procesador" placeholder="Ingrese un procesador.">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<span class="fa fa-"></span>
+										<label for="modelo">Modelo del equipo:</label>
+										<input type="text" id="modelo" class="form-control" name="modelo" placeholder="Ingrese el modelo.">
+									</div>
+									<div class="form-group">
+										<span class="fa fa-"></span>
+										<label for="disco">Disco del equipo:</label>
+										<input type="text" id="disco" class="form-control" name="disco" placeholder="Ingrese datos sobre el disco.">
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="form-group">
+										<span class="fa fa-"></span>
+										<label for="observaciones">Descripción del equipo:</label>
+										<input type="text" id="observaciones" class="form-control" name="observaciones" placeholder="Ingrese las observaciones presentes.">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						<div class="modal-footer">
+							<span class="msg pull-left"></span>
+							<span class="print"></span>
+							<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
+							<button type="submit" class="btn btn-primary"><span class="fa fa-check"></span> Registrar</button>
+						</div>
+					</form>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
 		<div class="modal fade modal-registrar" tabindex="-1" role="dialog">
 			<div class="modal-dialog modal-lg" role="document">
 				<div class="modal-content">
@@ -463,30 +616,26 @@ class Modales
 								<div class="form-group">
 									<span class="fa fa-group"></span>
 									<label for="colaborador">Colaborador (Seleccione Presionando "control"):</label><br>
-									<select id="colaborador" class="form-control" name="colaborador[]" multiple required>
+									<select id="colaborador" class="form-control" name="colaborador[]" multiple>
 										<option value="Sin colaborador" selected>Sin colaborador</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<span class="fa fa-barcode"></span>
-									<label for="serial">BN / Serial:</label>
-									<input type="text" id="serial" class="form-control" name="serial" placeholder="Serial del Bien Nacional">
-								</div>
-								<div class="form-group">
 									<span class="fa fa-sort-numeric-asc"></span>
-									<label for="prioridad">*Prioridad:</label>
+									<label for="prioridad">* Prioridad:</label>
 									<select  id="prioridad" class="form-control" name="prioridad" required>
-										<option value="Bajo">Bajo</option>
-										<option value="Medio">Medio</option> 
-										<option value="Alto">Alto</option>
+										<option value="">Seleccione la prioridad</option>
+										<option value="3">Bajo</option>
+										<option value="2">Medio</option> 
+										<option value="1">Alto</option>
 									</select>
 								</div>
 								<div class="form-group">
 									<span class="fa fa-id-card-o"></span>
-									<label for="cedulaTecnico">*Responsable:</label>
-									<select id="cedulaTecnico" class="form-control" name="cedulaTecnico" required>
+									<label for="idTecnico">*Responsable:</label>
+									<select id="idTecnico" class="form-control" name="idTecnico" required>
 									</select>
 								</div>
 								<div class="form-group">
@@ -504,10 +653,16 @@ class Modales
 									<label for="problema_ii">*Problema especifico:</label>
 									<select id="problema_ii" class="form-control" name="problema_ii" required></select>
 								</div>
-								<div class="message text-center"> </div>
+								<div class="form-group">
+									<span class="fa fa-barcode"></span>
+									<label for="serial">BN / Serial:</label>
+									<input type="text" id="serial" class="form-control" name="serial" placeholder="Serial del Bien Nacional">
+								</div>
+								<div class="message text-center"></div>
 							</div>
 							<input type="hidden" name="id" value="-1" />
 							<input type="hidden" name="token" value="3" />
+							<input type="hidden" name="coordinacion" value="" />
 						</div>
 						<div class="clearfix"></div>
 						<div class="modal-footer">
@@ -613,7 +768,7 @@ class Modales
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
-		
+
 		<div class="modal fade modal-contraseña" tabindex="-1" role="dialog">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">

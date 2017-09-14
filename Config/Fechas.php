@@ -9,6 +9,6 @@ class Fechas {
 	}
 	public static function normal($fecha)
 	{
-		return date('d-m-Y', strtotime($fecha));
+		return date('d/m/Y', strtotime($fecha));
 	}
 } /* Fin de la clase Fechas */

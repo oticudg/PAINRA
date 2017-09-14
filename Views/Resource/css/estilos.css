@@ -274,6 +274,17 @@ ol.listaTickets li{
   padding-bottom: .8em;
   width: 50%;
 }
+ul.dropdown-menu{padding: 0;}
+ul.dropdown-menu.menu1 li {height: 3em;}
+nav ul.dropdown-menu li a[href="#"],
+nav ul.dropdown-menu li a[href="departamentos"],
+nav ul.dropdown-menu li a[href="personales"],
+nav ul.dropdown-menu li a[href="mensuales"]{padding-top: 10px;height: 100%}
+ul.dropdown-menu li a span{padding-right: 5px;}
+ul > li.divider{margin: 0 !important;height:1px!important;}
+.modal-cerrarTicket .modal-body small {padding-left: 3em;color: #519;}
+.modal-cerrarTicket .modal-body div {color: #337ab7;font-weight: bold;}
+.modal-cerrarTicket .modal-body div.radio {display: inline;}
 @media print {
   footer, nav.navbar, header, a, button[type="submit"], input[type="submit"] {display:none;}
 }
