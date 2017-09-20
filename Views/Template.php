@@ -14,7 +14,7 @@ class Template {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta url="<?php echo(URL) ?>">
 	<title>P A I N R A</title>
-	<!-- <link rel="shortcut icon" href="images/favicon.png"/> -->
+	<link rel="shortcut icon" href="<?php echo(URL.'Views/Resource/imagenes/favicon-96x96.png') ?>"/>
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
 	<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/white/pace-theme-minimal.css" rel="stylesheet"> -->
@@ -102,8 +102,7 @@ class Template {
 	<div id="page-loader"><span class="preloader-interior"></span></div>
 	<footer class="navbar-fixed-bottom">
 		<div class="container">
-			<p class="text-center"> Made with <span class="glyphicon glyphicon-heart"></span>. por la oficina de sistemas y tecnológias de información</p>
-			<!-- <p class="text-center"> APLICACIÓN DESARROLLADA POR LA OFICINA DE SISTEMAS Y TECNOLÓGIAS DE INFORMACIÓN <b><span class="fa fa-copyright"></span> Copyleft</b> </p> -->
+			<p class="text-center"> APLICACIÓN DESARROLLADA POR LA OFICINA DE SISTEMAS Y TECNOLÓGIAS DE INFORMACIÓN <b><span class="fa fa-copyright"></span> Copyleft</b> </p>
 		</div>
 	</footer>
 </body>
@@ -129,7 +128,7 @@ class Template {
 <script src="<?php Route::js('exporting') ?>"></script>
 <script src="<?php Route::js('sweetalert2.min') ?>"></script>
 <script src="<?php Route::js('highcharts-more') ?>"></script>
-<script src="Views/resource/js/main.js"></script>
+<script src="Views/resource/js/main.min.js"></script>
 </html>
 <?php
 	}

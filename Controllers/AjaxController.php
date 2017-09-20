@@ -537,7 +537,7 @@ class AjaxController
 	{
 		$ticket = $this->cp->verTicket($_REQUEST['ticket'])->see();
 		$ticket[0]['fecha_apertura'] = Fechas::normal($ticket[0]['fecha_apertura']);
-		// $resultado = $this->cp->ultimoEnRevisar($_SESSION['id'], $_REQUEST['ticket'])->save();
+		$resultado = $this->cp->ultimoEnRevisar($_SESSION['id'], $_REQUEST['ticket'])->save();
 		if (!empty($ticket[0]['serial'])) {
 			$computador = $this->cp->computador($ticket[0]['serial'])->see();
 			$resultado = array_merge($ticket, $computador);
@@ -663,9 +663,9 @@ class AjaxController
 			<ul class="dropdown-menu">
 			<li><a href="#" ren="'.$r['id'].'" id="abrirTicket2">Detalles</a></li>
 			'.(($_SESSION['rol'] < 4) ? '<li><a href="#" ren="'.$r['id'].'" id="editTicket">Modificar</a></li>' : '').'
-			<li><a href="reportes/informe.php?num='.$r['id'].'">Informe</a></li>
 			</ul>
 			</div>';
+			// <li><a href="reportes/informe.php?num='.$r['id'].'">Informe</a></li>
 			$data[] = $nestedData;
 		}
 

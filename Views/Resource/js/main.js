@@ -1541,7 +1541,7 @@ $(document).ready(function () {
 					$('.modal-abrirTicket .prioridad').html(resul[0].prioridad);
 					$('.modal-abrirTicket .informe').html(resul[0].solucion);
 					$('.modal-abrirTicket .serial').html(resul[0].serial);
-					$('.modal-abrirTicket a#imprimir').attr("href", url+"Views/reportes/informe.php?num="+resul[0].id);
+					// $('.modal-abrirTicket a#imprimir').attr("href", url+"Views/reportes/informe.php?num="+resul[0].id);
 					$('.modal-abrirTicket').modal('show');
 				}
 			}
@@ -1578,7 +1578,7 @@ $(document).ready(function () {
 					$('.modal-cerrarTicket .solicitante').html(resul[0].solicitante);
 					$('.modal-cerrarTicket .estatus').html(resul[0].estatus);
 					$('.modal-cerrarTicket .colaborador').html(resul[0].colaborador);
-					$('.modal-cerrarTicket .print').html('<a id="imprimir" class="btn btn-warning" href="reportes/informe.php?num='+resul[0].id+'"> <span class="glyphicon glyphicon-print"></span> </a> ');
+					// $('.modal-cerrarTicket .print').html('<a id="imprimir" class="btn btn-warning" href="reportes/informe.php?num='+resul[0].id+'"> <span class="glyphicon glyphicon-print"></span> </a> ');
 					$('.modal-cerrarTicket input#id').val(resul[0].id);
 					$('.modal-cerrarTicket input#solucion').val(resul[0].solucion);
 					$('select#prioridad2').val(resul[0].id_prioridad);

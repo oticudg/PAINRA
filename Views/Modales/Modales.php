@@ -489,32 +489,32 @@ class Modales
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<span class="fa fa-"></span>
-									<label for="responsable">Transferir ticket:</label>
-									<select name="responsable" id="responsable" class="form-control">
-										<option value=""></option>
-									</select>
-								</div>
-								<div class="form-group">
 									<span>Estatus: </span><br>
 									<div class="radio">
-										<label>
+										<label class="radio-inline">
 											<input type="radio" name="estatus" id="radioEstatus" value="1">
 											Abierto.
 										</label>
 									</div>
 									<div class="radio">
-										<label>
+										<label class="radio-inline">
 											<input type="radio" name="estatus" id="radioEstatus" value="2">
 											En Proceso.
 										</label>
 									</div>
 									<div class="radio">
-										<label>
+										<label class="radio-inline">
 											<input type="radio" name="estatus" id="radioEstatus" value="3">
 											Cerrado.
 										</label>
 									</div>
+								</div>
+								<div class="form-group">
+									<span class="fa fa-"></span>
+									<label for="responsable">Transferir ticket:</label>
+									<select name="responsable" id="responsable" class="form-control">
+										<option value=""></option>
+									</select>
 								</div>
 							</div>
 							<div class="col-md-6">
@@ -762,7 +762,7 @@ class Modales
 					</div>
 					<div class="clearfix"></div>
 					<div class="modal-footer">
-						<a id="imprimir" class="btn btn-warning" href="#" data-toggle="tooltip" data-placement="top" title="Imprimir Informe"><span class="glyphicon glyphicon-print"></span></a>
+						<!-- <a id="imprimir" class="btn btn-warning" href="#" data-toggle="tooltip" data-placement="top" title="Imprimir Informe"><span class="glyphicon glyphicon-print"></span></a> -->
 						<button type="button" class="btn btn-default" data-dismiss="modal"><span class="fa fa-close"></span> Cerrar</button>
 					</div>
 				</div><!-- /.modal-content -->
