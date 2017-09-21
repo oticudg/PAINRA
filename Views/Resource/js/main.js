@@ -145,7 +145,7 @@ $(document).ready(function () {
 			$("form#registrarDepartamento input#division").parent().show();
 			$("form#registrarDepartamento input#division").attr("type", "text");
 			$("form#registrarDepartamento input#id_direccion").val(valor);
-		} else {
+		} else if(addEditdepartamentos == 1) {
 			$("form#registrarDepartamento input#id_direccion").val(-1);
 			$("form#registrarDepartamento input#division").parent().hide();
 			$("form#registrarDepartamento input#division").attr("type", "hidden");
@@ -198,16 +198,22 @@ $(document).ready(function () {
 			data: data,
 			type: "POST",
 			success: function (res) {
-				swal({
-					title: '¡Registro Exitoso!',
-					type: 'success',
-					timer: 2000
-				}).then(
-				function () {},
-				function (dismiss) {
-					$(".modal-registrarDepartamento").modal("toggle");
-					$("form#registrarDepartamento")[0].reset();
+				alerta('¡Registro Exitoso!', 'success');
+				$("form#registrarDepartamento")[0].reset();
+				$.ajax({
+					url: url+"Ajax/buscarDepartamento",
+					dataType: 'html',
+					data: {
+						operation: "departamentos",
+						token: 12
+					},
+					type: "POST",
+					success: function (res) {
+						$(".modal-departamentos select#direccion").html(res);
+						$("select#division").html("");
+					}
 				});
+				$(".modal-registrarDepartamento").modal("toggle");
 			}
 		})
 		.fail(function() {
@@ -229,13 +235,14 @@ $(document).ready(function () {
 				direccion = $(".modal-departamentos select#direccion option[value="+iddireccion+"]").html();
 				$("form#registrarDepartamento input#direccion").val(direccion);
 				$("form#registrarDepartamento input#id_direccion").val(iddireccion);
+				$("form#registrarDepartamento input#division").attr("type", "text");
+				$("form#registrarDepartamento input#division").parent().show();
+				$("form#registrarDepartamento input#id_division").val(-1);
 				if (num >= 2) {
 					iddivision = $("select#division").val();
 					division = $("select#division option[value="+iddivision+"]").text();
 					$("form#registrarDepartamento input#division").val(division);
 					$("form#registrarDepartamento input#id_division").val(iddivision);
-					$("form#registrarDepartamento input#division").parent().show();
-					$("form#registrarDepartamento input#division").attr("type", "text");
 				}
 			}
 			if ($("form#registrarDepartamento input#division").val() == "" ) {
@@ -424,16 +431,16 @@ $(document).ready(function () {
 	});
 	$(".modal-servicios #registrarS").click(function () {
 		addEditservicios = 1;
+		$("form#registroServicios")[0].reset();
 		$("input[type='hidden']#idcategoria").val(-1);
 		$("input[type='hidden']#idproblema").val(-1);
 		$("input[type='hidden']#idsubproblema").val(-1);
 		$("input#problema").attr("type", "text");
-		$("input#problema").attr("value", "");
+		$("input#problema").val("");
 		$("input#subproblema").attr("type", "text");
-		$("input#subproblema").attr("value", "");
+		$("input#subproblema").val("");
 		$("input[type='hidden']#idproblema").parent().show();
 		$("input[type='hidden']#idsubproblema").parent().show();
-		$("form#registroServicios")[0].reset();
 		$(".modal-registroServicios").modal("toggle");
 	});
 	$(".modal-servicios #editarS").click(function () {
@@ -452,23 +459,29 @@ $(document).ready(function () {
 					$(".modal-registroServicios input#problema").val(problema);
 					$(".modal-registroServicios input#idproblema").val(nProblema);
 					$(".modal-registroServicios input#problema").parent().show();
+					$(".modal-registroServicios input#problema").attr("type", "text");
+				} else {
+					$(".modal-registroServicios input#problema").attr("type", "hidden");
+					$(".modal-registroServicios input#idproblema").parent().hide();
+					$(".modal-registroServicios input#idproblema").val(-1);
 				}
 				if (num >= 3) {
 					nSubproblema = $("select#subproblema").val();
 					subproblema = $("select#subproblema option[value="+nSubproblema+"]").html();
 					$(".modal-registroServicios input#subproblema").val(subproblema);
 					$(".modal-registroServicios input#idsubproblema").val(nSubproblema);
+					$(".modal-registroServicios input#subproblema").attr("type", "text");
 					$(".modal-registroServicios input#subproblema").parent().show();
+				} else {
+					$(".modal-registroServicios input#subproblema").attr("type", "hidden");
+					$(".modal-registroServicios input#idsubproblema").parent().hide();
+					$(".modal-registroServicios input#idsubproblema").val(-1);
 				}
 			}
-			if ($(".modal-registroServicios input#problema").val() == '') {
-				$(".modal-registroServicios input#idproblema").parent().hide();
-				$(".modal-registroServicios input#idproblema").val(-1);
-			}
-			if ($(".modal-registroServicios input#subproblema").val() == '') {
-				$(".modal-registroServicios input#idsubproblema").parent().hide();
-				$(".modal-registroServicios input#idsubproblema").val(-1);
-			}
+			// if ($(".modal-registroServicios input#problema").val() == '') {
+			// }
+			// if ($(".modal-registroServicios input#subproblema").val() == '') {
+			// }
 			$(".modal-registroServicios").modal("toggle");
 		}
 	});
@@ -485,7 +498,35 @@ $(document).ready(function () {
 			}
 		})
 		.done(function(res) {
+			$("form#registroServicios")[0].reset();
+			$(".modal-servicios select#problema").val("");
+			$(".modal-servicios select#subproblema").val("");
 			alerta('¡Registro Exitoso!', 'success');
+			$.ajax({
+				url: url+"Ajax/buscarSolicitudes",
+				dataType: 'html',
+				data: {
+					operation: "solicitudesRegistro",
+					token: 19
+				},
+				type: "POST",
+				success: function (res) {
+					$(".modal-registroServicios datalist#categorias").html(res);
+				}
+			});
+			$.ajax({
+				url: url+"Ajax/buscarSolicitudes",
+				dataType: 'html',
+				data: {
+					operation: "solicitudes",
+					token: 16
+				},
+				type: "POST",
+				success: function (res) {
+					$(".modal-servicios select#categoria").html(res);
+				}
+			});
+			$(".modal-registroServicios").modal("toggle");
 		})
 		.fail(function() {
 			alerta('¡Error al Borrar!', 'error');
@@ -1357,7 +1398,8 @@ $(document).ready(function () {
 					$('#Proceso').html(resul.Proceso);
 					$('#Total').html(resul.Total);
 					$('#Efectividad').html(resul.Efectividad.toFixed(2));
-					$('h2#nombre').html("Ticket de "+resul.Soportista);
+					let name= $("select#responsable option[value='"+$("select#responsable").val()+"']").html();
+					$('h2#nombre').html("Ticket de "+name);
 				})
 				.fail(function(resul) {
 					$('#Abierto').html(0);
@@ -1457,7 +1499,7 @@ $(document).ready(function () {
 		swal({
 			title: string,
 			type: tipo,
-			timer: 2000
+			timer: 1500
 		}).then(
 		function () {},
 		function (dismiss) {});

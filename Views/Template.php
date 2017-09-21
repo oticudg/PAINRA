@@ -102,7 +102,7 @@ class Template {
 	<div id="page-loader"><span class="preloader-interior"></span></div>
 	<footer class="navbar-fixed-bottom">
 		<div class="container">
-			<p class="text-center"> APLICACIÓN DESARROLLADA POR LA OFICINA DE SISTEMAS Y TECNOLÓGIAS DE INFORMACIÓN <b><span class="fa fa-copyright"></span> Copyleft</b> </p>
+			<p class="text-center"> APLICACIÓN DESARROLLADA POR LA UNIDAD DE DESARROLLO Y PROGRAMACIÓN - OTIC <b><span class="fa fa-copyright"></span> Copyleft</b> </p>
 		</div>
 	</footer>
 </body>
@@ -116,7 +116,6 @@ class Template {
 <!-- <script src="http://code.highcharts.com/highcharts.js"></script> -->
 <!-- <script src="http://code.highcharts.com/modules/exporting.js"></script> -->
 <!-- <script src="bower_components/sweetalert2/dist/sweetalert2.min.js"></script> -->
-
 <script src="<?php Route::js('jquery.min') ?>"></script>
 <script src="<?php Route::js('bootstrap.min') ?>"></script>
 <script src="<?php Route::js('jquery.dataTables.min') ?>"></script>
@@ -128,7 +127,7 @@ class Template {
 <script src="<?php Route::js('exporting') ?>"></script>
 <script src="<?php Route::js('sweetalert2.min') ?>"></script>
 <script src="<?php Route::js('highcharts-more') ?>"></script>
-<script src="Views/resource/js/main.min.js"></script>
+<script src="Views/resource/js/main.js"></script>
 </html>
 <?php
 	}

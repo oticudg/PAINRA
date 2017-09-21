@@ -70,7 +70,7 @@
 	</div>
 	<footer class="navbar-fixed-bottom">
 		<div class="container">
-			<p class="text-center"> APLICACIÓN DESARROLLADA POR LA OFICINA DE SISTEMAS Y TECNOLÓGIAS DE INFORMACIÓN <b><span class="fa fa-copyright"></span> Copyleft</b> </p>
+			<p class="text-center"> APLICACIÓN DESARROLLADA POR LA UNIDAD DE DESARROLLO Y PROGRAMACIÓN - OTIC <b><span class="fa fa-copyright"></span> Copyleft</b> </p>
 		</div>
 	</footer>
 </body>

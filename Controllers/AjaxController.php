@@ -386,8 +386,8 @@ class AjaxController
 	public function ticketspersonales()
 	{
 		if ($_REQUEST['fstart'] != '' && $_REQUEST['fend'] != '') {
-			$fstart = Fechas::Sql($_REQUEST['fstart']);
-			$fend = Fechas::Sql($_REQUEST['fend']);
+			$fstart = Fechas::sql($_REQUEST['fstart']);
+			$fend = Fechas::sql($_REQUEST['fend']);
 		} else {
 			$fstart = 0;
 			$fend = 0;
@@ -408,7 +408,7 @@ class AjaxController
 			'Cerrado' => $cerrado,
 			'Total' => $totalSolicitudes,
 			'Efectividad' => $efectividad,
-			'Soportista' => $resultado[0]['nombre']
+			'Soportista' => (isset($resultado[0]['nombre']) ? $resultado[0]['nombre'] : '')
 		));
 	}
 
@@ -432,8 +432,10 @@ class AjaxController
 		}
 		if ($_SESSION['rol'] == 3) {
 			$users = $this->cp->users(0, 0, 0, $_SESSION['cedula'])->see();
+		} elseif($_SESSION['rol'] == 2) {
+			$users = $this->cp->users(0, 0, 0, 0, 0, $_SESSION['id_coordinacion'])->see();
 		} else {
-			$users = $this->cp->users(0, $rol)->see();
+			$users = $this->cp->users()->see();
 		}
 		$html = '<option value="">Seleccione una opción</option>';
 		foreach ($users as $u) {

@@ -1,7 +1,7 @@
 <?php namespace models;
 define('DBHOST', 'localhost');
-define('DBUSER', 'renny');
-define('DBPASS', '123456789');
+define('DBUSER', 'root');
+define('DBPASS', '');
 define('DBTABLE', 'st');
 define('METHOD', 'AES-256-CBC');
 define('SECRET_KEY', '<1RENNY@SUAREZ!OTIC@SAHUM-2017></1RENNY@SUAREZ!OTIC@SAHUM-2017>');
