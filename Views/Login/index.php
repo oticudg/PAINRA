@@ -39,7 +39,7 @@
 										<form class="form" role="form" method="post" action="" accept-charset="UTF-8" id="">
 											<div class="form-group">
 												<label class="sr-only" for="usuario">Usuario</label>
-												<input type="text" class="form-control" id="usuario" name="usuario" pattern="[A-Za-z0-9@.-]{5,}" placeholder="Ingrese su usuario" required>
+												<input type="text" class="form-control" id="usuario" name="usuario" pattern="[A-Za-z0-9@.-]{2,}" placeholder="Ingrese su usuario" required>
 											</div>
 											<div class="form-group">
 												<label class="sr-only" for="clave">Contraseña</label>
