@@ -12,7 +12,7 @@ class Estadisticas extends Conexion
 		if ($rol == 2) {
 			$where = 'WHERE t.coordinacion = '.$_SESSION['id_coordinacion'];
 		} elseif ($rol == 3) {
-			$where = 'WHERE t.id_soporte = ' . $_SESSION['cedula'];
+			$where = 'WHERE t.id_soporte = ' . $_SESSION['id'];
 		}
 		$this->sql = 'SELECT e.id, e.descripcion, COUNT(t.id) AS tickets 
 		'.$this->join.' '.$where.'
@@ -25,7 +25,7 @@ class Estadisticas extends Conexion
 		if ($rol == 2) {
 			$where = 'AND t.coordinacion = '.$_SESSION['id_coordinacion'];
 		} elseif ($rol == 3) {
-			$where = 'AND t.id_soporte = '.$_SESSION['cedula'];
+			$where = 'AND t.id_soporte = '.$_SESSION['id'];
 		} else {
 			$where = '';
 		}
