@@ -38,9 +38,11 @@ class Modales
 								<button type="btn" class="btn btn-small btn-danger" id="eliminarU" data-toggle="tooltip" data-placement="top" title="Eliminar">
 									<span class="fa fa-trash"></span>
 								</button>
+								<?php if ($_SESSION['rol'] == 1) { ?>
 								<button type="btn" class="btn btn-small btn-info" id="coordinacionU" style="display:none;" data-toggle="tooltip" data-placement="top" title="Coordinación">
 									<span class="fa fa-cubes"></span>
 								</button>
+								<?php } ?>
 							</div>
 						</div><br>
 					</div>
@@ -90,17 +92,24 @@ class Modales
 										<input type="password" id="pass" class="form-control" name="pass" placeholder="Ingrese la Contraseña" minlength="8">
 									</div>
 									<div class="form-group">
+										<span class="fa fa-key"></span>
+										<label for="cpass">Confirme Contraseña:</label>
+										<input type="cpassword" id="cpass" class="form-control" name="cpass" placeholder="Ingrese la Contraseña" minlength="8">
+									</div>
+									<?php if ($_SESSION['rol'] == 1) { ?>
+									<div class="form-group">
 										<span class="fa fa-calendar"></span>
 										<label for="rol">Rol:</label>
 										<select name="rol" id="rol" class="form-control" required>
 											<option value="">Seleccione el rol</option>
-											<option value="1">1</option>
-											<option value="2">2</option>
-											<option value="3">3</option>
-											<option value="4">4</option>
+											<option value="1">Administrador</option>
+											<option value="2">Coordinador</option>
+											<option value="3">Soportista</option>
+											<option value="4">Call Center</option>
 										</select>
-										<input type="hidden" name="id" id="id" value="-1">
 									</div>
+									<?php } ?>
+									<input type="hidden" name="id" id="id" value="-1">
 								</div>
 								<div class="clearfix"></div>
 							</div>

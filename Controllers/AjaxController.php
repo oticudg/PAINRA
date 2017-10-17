@@ -161,24 +161,27 @@ class AjaxController
 						$pass,
 						$_REQUEST['id']
 					)->save();
+					if ($_SESSION['rol'] == 2 && $_REQUEST['id'] == -1) {
+						$user = $this->cp->users(0, 0, $_REQUEST['usuario'])->see();
+						$this->coordinacionRegistrar($user[0]['id'], $_SESSION['id_coordinacion']);
+						return;
+					}
 				}
 				echo json_encode($resultado);
 			}
 		}
 	}
 
-	public function coordinacionRegistrar()
+	public function coordinacionRegistrar($id = '', $coordinacion = '')
 	{
-		if (isset($_REQUEST['operation']) && $_REQUEST['operation'] == 'coordinacionRegistrar') {
-			if ($_REQUEST['token'] == 8) {
-				$iduser = MED::d($_REQUEST['iduser']);
-				$resultado = $this->cp->select('user_coordinacion', array(array('id_user',$iduser), array('id_coordinacion',$_REQUEST['coordinacion'])), 0)->see();
-				if (count($resultado) > 0) {
-					echo 0;
-				} else {
-					echo $this->cp->addUserCoordinacion($iduser, $_REQUEST['coordinacion'], $_REQUEST['tipo'])->save();
-				}
-			}
+		$iduser = ($id === '') ? MED::d($_REQUEST['iduser']) : $id;
+		$add_edit = ($id === '') ? $_REQUEST['tipo'] : -1;
+		$coordinacion = ($coordinacion === '') ? $_REQUEST['coordinacion'] : $coordinacion;
+		$resultado = $this->cp->select('user_coordinacion', array(array('id_user',$iduser), array('id_coordinacion',$coordinacion)), 0)->see();
+		if (count($resultado) > 0) {
+			echo 0;
+		} else {
+			echo $this->cp->addUserCoordinacion($iduser, $coordinacion, $add_edit)->save();
 		}
 	}
 

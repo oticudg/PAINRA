@@ -1,3 +1,4 @@
+"use strict";
 $(document).ready(function () {
 	const url = $("meta[url]").attr("url");
 	/*
@@ -541,39 +542,45 @@ $(document).ready(function () {
 		var data = $(this).serializeArray();
 		data.push({ name: "operation", value: "soportistasRegistrar" });
 		data.push({ name: "token", value: "7" });
-		$.ajax({
-			url: url+"Ajax/soportistasRegistrar",
-			type: 'POST',
-			dataType: 'json',
-			data: data,
-			beforeSend: function () {
-				$(".msg").html('<div class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i><div>');
-			}
-		})
-		.done(function(resul) {
-			if (resul == false) {
-				$(".msg").html('<div class="alert alert-danger" role="alert"> <span class="fa fa-exclamation-triangle"></span> Ya existe este usuario o cedula.<div>');
-			} else {
-				$(".msg").html('<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-ok"></span> Datos Recibidos Exitosamente...<div>');
-				setTimeout(function () {
-					$('.modal-soportista-registrar').modal('toggle');
-					$("form#registrar-soportista")[0].reset();
-					$(".msg").html('');
-					llenarSoportistas();
-				}, 1000);
-				setTimeout(function () {
-					$("div.alert").fadeOut();
-				}, 5000);
-			}
-		})
-		.fail(function(resul) {
-			$(".msg").html('<div class="alert alert-danger" role="alert">Error al enviar Datos...<div>');
-		});
+		if (data[4].value === data[5].value) {
+			$.ajax({
+				url: url+"Ajax/soportistasRegistrar",
+				type: 'POST',
+				dataType: 'json',
+				data: data,
+				beforeSend: function () {
+					$(".msg").html('<div class="alert alert-info" role="alert">Enviando Datos...<i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i><div>');
+				}
+			})
+			.done(function(resul) {
+				if (resul == false) {
+					$(".msg").html('<div class="alert alert-danger" role="alert"> <span class="fa fa-exclamation-triangle"></span> Ya existe este usuario o cedula.<div>');
+				} else {
+					$(".msg").html('<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-ok"></span> Datos Recibidos Exitosamente...<div>');
+					setTimeout(function () {
+						$('.modal-soportista-registrar').modal('toggle');
+						$("form#registrar-soportista")[0].reset();
+						$(".msg").html('');
+						llenarSoportistas();
+					}, 1000);
+					setTimeout(function () {
+						$("div.alert").fadeOut();
+					}, 5000);
+				}
+			})
+			.fail(function(resul) {
+				$(".msg").html('<div class="alert alert-danger" role="alert">Error al enviar Datos...<div>');
+			});
+		} else {
+			$(".msg").html('<div class="alert alert-danger" role="alert">¡Las contraseñas no coinciden!<div>');
+		}
 	});
 	/* Abre el modal para registrar nuevo usuario */
 	$("button.btn.btn-small.btn-primary#registrarU").click(function () {
 		$(".modal-soportista-registrar input#pass").attr("type", "hidden");
 		$(".modal-soportista-registrar input#pass").parent().hide();
+		$(".modal-soportista-registrar input#cpass").attr("type", "hidden");
+		$(".modal-soportista-registrar input#cpass").parent().hide();
 		$("form#registrar-soportista.form")[0].reset();
 		$(".modal-soportista-registrar select#rol").val("");
 		$(".modal-soportista-registrar").modal("show");
@@ -583,6 +590,8 @@ $(document).ready(function () {
 	$("button.btn#editarU").click(function (e) {
 		$(".modal-soportista-registrar input#pass").attr("type", "password");
 		$(".modal-soportista-registrar input#pass").parent().show();
+		$(".modal-soportista-registrar input#cpass").attr("type", "password");
+		$(".modal-soportista-registrar input#cpass").parent().show();
 		e.preventDefault();
 		if ($(this).attr("ren")) {
 			$.ajax({
@@ -813,7 +822,7 @@ $(document).ready(function () {
 				data: {token: 11}
 			})
 			.done(function(resul) {
-				var total = 0;
+				var total = 0, cerrados;
 				for (var i = 0; i < resul.length; i++) {
 					total += JSON.parse(resul[i].tickets);
 					$("div."+resul[i].id+" strong").html(resul[i].descripcion+": "+resul[i].tickets);
@@ -822,7 +831,7 @@ $(document).ready(function () {
 				if ($("div.1 strong").html() == "") {$("div.1 strong").html("Abierto: 0");}
 				if ($("div.2 strong").html() == "") {$("div.2 strong").html("En proceso: 0");}
 				if ($("div.3 strong").html() == "") {$("div.3 strong").html("Cerrado: 0");}
-				efectividad = (total != 0) ? ((cerrados*100)/total) : 0;
+				let efectividad = (total != 0) ? ((cerrados*100)/total) : 0;
 				$("div.total strong").html("Total de solicitudes: "+total);
 				$("div.efectividad strong").html("Efectividad: "+efectividad.toFixed(2)+"%");
 			});
