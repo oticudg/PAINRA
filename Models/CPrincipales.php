@@ -287,6 +287,12 @@ class CPrincipales extends Conexion
 		return $this;
 	}
 
+	public function keySearch($table, $key)
+	{
+		$this->sql = "SELECT * FROM {$table} WHERE opcion LIKE '%{$key}%' AND delete_at IS NULL";
+		return $this;
+	}
+
 	public function confirmDelete($tabla, $id)
 	{
 		$this->sql = 'UPDATE '.$tabla.' SET delete_at = "'.date('Y-m-d H:m:s').'" WHERE id = '.$id.' LIMIT 1';

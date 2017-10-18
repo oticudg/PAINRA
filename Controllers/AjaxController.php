@@ -576,8 +576,8 @@ class AjaxController
 			$_SESSION['id'],
 			date('H:i'),
 			$_REQUEST['solicitante'],
-			$_REQUEST['direccion'],
-			$_REQUEST['division'],
+			MED::d($_REQUEST['direccion']),
+			MED::d($_REQUEST['division']),
 			$_REQUEST['categoria'],
 			$_REQUEST['problema_i'],
 			$_REQUEST['problema_ii'],
@@ -638,6 +638,16 @@ class AjaxController
 			$_SESSION['id'],
 			$_REQUEST['id'])->save();
 		echo json_encode(array('estado' => $estado));
+	}
+
+	public function Divisiones()
+	{
+		$deps = $this->cp->select('division', array(array('-1', -1)))->see();
+		$datalist = '';
+		foreach ($deps as $d) {
+			$datalist .= '<option departamento="'.MED::e($d['relacion']).'" division="'.MED::e($d['id']).'" value="'.$d['opcion'].'"></option>';
+		}
+		echo(json_encode(array('datalist' => $datalist)));
 	}
 
 	public function server_side_processing()

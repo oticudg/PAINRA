@@ -5,7 +5,7 @@ use Config\Route as Route;
 class Template {
 	public function __construct()
 	{
-?>
+		?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -32,6 +32,7 @@ class Template {
 	<link rel="stylesheet" href="<?php Route::css('dataTables.bootstrap.min') ?>">
 	<link rel="stylesheet" href="<?php Route::css('sweetalert2.min') ?>">
 	<link href="Views/resource/css/estilos.css" rel="stylesheet">
+	<script src="<?php Route::js('jquery.min') ?>"></script>
 </head>
 <body>
 	<nav class="navbar navbar-primary navbar-fixed-top">
@@ -76,16 +77,16 @@ class Template {
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><b>Bienvenido, <?php echo $_SESSION['nombre']; ?> <span class="caret"></span></b></a>
 						<ul class="dropdown-menu menup">
-						<?php if ($_SESSION['rol'] < 3) { ?>
+							<?php if ($_SESSION['rol'] < 3) { ?>
 							<?php if ($_SESSION['rol'] == 1): ?>
-							<li><a href="#" data-toggle="modal" data-target=".modal-departamentos"><span class="fa fa-cubes" aria-hidden="true"></span>Departamentos</a></li>
-							<li role="separator" class="divider"></li>
+								<li><a href="#" data-toggle="modal" data-target=".modal-departamentos"><span class="fa fa-cubes" aria-hidden="true"></span>Departamentos</a></li>
+								<li role="separator" class="divider"></li>
 							<?php endif ?>
 							<li><a href="#" data-toggle="modal" data-target=".modal-servicios"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span> Servicios</a></li>
 							<li role="separator" class="divider"></li>
 							<li><a href="#" data-toggle="modal" data-target=".modal-soportistas"><span class="fa fa-user-circle-o" aria-hidden="true"></span> Usuarios</a></li>
 							<li role="separator" class="divider"></li>
-						<?php } ?>
+							<?php } ?>
 							<li><a href="#" data-toggle="modal" data-target=".modal-contraseña"><span class="glyphicon glyphicon-cog"></span> Cambiar Contraseña</a></li>
 							<li role="separator" class="divider"></li>
 							<li><a href="#" id="logout"><span class="fa fa-sign-out"></span> Salir</a></li>
@@ -95,43 +96,42 @@ class Template {
 			</div><!-- /.navbar-collapse -->
 		</div><!-- /.container-fluid -->
 	</nav>
-<?php
-	}
-	public function __destruct()
-	{
-?>
-	<div id="page-loader"><span class="preloader-interior"></span></div>
-	<footer class="navbar-fixed-bottom">
-		<div class="container">
-			<p class="text-center"> APLICACIÓN DESARROLLADA POR LA UNIDAD DE DESARROLLO Y PROGRAMACIÓN - OTIC <b><span class="fa fa-copyright"></span> Copyleft</b> </p>
-		</div>
-	</footer>
-</body>
-<?php /*
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
-<script src="bower_components/sweetalert2/dist/sweetalert2.min.js"></script>
-*/ ?>
-<script src="<?php Route::js('jquery.min') ?>"></script>
-<script src="<?php Route::js('bootstrap.min') ?>"></script>
-<script src="<?php Route::js('jquery.dataTables.min') ?>"></script>
-<script src="<?php Route::js('pace.min') ?>"></script>
-<script src="<?php Route::js('bootstrap-datepicker.min') ?>"></script>
-<script src="<?php Route::js('bootstrap-datepicker.es.min') ?>"></script>
-<script src="<?php Route::js('dataTables.bootstrap.min') ?>"></script>
-<script src="<?php Route::js('highcharts') ?>"></script>
-<script src="<?php Route::js('exporting') ?>"></script>
-<script src="<?php Route::js('sweetalert2.min') ?>"></script>
-<script src="<?php Route::js('highcharts-more') ?>"></script>
-<script src="Views/resource/js/main.min.js"></script>
+			<?php
+		}
+		public function __destruct()
+		{
+			?>
+		<div id="page-loader"><span class="preloader-interior"></span></div>
+		<footer class="navbar-fixed-bottom">
+			<div class="container">
+				<p class="text-center"> APLICACIÓN DESARROLLADA POR LA UNIDAD DE DESARROLLO Y PROGRAMACIÓN - OTIC <b><span class="fa fa-copyright"></span> Copyleft</b> </p>
+			</div>
+		</footer>
+	</body>
+	<?php /*
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+	<script src="http://code.highcharts.com/modules/exporting.js"></script>
+	<script src="bower_components/sweetalert2/dist/sweetalert2.min.js"></script>
+	*/ ?>
+	<script src="<?php Route::js('bootstrap.min') ?>"></script>
+	<script src="<?php Route::js('jquery.dataTables.min') ?>"></script>
+	<script src="<?php Route::js('pace.min') ?>"></script>
+	<script src="<?php Route::js('bootstrap-datepicker.min') ?>"></script>
+	<script src="<?php Route::js('bootstrap-datepicker.es.min') ?>"></script>
+	<script src="<?php Route::js('dataTables.bootstrap.min') ?>"></script>
+	<script src="<?php Route::js('highcharts') ?>"></script>
+	<script src="<?php Route::js('exporting') ?>"></script>
+	<script src="<?php Route::js('sweetalert2.min') ?>"></script>
+	<script src="<?php Route::js('highcharts-more') ?>"></script>
+	<script src="Views/resource/js/main.min.js"></script>
 </html>
 <?php
-	}
+}
 }

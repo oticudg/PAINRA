@@ -607,16 +607,35 @@ class Modales
 								</div>
 								<div class="form-group">
 									<span class="fa fa-building"></span>
-									<label for="direccion">*Departamento:</label>
-									<select id="direccion" class="form-control" name="direccion" required>
-										<option value="">Seleccione el departamento</option>
-									</select>
+									<label for="searchDep">*Departamento:</label>
+									<input type="text" id="searchDep" class="form-control" name="searchDep" required placeholder="Ubicacion del departamento" autofocus="" list="asd" autocomplete="off">
+									<input id="direccion" type="hidden" value="" name="direccion" name="direccion">
+									<input id="division" type="hidden" value="" name="division" name="division">
+									<datalist id="asd"></datalist>
 								</div>
-								<div class="form-group">
-									<span class="fa fa-building"></span>
-									<label for="division">*Division:</label>
-									<select id="division" class="form-control" name="division" required></select>
-								</div>
+								<script>
+									$(".modal-registrar").modal("toggle")
+									$(".modal-registrar datalist#asd").ready(function () {
+										$.ajax({
+											url: $("meta[url]").attr("url") + 'Ajax/Divisiones',
+											type: 'POST',
+											dataType: 'json',
+											data: {
+												departamento: $(this).val(),
+												token: 39
+											}
+										})
+										.done(function(resul) {
+											$("datalist#asd").html(resul.datalist);
+										})
+									})
+									$(".modal-registrar input#searchDep").change(function () {
+										let divi = $("datalist#asd option[value='"+$(this).val()+"']")[0].getAttribute("division"),
+										depa = $("datalist#asd option[value='"+$(this).val()+"']")[0].getAttribute("departamento");
+										$(".modal-registrar input#direccion").val(depa);
+										$(".modal-registrar input#division").val(divi);
+									})
+								</script>
 								<div class="form-group">
 									<span class="fa fa-file-text"></span>
 									<label for="detalles">*Resumen del Problema Informático:</label><br>
