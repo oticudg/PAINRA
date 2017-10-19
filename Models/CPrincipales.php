@@ -175,8 +175,8 @@ class CPrincipales extends Conexion
 		AND (id_estatus = 1 OR id_estatus = 2) 
 		AND serial = '".$ser."' 
 		AND solicitante = '".$sole."' 
-		AND id_departamento = ".$dep." 
-		AND id_categoriag = ".$cat.";";
+		AND id_departamento = '".$dep."' 
+		AND id_categoriag = '".$cat."';";
 		return $this;
 	}
 
@@ -185,11 +185,11 @@ class CPrincipales extends Conexion
 		$prefijo = ($id == -1) ? 'INSERT INTO ' : 'UPDATE ';
 		$sufijo = ($id == -1) ? ';' : ' WHERE id = ' . $id;
 		$this->sql = $prefijo." tickets SET ";
-		$this->sql .= ($id == -1) ? "id_departamento = ".$dep.", " : '';
-		$this->sql .= ($id == -1) ? "id_secciones = ".$sec.", " : '';
-		$this->sql .= ($id == -1) ? "id_categoriag = ".$cat.", " : '';
-		$this->sql .= ($id == -1) ? "solicitud = ".$sold.", " : '';
-		$this->sql .= ($id == -1) ? "problema = ".$pro.", " : '';
+		$this->sql .= ($id == -1) ? "id_departamento = '".$dep."', " : '';
+		$this->sql .= ($id == -1) ? "id_secciones = '".$sec."', " : '';
+		$this->sql .= ($id == -1) ? "id_categoriag = '".$cat."', " : '';
+		$this->sql .= ($id == -1) ? "solicitud = '".$sold."', " : '';
+		$this->sql .= ($id == -1) ? "problema = '".$pro."', " : '';
 		$this->sql .= ($id == -1) ? "registrante = '".$reg."', " : '';
 		$this->sql .= ($id == -1) ? "hora = '".$hor."', " : '';
 		$this->sql .= ($id == -1) ? "solicitante = '".$sole."', " : '';
@@ -290,6 +290,16 @@ class CPrincipales extends Conexion
 	public function keySearch($table, $key)
 	{
 		$this->sql = "SELECT * FROM {$table} WHERE opcion LIKE '%{$key}%' AND delete_at IS NULL";
+		return $this;
+	}
+
+	public function problems()
+	{
+		$this->sql = "SELECT c.id AS idcategory, p1.id AS idproblem, p2.id AS idproblem2, p2.opcion AS Subproblema
+		FROM categoria AS c LEFT JOIN problema_i AS p1 ON c.id = p1.relacion 
+		LEFT JOIN problema_ii AS p2 ON p1.id = p2.relacion
+		WHERE c.delete_at IS NULL AND p1.delete_at IS NULL AND p2.delete_at IS NULL AND p2.opcion != ''
+		ORDER BY Subproblema ASC";
 		return $this;
 	}
 

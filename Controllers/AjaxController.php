@@ -332,7 +332,7 @@ class AjaxController
 			$this->cp->add_editCategoria($_REQUEST['categoria'], $_REQUEST['idcategoria'])->save();
 			if ($_REQUEST['idcategoria'] != -1) {
 				$this->cp->add_editProblemas('problema_i', $_REQUEST['problema'], $_REQUEST['idcategoria'], $_REQUEST['idproblema'])->save();
-				if ($_REQUEST['idproblema'] != -1) {
+				if ($_REQUEST['idproblema'] != -1 &&  $_REQUEST['subproblema'] !== '') {
 					$this->cp->add_editProblemas('problema_ii', $_REQUEST['subproblema'], $_REQUEST['idproblema'], $_REQUEST['idsubproblema'])->save();
 				}
 			}
@@ -556,8 +556,8 @@ class AjaxController
 	{
 		$resultado = $this->cp->validarTicketSemana(
 			$_REQUEST['solicitante'],
-			$_REQUEST['direccion'],
-			$_REQUEST['categoria'],
+			MED::d($_REQUEST['direccion']),
+			MED::d($_REQUEST['categoria']),
 			$_REQUEST['serial'])->see();
 		if (isset($resultado[0])) {
 			echo(json_encode(array('ticket' => $resultado[0]['id'], 'estado' => false)));
@@ -569,7 +569,6 @@ class AjaxController
 				$resultado = $this->cp->add_editComputador($_REQUEST['serial'], '', '', '', '', '')->save();
 			}
 		}
-
 		$colaborador = (!empty($_REQUEST['colaborador'])) ? implode(', ', $_REQUEST['colaborador']) : '';
 		$estado = $this->cp->add_editTicket(
 			date("Y-m-d"),
@@ -578,9 +577,9 @@ class AjaxController
 			$_REQUEST['solicitante'],
 			MED::d($_REQUEST['direccion']),
 			MED::d($_REQUEST['division']),
-			$_REQUEST['categoria'],
-			$_REQUEST['problema_i'],
-			$_REQUEST['problema_ii'],
+			MED::d($_REQUEST['categoria']),
+			MED::d($_REQUEST['problema_i']),
+			MED::d($_REQUEST['problema_ii']),
 			$_REQUEST['serial'],
 			strtoupper($_REQUEST['detalles']),
 			'',
@@ -594,11 +593,10 @@ class AjaxController
 			'NULL')->save();
 		if ($estado) {
 			$lastId = $this->cp->lastTicket()->see();
+			echo(json_encode(array('estado' => $estado, 'lastId' => $lastId[0]['lastId'])));
 		} else {
 			echo(json_encode(array('estado' => $estado)));
-			
 		}
-		echo(json_encode(array('estado' => $estado, 'lastId' => $lastId[0]['lastId'])));
 	}
 
 	public function cerrarTicket()
@@ -640,12 +638,22 @@ class AjaxController
 		echo json_encode(array('estado' => $estado));
 	}
 
-	public function Divisiones()
+	public function datalistDep()
 	{
-		$deps = $this->cp->select('division', array(array('-1', -1)))->see();
 		$datalist = '';
+		$deps = $this->cp->select('division')->see();
 		foreach ($deps as $d) {
 			$datalist .= '<option departamento="'.MED::e($d['relacion']).'" division="'.MED::e($d['id']).'" value="'.$d['opcion'].'"></option>';
+		}
+		echo(json_encode(array('datalist' => $datalist)));
+	}
+
+	public function datalistPro()
+	{
+		$datalist = '';
+		$prob = $this->cp->problems()->see();
+		foreach ($prob as $p) {
+			$datalist .= '<option categoria="'.$p['idcategory'].'" problema="'.MED::e($p['idproblem']).'" id="'.MED::e($p['idproblem2']).'" value="'.$p['Subproblema'].'"></option>';
 		}
 		echo(json_encode(array('datalist' => $datalist)));
 	}

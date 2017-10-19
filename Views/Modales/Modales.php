@@ -613,29 +613,6 @@ class Modales
 									<input id="division" type="hidden" value="" name="division" name="division">
 									<datalist id="asd"></datalist>
 								</div>
-								<script>
-									$(".modal-registrar").modal("toggle")
-									$(".modal-registrar datalist#asd").ready(function () {
-										$.ajax({
-											url: $("meta[url]").attr("url") + 'Ajax/Divisiones',
-											type: 'POST',
-											dataType: 'json',
-											data: {
-												departamento: $(this).val(),
-												token: 39
-											}
-										})
-										.done(function(resul) {
-											$("datalist#asd").html(resul.datalist);
-										})
-									})
-									$(".modal-registrar input#searchDep").change(function () {
-										let divi = $("datalist#asd option[value='"+$(this).val()+"']")[0].getAttribute("division"),
-										depa = $("datalist#asd option[value='"+$(this).val()+"']")[0].getAttribute("departamento");
-										$(".modal-registrar input#direccion").val(depa);
-										$(".modal-registrar input#division").val(divi);
-									})
-								</script>
 								<div class="form-group">
 									<span class="fa fa-file-text"></span>
 									<label for="detalles">*Resumen del Problema Informático:</label><br>
@@ -668,18 +645,12 @@ class Modales
 								</div>
 								<div class="form-group">
 									<span class="fa fa-exclamation-triangle"></span>
-									<label for="categoria">*Categoria del Problema:</label>
-									<select id="categoria" class="form-control" name="categoria" required></select>
-								</div>
-								<div class="form-group">
-									<span class="fa fa-exclamation-triangle"></span>
-									<label for="problema_i">*Problema Informático:</label>
-									<select id="problema_i" class="form-control" name="problema_i" required></select>
-								</div>
-								<div class="form-group">
-									<span class="fa fa-exclamation-triangle"></span>
-									<label for="problema_ii">*Problema especifico:</label>
-									<select id="problema_ii" class="form-control" name="problema_ii" required></select>
+									<label for="searchprob">*Problema Informático:</label>
+									<input type="text" id="searchprob" class="form-control" name="searchprob" required placeholder="Seleccione el problema" autofocus="" list="problem" autocomplete="off">
+									<datalist id="problem"></datalist>
+									<input type="hidden" id="categoria" name="categoria" value=""></input>
+									<input type="hidden" id="problema_i" name="problema_i" value=""></input>
+									<input type="hidden" id="problema_ii" name="problema_ii" value=""></input>
 								</div>
 								<div class="form-group">
 									<span class="fa fa-barcode"></span>
