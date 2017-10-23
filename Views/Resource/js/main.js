@@ -940,7 +940,7 @@ $(document).ready(function () {
 				e.preventDefault();
 				var data = $(this).serializeArray();
 				$(".modal-cerrarTicket span.msg").html('');
-				tiposerial = $(".modal-cerrarTicket input#serial").attr("type");
+				let tiposerial = $(".modal-cerrarTicket input#serial").attr("type");
 				if (data[6].value == 3) {
 					if (tiposerial !== "hidden") {
 						if (data[7].value == '') {
