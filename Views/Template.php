@@ -31,7 +31,7 @@ class Template {
 	<link rel="stylesheet" href="<?php Route::css('font-awesome.min') ?>">
 	<link rel="stylesheet" href="<?php Route::css('dataTables.bootstrap.min') ?>">
 	<link rel="stylesheet" href="<?php Route::css('sweetalert2.min') ?>">
-	<link href="Views/resource/css/estilos.css" rel="stylesheet">
+	<link href="Views/Resource/css/estilos.css" rel="stylesheet">
 	<script src="<?php Route::js('jquery.min') ?>"></script>
 </head>
 <body>
@@ -130,7 +130,7 @@ class Template {
 	<script src="<?php Route::js('exporting') ?>"></script>
 	<script src="<?php Route::js('sweetalert2.min') ?>"></script>
 	<script src="<?php Route::js('highcharts-more') ?>"></script>
-	<script src="Views/resource/js/main.min.js"></script>
+	<script src="Views/Resource/js/main.js"></script>
 </html>
 <?php
 }

@@ -1,4 +1,4 @@
-<?php namespace models;
+<?php namespace Models;
 define('DBHOST', 'localhost');
 define('DBUSER', 'root');
 define('DBPASS', '');

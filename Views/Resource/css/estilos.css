@@ -1,7 +1,7 @@
 * {margin:0; padding:0; box-sizing:border-box;}
 body{padding-top:51px !important; margin-bottom:8vh !important;}
 .bgbody{
-  background-image:url(../../resource/imagenes/blackp.jpg);
+  background-image:url(../../Resource/imagenes/blackp.jpg);
   background-position:center;
   background-repeat:no-repeat;
   background-attachment:fixed;
@@ -265,12 +265,12 @@ div#tabla_processing.dataTables_processing:after {
 .input-group-btn button.btn.btn-default i{line-height:1.1em; }
 div.alert{margin:0;}
 /*lista de los modales abiertos y en proceso*/
-ol.listaTickets{
+ul.listaTickets{
   margin-left: 1.8em;
   display: flex;
   flex-flow: row wrap;
 }
-ol.listaTickets li{
+ul.listaTickets li{
   padding-bottom: .8em;
   width: 50%;
 }

@@ -230,6 +230,8 @@ $(document).ready(function () {
 	var addEditservicios;
 	$("a[data-target='.modal-servicios']").click(function () {
 		llenarCategoria();
+		$(".modal-servicios #editarS, .modal-servicios #eliminarS").attr("ren", '');
+		$(".modal-servicios #editarS, .modal-servicios #eliminarS").attr("num", '');
 	});
 	$(".modal-servicios select#categoria").change(function () {
 		var num = $(this).val();
@@ -272,7 +274,7 @@ $(document).ready(function () {
 		$(".modal-servicios #editarS, .modal-servicios #eliminarS").attr("ren", $(this).val());
 		$(".modal-servicios #editarS, .modal-servicios #eliminarS").attr("num", 3);
 	});
-	$("button#registrarS, button#editarS").click(function () {
+	function llenarDatalistCategoria() {
 		$.ajax({
 			url: url+"Ajax/buscarSolicitudes",
 			dataType: 'html',
@@ -285,7 +287,7 @@ $(document).ready(function () {
 				$(".modal-registroServicios datalist#categorias").html(res);
 			}
 		});
-	});
+	}
 	$(".modal-servicios #registrarS").click(function () {
 		addEditservicios = 1;
 		$("form#registroServicios")[0].reset();
@@ -298,12 +300,13 @@ $(document).ready(function () {
 		$("input[type='hidden']#idsubproblema").val(-1);
 		$("input[type='hidden']#idproblema").parent().show();
 		$("input[type='hidden']#idsubproblema").parent().show();
+		llenarDatalistCategoria()
 		$(".modal-registroServicios").modal("toggle");
 	});
 	$(".modal-registroServicios input#categoria").change(function () {
-		let valor = $(this).val(),
-		id = $("datalist#categorias option[value='"+valor+"'").html();
+		let id = $("datalist#categorias option[value='"+$(this).val()+"'")[0];
 		if (id) {
+			id = id.getAttribute('id');
 			$.ajax({
 				url: url + "Ajax/buscarSolicitudes",
 				dataType: 'html',
@@ -320,38 +323,21 @@ $(document).ready(function () {
 					$("input[type='hidden']#idproblema").parent().show();
 				}
 			});
-		} else if (addEditservicios != 2) {
+		} else if(addEditservicios == 1) {
+			$("input#idcategoria").val(-1);
 			$("input[type='hidden']#idproblema").parent().hide();
 			$("input[type='hidden']#idsubproblema").parent().hide();
 			$("input[type='hidden']#idproblema").val(-1);
 			$("input[type='hidden']#idsubproblema").val(-1);
-			$("input#idcategoria").val(-1);
 			$("input#problema").attr("type", "hidden");
 			$("input#subproblema").attr("type", "hidden");
 			$("input#problema").val("");
 			$("input#subproblema").val("");
 		}
 	});
-	$(".modal-registroServicios input#categoria").change(function () {
-		let valor = $(this).val(),
-		id = $("datalist#categorias option[value='"+valor+"'").html();
-		$.ajax({
-			url: url+"Ajax/buscarSolicitudes",
-			dataType: 'html',
-			data: {
-				operation: "solicitudesRegistro",
-				token: 21,
-				num: id
-			},
-			type: "POST",
-			success: function (res) {
-				$("datalist#problemas").html(res);
-			}
-		});
-	});
 	$(".modal-registroServicios input#problema").change(function () {
 		var valor = $(this).val(),
-		id = $("datalist#problemas option[value='"+valor+"'").html();
+		id = $("datalist#problemas option[value='"+valor+"'").attr("id");
 		if (id) {
 			$("input[type='hidden']#idproblema").val(id);
 			$("input[type='hidden']#idsubproblema").parent().show();
@@ -363,10 +349,11 @@ $(document).ready(function () {
 			$("input[type='hidden']#idsubproblema").parent().hide();
 		}
 	});
-	$(".modal-servicios #editarS").click(function () {
+	$(".modal-servicios button#editarS").click(function () {
 		$("form#registroServicios")[0].reset();
 		addEditservicios = 2;
 		if ($(this).attr("ren")) {
+		llenarDatalistCategoria()
 			let num = $(this).attr("num");
 			if (num >= 1) {
 				let nCategoria = $("select#categoria").val(),
@@ -695,7 +682,6 @@ $(document).ready(function () {
 			buscarTicket(data[0].value);
 		}
 	});
-
 	/*
 	* Funciones
 	*/
@@ -941,7 +927,7 @@ $(document).ready(function () {
 				var data = $(this).serializeArray();
 				$(".modal-cerrarTicket span.msg").html('');
 				let tiposerial = $(".modal-cerrarTicket input#serial").attr("type");
-				if (data[6].value == 3) {
+				if (data[5].value == 3) {
 					if (tiposerial !== "hidden") {
 						if (data[7].value == '') {
 							$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar el serial del equipo.</span>');
@@ -1039,11 +1025,13 @@ $(document).ready(function () {
 				$(".modal-registrar input#searchDep").change(function () {
 					$(".modal-registrar input#direccion").val("");
 					$(".modal-registrar input#division").val("");
-					if ($(this).val()) {
+					if ($("datalist#asd option[value='"+$(this).val()+"']")[0]) {
 						let divi = $("datalist#asd option[value='"+$(this).val()+"']")[0].getAttribute("division"),
 						depa = $("datalist#asd option[value='"+$(this).val()+"']")[0].getAttribute("departamento");
 						$(".modal-registrar input#direccion").val(depa);
 						$(".modal-registrar input#division").val(divi);
+					} else {
+						$(this).val('');
 					}
 				})
 				$.ajax({
@@ -1059,13 +1047,17 @@ $(document).ready(function () {
 					$(".modal-registrar input#categoria").val("");
 					$(".modal-registrar input#problema_i").val("");
 					$(".modal-registrar input#problema_ii").val("");
-					if ($(this).val()) {
-						let subp = $("datalist#problem option[value='"+$(this).val()+"']")[0].getAttribute("id"),
+					let valor = $("datalist#problem option[value='"+$(this).val()+"']")[0];
+					if (valor) {
+						let subp = valor.getAttribute("id"),
 						prob = $("datalist#problem option[value='"+$(this).val()+"']")[0].getAttribute("problema"),
 						cat = $("datalist#problem option[value='"+$(this).val()+"']")[0].getAttribute("categoria");
 						$(".modal-registrar input#problema_i").val(prob);
 						$(".modal-registrar input#problema_ii").val(subp);
 						$(".modal-registrar input[name='categoria']").val(cat).change();
+					} else {
+						$(this).val('');
+						$(this).addClass('')
 					}
 				})
 				$(".modal-registrar input[name='categoria']").change(function () {

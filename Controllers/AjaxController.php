@@ -208,7 +208,7 @@ class AjaxController
 				} else {
 					$modulo = $_REQUEST['modulo'];
 				}
-				require_once 'Views/modulos/'.$modulo.'.php';
+				require_once 'Views/Modulos/'.$modulo.'.php';
 				$_SESSION['pagina'] = $modulo;
 			}
 		}
@@ -275,8 +275,7 @@ class AjaxController
 	public function registrarDepartamento()
 	{
 		if ($_REQUEST['token'] == 15) {
-			$this->cp->add_editDireccion($_REQUEST['direccion'],
-				$_REQUEST['id_direccion'])->save();
+			$this->cp->add_editDireccion($_REQUEST['direccion'], $_REQUEST['id_direccion'])->save();
 			if (isset($_REQUEST['division']) && $_REQUEST['id_direccion'] != -1) {
 				$this->cp->add_editDivision($_REQUEST['division'],
 					$_REQUEST['id_direccion'],
@@ -288,7 +287,7 @@ class AjaxController
 
 	public function buscarSolicitudes()
 	{
-		echo '<option value="">Seleccione una opción</option>';
+		echo '<option value="" disabled selected>Seleccione una opción</option>';
 		if ($_REQUEST['operation'] == 'solicitudes') {
 			if ($_REQUEST['token'] == 16) {
 				$resultado = $this->cp->select('categoria')->see();
@@ -308,7 +307,7 @@ class AjaxController
 				$resultado = $this->cp->select('problema_i', array(array('relacion', $_REQUEST['num'])))->see();
 			}
 			foreach ($resultado as $r) {
-				echo '<option value="'.$r['opcion'].'">'.$r['id'].'</option>';
+				echo '<option id="'.$r['id'].'" value="'.$r['opcion'].'"></option>';
 			}
 		}
 	}
@@ -345,22 +344,22 @@ class AjaxController
 		$open = $this->es->mTickets("Abierto", $_SESSION['rol'])->see();
 		$htmlA = '<div class="col-xs-12">';
 		if ($open != array()) {
-			$htmlA = '<ol class="listaTickets">';
+			$htmlA = '<ul class="listaTickets">';
 			foreach ($open as $o) {
 				$htmlA .= '<li> <b><a href="#" ren="'.$o['id'].'" id="abrirTicket">N° '.$o['id'].'</a></b><br>Fecha: '.$o['fecha_apertura'].'<br>Asignado: '.$o['soportista'].'</li>';
 			}
-			$htmlA .= '</ol>';
+			$htmlA .= '</ul>';
 		}
 		$htmlA .= '</div>';
 
 		$process = $this->es->mTickets("En proceso", $_SESSION['rol'])->see();
 		$htmlE = '<div class="col-xs-12">';
 		if ($process != array()) {
-			$htmlE .= '<ol class="listaTickets">';
+			$htmlE .= '<ul class="listaTickets">';
 			foreach ($process as $p) {
 				$htmlE .= '<li> <b><a href="#" ren="'.$p['id'].'" id="abrirTicket">N° '.$p['id'].'</a></b><br>Fecha: '.$p['fecha_apertura'].'<br>Asignado: '.$p['soportista'].'</li>';
 			}
-			$htmlE .= '</ol>';
+			$htmlE .= '</ul>';
 		}
 		$htmlE .= '</div>';
 
@@ -577,7 +576,7 @@ class AjaxController
 			$_REQUEST['solicitante'],
 			MED::d($_REQUEST['direccion']),
 			MED::d($_REQUEST['division']),
-			MED::d($_REQUEST['categoria']),
+			$_REQUEST['categoria'],
 			MED::d($_REQUEST['problema_i']),
 			MED::d($_REQUEST['problema_ii']),
 			$_REQUEST['serial'],

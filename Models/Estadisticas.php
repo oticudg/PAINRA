@@ -1,4 +1,4 @@
-<?php namespace models;
+<?php namespace Models;
 
 /**
 * Metodos de las consultas principales de PAINRA

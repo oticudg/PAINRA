@@ -3,7 +3,7 @@ class Enrutador{
 	public static function run(Request $request)
 	{
 		$controlador = $request->getControlador() . 'Controller';
-		$ruta = ROOT . 'Controllers' . DS . $controlador . '.php';
+		$ruta = ROOT . 'Controllers' . DS . ucwords($controlador) . '.php';
 		$metodo = $request->getMetodo();
 		if ($metodo == 'index.php') {
 			$metodo = 'index';

@@ -1,4 +1,4 @@
-<?php namespace models;
+<?php namespace Models;
 use Config\Fechas;
 
 /**
