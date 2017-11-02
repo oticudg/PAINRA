@@ -1,6 +1,6 @@
 <?php namespace Controllers;
 
-use models\CPrincipales as CPrincipales;
+use Models\CPrincipales as CPrincipales;
 
 /**
 * Metodos de controladores de inicio

@@ -130,7 +130,7 @@ class Template {
 	<script src="<?php Route::js('exporting') ?>"></script>
 	<script src="<?php Route::js('sweetalert2.min') ?>"></script>
 	<script src="<?php Route::js('highcharts-more') ?>"></script>
-	<script src="Views/Resource/js/main.js"></script>
+	<script src="Views/Resource/js/main.min.js"></script>
 </html>
 <?php
 }

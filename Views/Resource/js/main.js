@@ -927,6 +927,7 @@ $(document).ready(function () {
 				var data = $(this).serializeArray();
 				$(".modal-cerrarTicket span.msg").html('');
 				let tiposerial = $(".modal-cerrarTicket input#serial").attr("type");
+				console.log(data)
 				if (data[5].value == 3) {
 					if (tiposerial !== "hidden") {
 						if (data[7].value == '') {
