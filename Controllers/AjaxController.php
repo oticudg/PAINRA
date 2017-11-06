@@ -657,6 +657,15 @@ class AjaxController
 		echo(json_encode(array('datalist' => $datalist)));
 	}
 
+	public function coordinaciones()
+	{
+		echo('<option value="" selected disabled>Seleccione la Coordinación</option>');
+		$coord = $this->cp->select('coordinaciones', null, 0)->see();
+		foreach ($coord as $c) {
+			echo('<option value="'.$c['id'].'">'.$c['coordinacion'].'</option>');
+		}
+	}
+
 	public function server_side_processing()
 	{
 		$resultado = $this->cp->totalTickets()->see();
@@ -684,7 +693,7 @@ class AjaxController
 			</button>
 			<ul class="dropdown-menu">
 			<li><a href="#" ren="'.$r['id'].'" id="abrirTicket2">Detalles</a></li>
-			'.(($_SESSION['rol'] < 4) ? '<li><a href="#" ren="'.$r['id'].'" id="editTicket">Modificar</a></li>' : '').'
+			<li><a href="#" ren="'.$r['id'].'" id="editTicket">Modificar</a></li>
 			</ul>
 			</div>';
 			// <li><a href="reportes/informe.php?num='.$r['id'].'">Informe</a></li>

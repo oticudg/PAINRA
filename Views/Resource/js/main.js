@@ -353,7 +353,7 @@ $(document).ready(function () {
 		$("form#registroServicios")[0].reset();
 		addEditservicios = 2;
 		if ($(this).attr("ren")) {
-		llenarDatalistCategoria()
+			llenarDatalistCategoria();
 			let num = $(this).attr("num");
 			if (num >= 1) {
 				let nCategoria = $("select#categoria").val(),
@@ -463,6 +463,18 @@ $(document).ready(function () {
 	/* 
 	* soportistas
 	*/
+	$.ajax({
+		url: url+"Ajax/coordinaciones",
+		type: 'POST',
+		dataType: 'html',
+		data: {
+			token: 50,
+			operation: "coordinaciones"
+		},
+		success: function (res) {
+			$(".modal-soportistas-coordinacion form select#coordinacion").html(res);
+		}
+	});
 	/* Realiza el registro al presionar el boton submit */
 	$("#registrar-soportista").submit(function(e){
 		e.preventDefault();

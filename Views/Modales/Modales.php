@@ -143,12 +143,7 @@ class Modales
 									<div class="form-group">
 										<span class="fa fa-"></span>
 										<label for="coordinacion">Coordinacion:</label>
-										<select name="coordinacion" id="coordinacion" class="form-control" required>
-											<option value="">Seleccione la Coordinación</option>
-											<option value="1">Coordinación de Desarrollo</option>
-											<option value="2">Coordinación de Soporte</option>
-											<option value="3">Coordinación de Redes</option>
-										</select>
+										<select name="coordinacion" id="coordinacion" class="form-control" required></select>
 										<input type="hidden" id="iduser" name="iduser" value="-1">
 									</div>
 									<span class="msgcoordinacion"></span>
