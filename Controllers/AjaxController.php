@@ -600,26 +600,26 @@ class AjaxController
 
 	public function cerrarTicket()
 	{
-		if ($_REQUEST['serial'] !== $_REQUEST['idserial']) {
-			if ($_REQUEST['idserial'] == '-1' && !empty($_REQUEST['serial'])) {
-				$this->cp->add_editComputador(
-					$_REQUEST['serial'],
-					$_REQUEST['modelo'],
-					$_REQUEST['disco'],
-					$_REQUEST['memoria'],
-					$_REQUEST['procesador'],
-					$_REQUEST['observaciones'])->save();
-			} elseif($_REQUEST['idserial'] !== '-1') {
-				$this->cp->add_editComputador(
-					$_REQUEST['serial'],
-					$_REQUEST['modelo'],
-					$_REQUEST['disco'],
-					$_REQUEST['memoria'],
-					$_REQUEST['procesador'],
-					$_REQUEST['observaciones'],
-					$_REQUEST['idserial'])->save();
-			}
-		}
+		// if ($_REQUEST['serial'] !== $_REQUEST['idserial']) {
+		// 	if ($_REQUEST['idserial'] == '-1' && !empty($_REQUEST['serial'])) {
+		// 		$this->cp->add_editComputador(
+		// 			$_REQUEST['serial'],
+		// 			$_REQUEST['modelo'],
+		// 			$_REQUEST['disco'],
+		// 			$_REQUEST['memoria'],
+		// 			$_REQUEST['procesador'],
+		// 			$_REQUEST['observaciones'])->save();
+		// 	} elseif($_REQUEST['idserial'] !== '-1') {
+		// 		$this->cp->add_editComputador(
+		// 			$_REQUEST['serial'],
+		// 			$_REQUEST['modelo'],
+		// 			$_REQUEST['disco'],
+		// 			$_REQUEST['memoria'],
+		// 			$_REQUEST['procesador'],
+		// 			$_REQUEST['observaciones'],
+		// 			$_REQUEST['idserial'])->save();
+		// 	}
+		// }
 		$estado = $this->cp->add_editTicket(
 			NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 			$_REQUEST['serial'],

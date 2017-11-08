@@ -526,40 +526,7 @@ class Modales
 									<span class="fa fa-"></span>
 									<label for="serial">Serial del equipo:</label>
 									<input type="text" id="serial" class="form-control" name="serial" placeholder="Debe ingresar un serial.">
-									<input type="hidden" id="idserial" name="idserial">
-								</div>
-							</div>
-							<div id="serial" class="col-md-12">
-								<div class="col-md-6">
-									<div class="form-group">
-										<span class="fa fa-"></span>
-										<label for="memoria">Memoria del equipo:</label>
-										<input type="text" id="memoria" class="form-control" name="memoria" placeholder="Ingrese un memoria.">
-									</div>
-									<div class="form-group">
-										<span class="fa fa-"></span>
-										<label for="procesador">Procesador del equipo:</label>
-										<input type="text" id="procesador" class="form-control" name="procesador" placeholder="Ingrese un procesador.">
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<span class="fa fa-"></span>
-										<label for="modelo">Modelo del equipo:</label>
-										<input type="text" id="modelo" class="form-control" name="modelo" placeholder="Ingrese el modelo.">
-									</div>
-									<div class="form-group">
-										<span class="fa fa-"></span>
-										<label for="disco">Disco del equipo:</label>
-										<input type="text" id="disco" class="form-control" name="disco" placeholder="Ingrese datos sobre el disco.">
-									</div>
-								</div>
-								<div class="col-md-12">
-									<div class="form-group">
-										<span class="fa fa-"></span>
-										<label for="observaciones">Descripción del equipo:</label>
-										<input type="text" id="observaciones" class="form-control" name="observaciones" placeholder="Ingrese las observaciones presentes.">
-									</div>
+									<!-- <input type="hidden" id="idserial" name="idserial"> -->
 								</div>
 							</div>
 						</div>
@@ -649,7 +616,7 @@ class Modales
 								</div>
 								<div class="form-group">
 									<span class="fa fa-barcode"></span>
-									<label for="serial">BN / Serial:</label>
+									<label for="serial">Serial del B/N:</label>
 									<input type="text" id="serial" class="form-control" name="serial" placeholder="Serial del Bien Nacional">
 								</div>
 								<div class="message text-center"></div>
@@ -719,10 +686,10 @@ class Modales
 									<td>Problema especifico:</td>
 									<td class="subproblema"></td>
 								</tr>
-								<tr>
+								<!-- <tr>
 									<td>Solución aplicada:</td>
 									<td class="solucion"></td>
-								</tr>
+								</tr> -->
 								<tr>
 									<td>Estatus de la solicitud:</td>
 									<td class="estatus"></td>
@@ -748,7 +715,7 @@ class Modales
 									<td class="informe"></td>
 								</tr>
 								<tr>
-									<td>Serial:</td>
+									<td>Serial del B/N:</td>
 									<td class="serial"></td>
 								</tr>
 							</table>

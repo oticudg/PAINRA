@@ -938,19 +938,19 @@ $(document).ready(function () {
 				e.preventDefault();
 				var data = $(this).serializeArray();
 				$(".modal-cerrarTicket span.msg").html('');
-				let tiposerial = $(".modal-cerrarTicket input#serial").attr("type");
-				console.log(data)
+				// let tiposerial = $(".modal-cerrarTicket input#serial").attr("type");
+				// return;
 				if (data[5].value == 3) {
-					if (tiposerial !== "hidden") {
-						if (data[7].value == '') {
-							$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar el serial del equipo.</span>');
-							return;
-						}
-						if (data[9].value == '' || data[10].value == '' || data[11].value == '' || data[12].value == '' || data[13].value == '') {
-							$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar todos los Datos.</span>');
-							return;
-						}
-					}
+				// 	if (tiposerial !== "hidden") {
+				// 		if (data[7].value == '') {
+				// 			$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar el serial del equipo.</span>');
+				// 			return;
+				// 		}
+				// 		if (data[9].value == '' || data[10].value == '' || data[11].value == '' || data[12].value == '' || data[13].value == '') {
+				// 			$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar todos los Datos.</span>');
+				// 			return;
+				// 		}
+				// 	}
 					if (data[2].value == '') {
 						$(".modal-cerrarTicket span.msg").html('<span class="alert alert-warning" role="alert">Debe ingresar la solución.</span>');
 						return;
@@ -1492,7 +1492,7 @@ $(document).ready(function () {
 					$('.modal-abrirTicket .detalles').html(resul[0].detalleF);
 					$('.modal-abrirTicket .problema').html(resul[0].problema);
 					$('.modal-abrirTicket .subproblema').html(resul[0].subproblema);
-					$('.modal-abrirTicket .solucion').html(resul[0].solucion);
+					// $('.modal-abrirTicket .solucion').html(resul[0].solucion);
 					$('.modal-abrirTicket .estatus').html(resul[0].estatus);
 					$('.modal-abrirTicket .estatus').removeClass('bg-danger bg-success bg-info');
 					switch (resul[0].estatus){
@@ -1563,35 +1563,35 @@ $(document).ready(function () {
 					// }
 					$('.modal-cerrarTicket input#radioEstatus').removeAttr("checked");
 					$('.modal-cerrarTicket input#radioEstatus[value="'+resul[0].id_estatus+'"]').attr("checked", "");
-					$('.modal-cerrarTicket input#idserial').val(-1);
-					if (resul[0].id_categoriag == 4 || resul[0].id_categoriag == 9 || resul[0].id_categoriag == 13) {
-						$('.modal-cerrarTicket #serial').show();
-						$('.modal-cerrarTicket input#serial').parent().show();
-						$('.modal-cerrarTicket input#serial').val(resul[0].serial);
-						$('.modal-cerrarTicket input#serial').attr("type", "text");
-						$('.modal-cerrarTicket #serial input').attr('type', "text");
-						if (resul[1]) {
-							$('.modal-cerrarTicket input#modelo').val(resul[1].modelo);
-							$('.modal-cerrarTicket input#disco').val(resul[1].disco);
-							$('.modal-cerrarTicket input#memoria').val(resul[1].memoria);
-							$('.modal-cerrarTicket input#procesador').val(resul[1].procesador);
-							$('.modal-cerrarTicket input#observaciones').val(resul[1].observaciones);
-							$('.modal-cerrarTicket input#idserial').val(resul[1].id);
-						} else {
-							$('.modal-cerrarTicket input#modelo').val('');
-							$('.modal-cerrarTicket input#disco').val('');
-							$('.modal-cerrarTicket input#memoria').val('');
-							$('.modal-cerrarTicket input#procesador').val('');
-							$('.modal-cerrarTicket input#observaciones').val('');
-							$('.modal-cerrarTicket input#idserial').val('');
-						}
-					} else {
-						$('.modal-cerrarTicket #serial').hide();
-						$('.modal-cerrarTicket input#serial').parent().hide();
-						$('.modal-cerrarTicket input#serial').val(-1);
-						$('.modal-cerrarTicket input#serial').attr("type", "hidden");
-						$('.modal-cerrarTicket #serial input').attr('type', "hidden");
-					}
+					$('.modal-cerrarTicket input#idserial').val(resul[0].serial);
+					// if (resul[0].id_categoriag == 4 || resul[0].id_categoriag == 9 || resul[0].id_categoriag == 13) {
+					// 	$('.modal-cerrarTicket #serial').show();
+					// 	$('.modal-cerrarTicket input#serial').parent().show();
+					// 	$('.modal-cerrarTicket input#serial').val(resul[0].serial);
+					// 	$('.modal-cerrarTicket input#serial').attr("type", "text");
+					// 	$('.modal-cerrarTicket #serial input').attr('type', "text");
+					// 	if (resul[1]) {
+					// 		$('.modal-cerrarTicket input#modelo').val(resul[1].modelo);
+					// 		$('.modal-cerrarTicket input#disco').val(resul[1].disco);
+					// 		$('.modal-cerrarTicket input#memoria').val(resul[1].memoria);
+					// 		$('.modal-cerrarTicket input#procesador').val(resul[1].procesador);
+					// 		$('.modal-cerrarTicket input#observaciones').val(resul[1].observaciones);
+					// 		$('.modal-cerrarTicket input#idserial').val(resul[1].id);
+					// 	} else {
+					// 		$('.modal-cerrarTicket input#modelo').val('');
+					// 		$('.modal-cerrarTicket input#disco').val('');
+					// 		$('.modal-cerrarTicket input#memoria').val('');
+					// 		$('.modal-cerrarTicket input#procesador').val('');
+					// 		$('.modal-cerrarTicket input#observaciones').val('');
+					// 		$('.modal-cerrarTicket input#idserial').val('');
+					// 	}
+					// } else {
+					// 	$('.modal-cerrarTicket #serial').hide();
+					// 	$('.modal-cerrarTicket input#serial').parent().hide();
+					// 	$('.modal-cerrarTicket input#serial').val(-1);
+					// 	$('.modal-cerrarTicket input#serial').attr("type", "hidden");
+					// 	$('.modal-cerrarTicket #serial input').attr('type', "hidden");
+					// }
 					$('.modal-cerrarTicket').modal('show');
 				}
 			})
