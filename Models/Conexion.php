@@ -46,7 +46,7 @@ abstract class Conexion
 		}
 	}
 
-	public function getSQL() { echo($this->sql); }
+	public function getSQL() { return $this->sql; }
 
 	public function save()
 	{

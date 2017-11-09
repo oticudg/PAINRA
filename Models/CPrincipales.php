@@ -48,10 +48,10 @@ class CPrincipales extends Conexion
 
 	protected $arr = array(
 		0 => 't.id',
-		1 => 't.fecha_apertura, t.hora',
-		2 => 't.solicitante, division',
+		1 => 't.fecha_apertura',
+		2 => 't.solicitante',
 		3 => 'problem, subproblem',
-		4 => 'u.nombre, t.colaborador',
+		4 => 'u.nombre',
 		5 => 'estatus',
 		6 => '1'
 	);

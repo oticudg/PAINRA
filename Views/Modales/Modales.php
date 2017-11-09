@@ -521,6 +521,7 @@ class Modales
 									</select>
 								</div>
 							</div>
+							<?php /*
 							<div class="col-md-6">
 								<div class="form-group">
 									<span class="fa fa-"></span>
@@ -529,6 +530,7 @@ class Modales
 									<!-- <input type="hidden" id="idserial" name="idserial"> -->
 								</div>
 							</div>
+							*/ ?>
 						</div>
 						<div class="clearfix"></div>
 						<div class="modal-footer">
@@ -614,11 +616,13 @@ class Modales
 									<input type="hidden" id="problema_i" name="problema_i" value=""></input>
 									<input type="hidden" id="problema_ii" name="problema_ii" value=""></input>
 								</div>
+								<?php /*
 								<div class="form-group">
 									<span class="fa fa-barcode"></span>
 									<label for="serial">Serial del B/N:</label>
 									<input type="text" id="serial" class="form-control" name="serial" placeholder="Serial del Bien Nacional">
 								</div>
+								*/ ?>
 								<div class="message text-center"></div>
 							</div>
 							<input type="hidden" name="id" value="-1" />
@@ -714,10 +718,12 @@ class Modales
 									<td>Informe técnico:</td>
 									<td class="informe"></td>
 								</tr>
+								<?php /*
 								<tr>
 									<td>Serial del B/N:</td>
 									<td class="serial"></td>
 								</tr>
+								*/ ?>
 							</table>
 						</div>
 					</div>
