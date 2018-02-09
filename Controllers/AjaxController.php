@@ -633,7 +633,7 @@ class AjaxController
 			(($_REQUEST['responsable'] == '') ? NULL : $_REQUEST['responsable']),
 			($_REQUEST['colaborador'] == '') ? NULL : implode(', ', $_REQUEST['colaborador']),
 			$_SESSION['id'],
-			NULL,
+			date("Y-m-d H:i:s"),
 			$_SESSION['id'],
 			$_REQUEST['id'])->save();
 		echo json_encode(array('estado' => $estado));
