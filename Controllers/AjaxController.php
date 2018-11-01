@@ -568,7 +568,7 @@ class AjaxController
 				$resultado = $this->cp->add_editComputador($_REQUEST['serial'], '', '', '', '', '')->save();
 			}
 		}
-		$colaborador = (!empty($_REQUEST['colaborador'])) ? implode(', ', $_REQUEST['colaborador']) : '';
+		$colaborador = (strlen($_REQUEST['colaborador'][0])) ? implode(', ', $_REQUEST['colaborador']) : '';
 		$estado = $this->cp->add_editTicket(
 			date("Y-m-d"),
 			$_SESSION['id'],

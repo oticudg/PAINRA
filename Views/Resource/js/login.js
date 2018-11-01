@@ -6,7 +6,7 @@ $(document).ready(function () {
 		var data = $(this).serializeArray();
 		data.push({ name: "operation", value: "login" });
 		$.ajax({
-			url: url + 'Ajax/login',
+			url: url + 'ajax/login',
 			type: 'POST',
 			dataType: 'json',
 			data: data,

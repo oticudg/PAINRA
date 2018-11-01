@@ -196,7 +196,7 @@ class CPrincipales extends Conexion
 		$this->sql .= ($id == -1) ? "detalleF = '".$det."', " : '';
 		$this->sql .= ($id == -1) ? "fecha_apertura = '".$feca."', " : '';
 		$this->sql .= ($id == -1) ? "coordinacion = ".$coo.", " : '';
-		$this->sql .= ($id == -1) ? "fecha_cierre = NULL, " : "fecha_cierre = '".$fecc."', ";
+		$this->sql .= ($id == -1) ? "fecha_cierre = NULL, " : "fecha_cierre = " . (($fecc) ? "'" . $fecc . "'" : NULL) . "NULL, ";
 		$this->sql .= ($col !== '' && $col != NULL) ? "colaborador = '".$col."', " : '';
 		$this->sql .= ($ced == NULL) ? '' : 'id_soporte = "'.$ced.'",';
 		$this->sql .= "

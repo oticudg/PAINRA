@@ -14,9 +14,8 @@ class Estadisticas extends Conexion
 		} elseif ($rol == 3) {
 			$where = 'WHERE t.id_soporte = ' . $_SESSION['id'];
 		}
-		$this->sql = 'SELECT e.id, e.descripcion, COUNT(t.id) AS tickets 
-		'.$this->join.' '.$where.'
-		GROUP BY 2 ORDER BY 2;';
+		$this->sql = 'SELECT e.id, e.descripcion, COUNT(t.id) AS tickets '.$this->join.' '.$where.'
+		GROUP BY 1 ORDER BY 1;';
 		return $this;
 	}
 
