@@ -553,6 +553,7 @@ class AjaxController
 
 	public function registrarTicket()
 	{
+		$_REQUEST['serial'] = ''; /*sera '' hasta que se confirme el modulo de B/N*/
 		$resultado = $this->cp->validarTicketSemana(
 			$_REQUEST['solicitante'],
 			MED::d($_REQUEST['direccion']),
@@ -562,13 +563,13 @@ class AjaxController
 			echo(json_encode(array('ticket' => $resultado[0]['id'], 'estado' => false)));
 			return;
 		}
-		if (!empty($_REQUEST['serial'])) {
-			$resultado = $this->cp->computador($_REQUEST['serial'])->see();
-			if (isset($resultado[0]['id'])) {
-				$resultado = $this->cp->add_editComputador($_REQUEST['serial'], '', '', '', '', '')->save();
-			}
-		}
-		$colaborador = (strlen($_REQUEST['colaborador'][0])) ? implode(', ', $_REQUEST['colaborador']) : '';
+		// if (!empty($_REQUEST['serial'])) {
+		// 	$resultado = $this->cp->computador($_REQUEST['serial'])->see();
+		// 	if (isset($resultado[0]['id'])) {
+		// 		$resultado = $this->cp->add_editComputador($_REQUEST['serial'], '', '', '', '', '')->save();
+		// 	}
+		// }
+		$colaborador = (!empty($_REQUEST['colaborador'])) ? implode(', ', $_REQUEST['colaborador']) : '';
 		$estado = $this->cp->add_editTicket(
 			date("Y-m-d"),
 			$_SESSION['id'],
@@ -600,6 +601,7 @@ class AjaxController
 
 	public function cerrarTicket()
 	{
+		$_REQUEST['serial'] = ''; /*sera '' hasta que se confirme el modulo de B/N*/
 		// if ($_REQUEST['serial'] !== $_REQUEST['idserial']) {
 		// 	if ($_REQUEST['idserial'] == '-1' && !empty($_REQUEST['serial'])) {
 		// 		$this->cp->add_editComputador(
@@ -631,7 +633,7 @@ class AjaxController
 			(($_REQUEST['responsable'] == '') ? NULL : $_REQUEST['responsable']),
 			($_REQUEST['colaborador'] == '') ? NULL : implode(', ', $_REQUEST['colaborador']),
 			$_SESSION['id'],
-			NULL,
+			(($_REQUEST['estatus'] == 3) ? date("Y-m-d H:i:s") : NULL),
 			$_SESSION['id'],
 			$_REQUEST['id'])->save();
 		echo json_encode(array('estado' => $estado));
