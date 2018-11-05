@@ -569,7 +569,7 @@ class AjaxController
 		// 		$resultado = $this->cp->add_editComputador($_REQUEST['serial'], '', '', '', '', '')->save();
 		// 	}
 		// }
-		$colaborador = (!empty($_REQUEST['colaborador'])) ? implode(', ', $_REQUEST['colaborador']) : '';
+		$colaborador = (strlen($_REQUEST['colaborador'][0])) ? implode(', ', $_REQUEST['colaborador']) : '';
 		$estado = $this->cp->add_editTicket(
 			date("Y-m-d"),
 			$_SESSION['id'],
@@ -631,9 +631,9 @@ class AjaxController
 			$_REQUEST['estatus'],
 			NULL,
 			(($_REQUEST['responsable'] == '') ? NULL : $_REQUEST['responsable']),
-			($_REQUEST['colaborador'] == '') ? NULL : implode(', ', $_REQUEST['colaborador']),
+			(strlen($_REQUEST['colaborador'][0])) ? implode(', ', $_REQUEST['colaborador']) : NULL,
 			$_SESSION['id'],
-			(($_REQUEST['estatus'] == 3) ? date("Y-m-d H:i:s") : NULL),
+			date("Y-m-d H:i:s"),
 			$_SESSION['id'],
 			$_REQUEST['id'])->save();
 		echo json_encode(array('estado' => $estado));
